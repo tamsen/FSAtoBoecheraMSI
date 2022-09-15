@@ -1,7 +1,7 @@
 import sys, os
 import argparse
-import importlib
 import FSAreader
+import analysis
 import visuals
 
 #code snippets from
@@ -46,6 +46,12 @@ def main():
     #M.main( args )
 
     trace_data, all_collected_data = FSAreader.readFSAFile("./data/TD21DG24PS1c10_C07.fsa")
-    visuals.plotLadder(all_collected_data)
+
+    # get peaks of ladder
+    sixteen_peaks = analysis.getLadderPeaks(all_collected_data)
+    #visuals.plotLadder(all_collected_data, smoothed_ladder_data, indices, peak_heights)
+    visuals.plotRawTraceByColor(all_collected_data)
+
+
 
 main()
