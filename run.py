@@ -49,7 +49,9 @@ def main():
 
     # get peaks of ladder
     sixteen_peaks = analysis.getLadderPeaks(all_collected_data)
-    #visuals.plotLadder(all_collected_data, smoothed_ladder_data, indices, peak_heights)
+    mappingFxn = analysis.buildInterpolationdBasedOnLadder(sixteen_peaks)
+
+    newX=analysis.testRemappingOnLadder(all_collected_data,mappingFxn,100 )
     visuals.plotRawTraceByColor(all_collected_data)
 
 
