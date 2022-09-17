@@ -1,8 +1,7 @@
 import sys, os
 import argparse
-import FSAreader
-import analysis
-import visuals
+import filereaders
+import tracefileprocessor
 
 #code snippets from
 #https://github.com/trmznt/fatools/
@@ -24,8 +23,6 @@ def init_argparser():
 
 def main():
 
-    print("in main")
-
     greet()
 
     command = sys.argv[1]
@@ -45,15 +42,10 @@ def main():
     args = parser.parse_args(opt_args)
     #M.main( args )
 
-    trace_data, all_collected_data = FSAreader.readFSAFile("./data/TD21DG24PS1c10_C07.fsa")
+    files_to_process = filereaders.readInputFile("./data/FSAlist.txt")
+    panel_info = filereaders.readPanelFile("./data/Panel.txt")
 
-    # get peaks of ladder
-    sixteen_peaks = analysis.getLadderPeaks(all_collected_data)
-    mappingFxn = analysis.buildInterpolationdBasedOnLadder(sixteen_peaks)
-
-    newX=analysis.testRemappingOnLadder(all_collected_data,mappingFxn,100 )
-    visuals.plotRawTraceByColor(all_collected_data)
-
-
+    for file in files_to_process:
+        tracefileprocessor.processFSAfile(file, panel_info)
 
 main()

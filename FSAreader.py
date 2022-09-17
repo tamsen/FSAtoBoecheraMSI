@@ -181,9 +181,6 @@ def parseFSAheader(header, handle):
     head_offset = header[8]
     index = 0
 
-    print
-    "parsing header"
-
     while index < head_elem_num:
         start = head_offset + index * head_elem_size
         # added directory offset to tuple
@@ -209,7 +206,7 @@ def readFSAFile(in_file):
         # element size, number of elements, data size, data offset, handle,
         # file type, file version
         # dictionary for containing file metadata
-        print("reading header")
+        print("reading " + in_file)
         data = {}
         # dictionary for containing extracted directory data
         tags = {}
@@ -219,8 +216,8 @@ def readFSAFile(in_file):
                                handle.read(struct.calcsize(_HEADFMT)))
         # file format version
         version = header[1]
-        print("version: " + str(version))
-        print("header: " + str(header))
+        print("FSA file version: " + str(version))
+        #print("header: " + str(header))
 
         all_keys = {}
         headerEntries = parseFSAheader(header, handle)
@@ -241,14 +238,8 @@ def readFSAFile(in_file):
 
             all_keys[key] = tags[key].tag_data
 
-            # print(key)
 
-        print("")
-        print("All keys in header: " + str(all_keys.keys()))
-        print("")
-        print("Data keys in header: " + str(data.keys()))
 
-        # write a log file
 
     handle.close()
 

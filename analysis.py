@@ -2,36 +2,17 @@ import numpy as np
 from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
-import matplotlib
-import matplotlib.pyplot as plt
 
 import visuals
 
 Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
-def getLadderPeaks(trace_data_dictionary):
+def getLadderPeaks(runName, trace_data_dictionary):
 
     #'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
 
-    #very basic smoothing
-    kernel_size = 20
-    kernel = np.ones(kernel_size) / kernel_size
-    smoothed_trace = np.convolve(ladder_trace , kernel, mode='same')
-
-    #calculate the threshold:
-    ladder_variance = np.var(smoothed_trace)
-    ladder_mode = mode(smoothed_trace)[0][0]
-    ladder_sigma = np.sqrt(ladder_variance)
-    threshold = ladder_mode + 0.25*ladder_sigma
-
-    # https://plotly.com/python/peak-finding/
-    indices = find_peaks(smoothed_trace, height=threshold,distance=10)[0]
-    peak_heights_tup= [ (x,smoothed_trace[x]) for x in indices ]
-
-    #sort, greatest peak height first. Keep the best 30
-    peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
-    highest_peaks_tup=peak_heights_tup[0:30]
+    highest_peaks_tup, smoothed_trace, threshold = findTop30PeaksLargestFirst(ladder_trace)
 
     #of the remaining peaks, keep the greatest.
     highest_tup=highest_peaks_tup[0]
@@ -50,12 +31,36 @@ def getLadderPeaks(trace_data_dictionary):
     sixteen_peaks= [ (sixteen_peaks[i][0],sixteen_peaks[i][1],Liz500[i])
                        for i in range(0,16)]
 
-    visuals.plotLadder(trace_data_dictionary, threshold, smoothed_trace,
+    visuals.plotLadder(runName, threshold, smoothed_trace,
                        sixteen_peaks)
 
-    return sixteen_peaks
+    return sixteen_peaks, threshold
 
-def buildInterpolationdBasedOnLadder(sixteen_peaks):
+
+def findTop30PeaksLargestFirst(ladder_trace):
+
+    # very basic smoothing
+    kernel_size = 20
+    kernel = np.ones(kernel_size) / kernel_size
+    smoothed_trace = np.convolve(ladder_trace, kernel, mode='same')
+
+    # calculate the threshold:
+    ladder_variance = np.var(smoothed_trace)
+    ladder_mode = mode(smoothed_trace)[0][0]
+    ladder_sigma = np.sqrt(ladder_variance)
+    threshold = ladder_mode + 0.25 * ladder_sigma
+
+    # https://plotly.com/python/peak-finding/
+    indices = find_peaks(smoothed_trace, height=threshold, distance=10)[0]
+    peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
+    # sort, greatest peak height first. Keep the best 30
+    peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
+    highest_peaks_tup = peak_heights_tup[0:30]
+
+    return highest_peaks_tup, smoothed_trace, threshold
+
+
+def buildInterpolationdBasedOnLadder(run_folder, sixteen_peaks):
 
     #you are building a mapping from A -> B.
     #A = the peak positions in raw gel-travellijng space
@@ -66,59 +71,98 @@ def buildInterpolationdBasedOnLadder(sixteen_peaks):
 
     f = CubicSpline(A, B, bc_type='natural')
 
-    print("A=" + str(A))
-    print("B=" + str(B))
+    #dont appy the spline where we dont have data!
+    left_domain_limit = sixteen_peaks[0][0] - 100
+    right_domain_limit = sixteen_peaks[15][0] + 100
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    #test it looks good
+    visuals.plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f)
 
-    plt.plot(A, B, )
-    # plt.plot(peak_indexes,peak_heights,"*")
-    # plt.plot([threshold for x in new_x], "-", color="g")
+    return f, left_domain_limit, right_domain_limit
 
-    plt.title("MySpline")
-    plt.xlabel("A = raw")
-    plt.ylabel("B = remapped")
+def remapATrace(tracedata_x_coords, tracedata_y_coords,
+                fxn,  left_domain_limit, right_domain_limit):
 
-    # plt.show()
-    # ax.legend(loc="upper right", title="Legend")
-    plt.savefig("./tmp/mapping" + ".png")
-    plt.close()
+    #print("left_domain_limit,=" + str(left_domain_limit))
+    #print("right_domain_limit=" + str(right_domain_limit))
+    x_raw=[]
+    y_raw=[]
+
+    #get the subset of coords in the domain
+    for i in range(0,len(tracedata_x_coords)):
+        x = tracedata_x_coords[i]
+        if  x >= left_domain_limit and x <= right_domain_limit:
+            x_raw.append(tracedata_x_coords[i])
+            y_raw.append(tracedata_y_coords[i])
+
+    x_new= fxn(x_raw)
+
+    return x_raw, x_new, y_raw #y_raw and y_new are the same
 
 
-    return f
-
-def remapATrace(tracedata_x_coords, fxn):
-
-    new_x_coords = fxn(tracedata_x_coords)
-
-    return new_x_coords
-
-
-def testRemappingOnLadder(trace_data_dictionary, fxn, threshold):
+def RemapLadder(run_folder, trace_data_dictionary, fxn,
+                          left_domain_limit, right_domain_limit,
+                          sixteen_peaks, threshold ):
 
     original_ladder=trace_data_dictionary['DATA105']
     num_data_points=len(original_ladder)
     old_x_coords=[x for x in range(0,num_data_points)]
-    new_x_coords = remapATrace(old_x_coords, fxn)
+    x_raw, x_new, y_new = remapATrace(old_x_coords,
+                                      original_ladder,
+                                      fxn, left_domain_limit, right_domain_limit)
 
-    #cut off anything below zero
-    x_to_plot=[]
-    y_to_plot=[]
+    peak_xs=Liz500
+    peak_ys= [peak[1] for peak in sixteen_peaks]
 
-    for i in range(0,num_data_points):
+    visuals.plotRemappedTrace(run_folder,
+                              x_new,
+                              y_new , peak_xs, peak_ys,
+                              threshold, "Ladder Trace", "Ladder Trace",
+                              "Ladder Trace" , "Remapped")
 
-        x=new_x_coords[i]
-        y=original_ladder[i]
-        if x >= 0 and x <= 100:
-            x_to_plot.append(x)
-            y_to_plot.append(y)
+    return x_new
 
 
-    #x datapoints start getting smaller again, so something seems wrong with the spline
-    print("x=" + str(x_to_plot))
-    print("y=" + str(y_to_plot))
+def RemapDataTrace(run_folder, trace_data_dictionary, fxn,
+                          left_domain_limit, right_domain_limit,
+                          sixteen_peaks, threshold ):
+    channel_number = 1
+    channel_name= 'DATA' + str(channel_number)
+    wavelength = trace_data_dictionary['DyeW' + str(channel_number)]
+    dyename = trace_data_dictionary['DyeN' + str(channel_number)]
+    raw_trace_data = (trace_data_dictionary[channel_name])
 
-    visuals.plotRemappedTrace(x_to_plot,
-                              y_to_plot, threshold)
 
-    return new_x_coords
+    highest_peaks_tup, smoothed_trace, threshold = findTop30PeaksLargestFirst(raw_trace_data)
+
+    peak_xs = [peak[0] for peak in highest_peaks_tup]
+    peak_ys = [peak[1] for peak in highest_peaks_tup]
+
+    #plot raw trace, smoothed trace, and discovered peaks
+    visuals.plotUnmappedTraceByColor(
+        run_folder,
+        raw_trace_data,smoothed_trace,highest_peaks_tup,
+        wavelength, dyename, channel_number,"Raw")
+
+
+    num_data_points=len(smoothed_trace)
+    old_x_coords=[x for x in range(0,num_data_points)]
+    trace_x_raw, trace_x_new, trace_y_new = remapATrace(old_x_coords, smoothed_trace,
+                                      fxn, left_domain_limit, right_domain_limit)
+
+    # if peaks are at the extreme end of the ladder, throw them out
+    peak_x_raw, peak_x_new, peak_y_new = remapATrace(peak_xs,
+                                      peak_ys,
+                                      fxn,
+                                      sixteen_peaks[1][0] + 10,
+                                      sixteen_peaks[14][0] - 10)
+
+    print("old peaks: " + str(peak_xs) )
+    print("new peaks: " + str(peak_x_new) )
+
+    visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
+                              peak_x_new, peak_y_new,
+                              threshold,
+                              wavelength, dyename, channel_number, "Remapped")
+
+    return peak_x_new, peak_y_new
