@@ -83,8 +83,6 @@ def buildInterpolationdBasedOnLadder(run_folder, sixteen_peaks):
 def remapATrace(tracedata_x_coords, tracedata_y_coords,
                 fxn,  left_domain_limit, right_domain_limit):
 
-    #print("left_domain_limit,=" + str(left_domain_limit))
-    #print("right_domain_limit=" + str(right_domain_limit))
     x_raw=[]
     y_raw=[]
 
@@ -95,7 +93,10 @@ def remapATrace(tracedata_x_coords, tracedata_y_coords,
             x_raw.append(tracedata_x_coords[i])
             y_raw.append(tracedata_y_coords[i])
 
-    x_new= fxn(x_raw)
+    if fxn:
+        x_new = fxn(x_raw)
+    else:
+        x_new= x_raw
 
     return x_raw, x_new, y_raw #y_raw and y_new are the same
 
@@ -123,10 +124,11 @@ def RemapLadder(run_folder, trace_data_dictionary, fxn,
     return x_new
 
 
-def RemapDataTrace(run_folder, trace_data_dictionary, fxn,
+def RemapDataTrace(run_folder, relevant_loci,
+                          trace_data_dictionary, fxn,
                           left_domain_limit, right_domain_limit,
-                          sixteen_peaks, threshold ):
-    channel_number = 1
+                          sixteen_peaks, channel_number ):
+
     channel_name= 'DATA' + str(channel_number)
     wavelength = trace_data_dictionary['DyeW' + str(channel_number)]
     dyename = trace_data_dictionary['DyeN' + str(channel_number)]
@@ -159,10 +161,26 @@ def RemapDataTrace(run_folder, trace_data_dictionary, fxn,
 
     print("old peaks: " + str(peak_xs) )
     print("new peaks: " + str(peak_x_new) )
+    plot_domain = [trace_x_new[0], trace_x_new[len(trace_x_new)-1]]
 
     visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
                               peak_x_new, peak_y_new,
                               threshold,
-                              wavelength, dyename, channel_number, "Remapped")
+                              wavelength, dyename, channel_number, "Remapped", plot_domain)
+
+    # plot a zoomed-in view for each loci
+    for loci in relevant_loci.keys():
+
+        bp_start = relevant_loci[loci]["length"][0] - 20
+        bp_end = relevant_loci[loci]["length"][1] + 20
+        plot_domain = [bp_start, bp_end ]
+
+        visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
+                                  peak_x_new, peak_y_new,
+                                  threshold,
+                                  wavelength, dyename, channel_number,
+                                  loci + "_Remapped",  plot_domain)
+
+
 
     return peak_x_new, peak_y_new

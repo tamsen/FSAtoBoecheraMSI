@@ -40,7 +40,8 @@ def plotLadder(run_folder, threshold,
 
 
 def plotRemappedTrace(run_folder, new_x,old_y, peak_xs,  peak_ys, threshold,
-                      wavelength, dyename, channel_number, plot_prefix):
+                      wavelength, dyename, channel_number,
+                      plot_prefix, plot_domain=False):
 
     fig, ax = plt.subplots(figsize=(10, 10))
 
@@ -55,6 +56,9 @@ def plotRemappedTrace(run_folder, new_x,old_y, peak_xs,  peak_ys, threshold,
     plt.title(plot_prefix + " " + dyename )
     plt.xlabel("Distance Fragment Travelled (BP)")
     plt.ylabel("Intensity")
+
+    if (plot_domain):
+        plt.xlim(plot_domain)
 
     #ax.legend(loc="upper right", title="Legend")
     plt.savefig(run_folder + "/" + plot_prefix + "_" + dyename + "_plot" + ".png")

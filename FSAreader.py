@@ -243,9 +243,19 @@ def readFSAFile(in_file):
 
     handle.close()
 
-    with open('./tmp/FSA_file_reader_log.txt', 'w') as f:
+    #with open('./tmp/FSA_file_reader_log.txt', 'w') as f:
 
-        for key in all_keys.keys():
-            f.write(key + "\t" + str(all_keys[key]) + "\n")
+    #    for key in all_keys.keys():
+    #        f.write(key + "\t" + str(all_keys[key]) + "\n")
+
+    print("Dyes in this file: " )
+    dye_to_channel_mapping={}
+    channel_numbers=[1,2,3,4]
+    for channel_number in channel_numbers:
+            channel_name = 'DATA' + str(channel_number)
+            wavelength = all_keys['DyeW' + str(channel_number)]
+            dyename = all_keys['DyeN' + str(channel_number)]
+            dye_to_channel_mapping[dyename ]= channel_name
+            print(channel_name + ":\t" + dyename + ", wavelength " +  str(wavelength))
 
     return data, all_keys

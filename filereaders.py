@@ -1,5 +1,4 @@
-
-
+import xml.etree.ElementTree as ET
 
 def readInputFile(input_file_path):
 
@@ -10,34 +9,47 @@ def readInputFile(input_file_path):
 
     return clean_lines
 
-def readPanelFile(input_file_path):
+def readPanelXml(input_file_path):
 
-    clean_lines = readInputFile(input_file_path)
-    panel={}
+    mytree = ET.parse(input_file_path)
+    myroot = mytree.getroot()
 
-    for line in clean_lines:
+    primer_set_list=[ x.tag for x in myroot]
+    print(primer_set_list)
+    print(myroot[0].tag)
+    primer_sets_data_by_primer_set_name={}
 
-        spat = line.split(":")
-        primer_set=spat[0]
-        loci_in_primer_set=spat[1].split(",")
-        loci_info = {}
-        for each_loci in  loci_in_primer_set:
+    for primer_set in myroot:
+        primer_set_name=primer_set.attrib["name"]
+        primer_set_data_by_loci={}
+        for loci in primer_set:
+            loci_name = loci.attrib["name"]
+            loci_data={}
 
-            spat = each_loci.split("(")
-            msi_loci_name=spat[0].strip()
-            msi_loci_start = spat[1].strip()
-            #msi_loci_end = spat[2].strip()
+            for data in loci:
 
-            loci_info[msi_loci_name] = [msi_loci_start,0]# msi_loci_end]
+                incoming_txt=data.text.strip()
+                incoming_tag = data.tag.strip()
 
-        panel[primer_set] = loci_info
+                if (incoming_tag == "length"):
+                    interval_splat = incoming_txt.split('-')
+                    msi_loci_start = int(interval_splat[0].strip())
+                    msi_loci_end = int(interval_splat[1].strip())
+                    loci_data["length"] = [msi_loci_start, msi_loci_end]
+                else:
+                    loci_data[incoming_tag]=incoming_txt
 
-    return panel
+            primer_set_data_by_loci[loci_name]=loci_data
+
+        primer_sets_data_by_primer_set_name[primer_set_name]=primer_set_data_by_loci
+
+    print(primer_sets_data_by_primer_set_name)
+    return primer_sets_data_by_primer_set_name
 
 def figure_out_loci_from_run_name(panel, run_name):
 
     for primer_set in panel.keys():
         if primer_set in run_name:
-            return primer_set
+            return panel[primer_set]
 
     return "FAIL"

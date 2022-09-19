@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+<PrimerSet name="PS1" >
+    <loci name="ICE3">
+        <name>ICE3</name>
+        <length>65-180</length>
+        <dye>FAM</dye>
+    </loci>
+    <!--price>ICE3(65-180),FAM; BF20 (190-260),VIC; A1 (230-250),FAM</price -->
+</PrimerSet>
+<!--<PrimerSet>
+    <name>PS2</name>
+    <price>BF11 (65-110),FAM; ICE14 (200-250),VIC; C8 (220-300),FAM</price>
+</PrimerSet>
+<PrimerSet>
+    <name>PS3</name>
+    <price>BF9 (70-160),FAM; BF18 (100-150),VIC; E9 (190-260),FAM</price>
+</PrimerSet>
+<PrimerSet>
+    <name>PS4</name>
+    <price>BF3 (80-180),FAM; BF19 (90-200),VIC; B6 (290-370),FAM</price>
+</PrimerSet>
+<PrimerSet>
+    <name>PS5</name>
+    <price>Bdru266(90-175),FAM; BF15 (75-140),VIC; A3 (205-310),FAM</price>
+</PrimerSet>
+<PrimerSet>
+    <name>PSM</name>
+    <price>ICE3 (65-180),FAM; BF20 (190-260),VIC; C8 (220-300),FAM</price>
+</PrimerSet>
+<PrimerSet>
+    <name>PSE</name>
+    <price>E9(190-260),FAM</price>
+</PrimerSet> -->
+</metadata>
+

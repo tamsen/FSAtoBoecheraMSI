@@ -18,6 +18,14 @@ def processFSAfile(FSAfile, panel_info):
             os.makedirs(run_folder )
 
 
+    relevant_loci = filereaders.figure_out_loci_from_run_name(panel_info,run_name)
+
+    if (relevant_loci == "FAIL" ):
+        print("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
+    else:
+        print("relevant_loci=", str(relevant_loci ))
+
+
     sixteen_peaks, threshold = analysis.getLadderPeaks(run_folder, all_collected_data)
 
     mappingFxn, left_domain_limit, right_domain_limit = \
@@ -27,13 +35,12 @@ def processFSAfile(FSAfile, panel_info):
                      left_domain_limit, right_domain_limit,
                      sixteen_peaks, threshold )
 
-    peak_x_new, peak_y_new, = analysis.RemapDataTrace(run_folder, all_collected_data ,mappingFxn,
+    channel_numbers=[1,2,3,4]
+
+    for data_channel in channel_numbers:
+        analysis.RemapDataTrace(run_folder,
+                        relevant_loci,
+                        all_collected_data ,mappingFxn,
                         left_domain_limit, right_domain_limit,
-                        sixteen_peaks, threshold )
+                        sixteen_peaks, data_channel )
 
-    relevant_loci = filereaders.figure_out_loci_from_run_name(panel_info,run_name)
-
-    if (relevant_loci == "FAIL" ):
-        print("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
-    else:
-        print("relevant_loci=", str(relevant_loci ))

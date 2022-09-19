@@ -43,7 +43,7 @@ def main():
     #M.main( args )
 
     files_to_process = filereaders.readInputFile("./data/FSAlist.txt")
-    panel_info = filereaders.readPanelFile("./data/Panel.txt")
+    panel_info = filereaders.readPanelXml("./data/Panel.xml")
 
     for file in files_to_process:
         tracefileprocessor.processFSAfile(file, panel_info)
