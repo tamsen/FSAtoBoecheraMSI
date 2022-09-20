@@ -1,7 +1,7 @@
 import FSAreader
 import analysis
 import os
-
+import ResultsFile
 import InputFileReaders
 
 
@@ -40,9 +40,17 @@ def processFSAfile(FSAfile, panel_info):
     channels = set([loci_info_dict["dye"] for loci_info_dict in relevant_loci.values()])
 
     for channel in channels:
-        analysis.RemapDataTrace(run_folder,
+        Peaks_inside_loci = analysis.RemapDataTrace(run_folder,
                         relevant_loci, #ie, the loci for this primer set
                         all_collected_data ,mappingFxn,
                         left_domain_limit, right_domain_limit,
                         sixteen_peaks, dye_to_channel_mapping[channel] )
 
+
+
+        for loci in Peaks_inside_loci:
+            # convert peak calls to MSI calls.
+            MSI_calls = analysis.PeaksToMsiCalls(Peaks_inside_loci[loci])
+            allele_calls_for_loci=[str(x) for x in MSI_calls ]
+            data = [ FSAfile, loci ] + allele_calls_for_loci
+            ResultsFile.WriteResults(output_dir, data)

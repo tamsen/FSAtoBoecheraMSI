@@ -2,7 +2,6 @@ import numpy as np
 from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
-
 import visuals
 
 Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
@@ -168,8 +167,11 @@ def RemapDataTrace(run_folder, relevant_loci,
                               threshold,
                               wavelength, channel_dye_name, channel_number, "Remapped", plot_domain)
 
-    # plot a zoomed-in view for each loci of interest,
-    # for this dye (usually one or two loci per dye)
+    # Plot a zoomed-in view for each loci of interest,
+    # for this dye (usually one or two loci per dye).
+    # Save off the MSI calls for each plot
+
+    Peaks_inside_loci={}
     for loci_name in relevant_loci.keys():
 
         loci = relevant_loci[loci_name]
@@ -195,6 +197,26 @@ def RemapDataTrace(run_folder, relevant_loci,
                                   wavelength, channel_dye_name, channel_number,
                                   loci_name + "_Remapped",  plot_domain)
 
+        peaks_in_loci_range = [x for x in  peak_x_new if  \
+                ((x >=  loci["length"][0]) and (x <=  loci["length"][1]))]
+
+        Peaks_inside_loci[loci_name] = peaks_in_loci_range
 
 
-    return peak_x_new, peak_y_new
+    return Peaks_inside_loci
+
+def PeaksToMsiCalls(peaks_in_loci, smoothed_trace):
+
+    MSI_calls = [round(peak,0) for peak in peaks_in_loci]
+
+    if len(MSI_calls) <= 1 :
+        #nothing to quibble about
+        return MSI_calls
+
+    #sort by position
+    #BP.sort(key=lambda x: x, reverse=True)
+    MSI_calls.sort()
+
+    #consolidate
+
+    return MSI_calls
