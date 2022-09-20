@@ -2,35 +2,94 @@
 <metadata>
 <PrimerSet name="PS1" >
     <loci name="ICE3">
-        <name>ICE3</name>
         <length>65-180</length>
         <dye>FAM</dye>
     </loci>
-    <!--price>ICE3(65-180),FAM; BF20 (190-260),VIC; A1 (230-250),FAM</price -->
+    <loci name="BF20">
+        <length>190-260</length>
+        <dye>VIC</dye>
+    </loci>
+    <loci name="A1">
+        <length>230-250</length>
+        <dye>FAM</dye>
+    </loci>
 </PrimerSet>
-<!--<PrimerSet>
-    <name>PS2</name>
-    <price>BF11 (65-110),FAM; ICE14 (200-250),VIC; C8 (220-300),FAM</price>
+<PrimerSet name="PS2">
+    <loci name="BF11">
+        <length>65-110</length>
+        <dye>FAM</dye>
+    </loci>
+    <loci name="ICE14">
+        <length>200-250</length>
+        <dye>VIC</dye>
+    </loci>
+    <loci name="C8">
+        <length>220-300</length>
+        <dye>FAM</dye>
+    </loci>
 </PrimerSet>
-<PrimerSet>
-    <name>PS3</name>
-    <price>BF9 (70-160),FAM; BF18 (100-150),VIC; E9 (190-260),FAM</price>
+<PrimerSet name="PS3">
+    <loci name="BF9">
+        <length>70-160</length>
+        <dye>FAM</dye>
+    </loci>
+    <loci name="BF18">
+        <length>100-150</length>
+        <dye>VIC</dye>
+    </loci>
+    <loci name="E9">
+        <length>190-260</length>
+        <dye>FAM</dye>
+    </loci>
 </PrimerSet>
-<PrimerSet>
-    <name>PS4</name>
-    <price>BF3 (80-180),FAM; BF19 (90-200),VIC; B6 (290-370),FAM</price>
+
+<PrimerSet name="PS4">
+    <loci name="BF3">
+        <length>80-180</length>
+        <dye>FAM</dye>
+    </loci>
+    <loci name="BF19">
+        <length>90-200</length>
+        <dye>VIC</dye>
+    </loci>
+    <loci name="B6">
+        <length>290-370</length>
+        <dye>FAM</dye>
+    </loci>
 </PrimerSet>
-<PrimerSet>
-    <name>PS5</name>
-    <price>Bdru266(90-175),FAM; BF15 (75-140),VIC; A3 (205-310),FAM</price>
+<PrimerSet name="PS5">
+    <loci name="Bdru266">
+        <length>90-175</length>
+        <dye>FAM</dye>
+    </loci>
+    <loci name="BF15">
+        <length>75-140</length>
+        <dye>VIC</dye>
+    </loci>
+    <loci name="A3">
+        <length>205-310</length>
+        <dye>FAM</dye>
+    </loci>
 </PrimerSet>
-<PrimerSet>
-    <name>PSM</name>
-    <price>ICE3 (65-180),FAM; BF20 (190-260),VIC; C8 (220-300),FAM</price>
+<PrimerSet name="PSM">
+    <loci name="ICE3">
+        <length>65-180</length>
+        <dye>VIC</dye>
+    </loci>
+    <loci name="BF20">
+        <length>190-260</length>
+        <dye>FAM</dye>
+    </loci>
+    <loci name="C8">
+        <length>220-300</length>
+        <dye>FAM</dye>
+    </loci>    
 </PrimerSet>
-<PrimerSet>
-    <name>PSE</name>
-    <price>E9(190-260),FAM</price>
-</PrimerSet> -->
+<PrimerSet name="PSE">
+    <loci name="E9">
+        <length>190-260</length>
+        <dye>FAM</dye>
+    </loci>
+</PrimerSet>
 </metadata>
 

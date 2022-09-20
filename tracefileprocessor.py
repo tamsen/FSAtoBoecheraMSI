@@ -2,14 +2,14 @@ import FSAreader
 import analysis
 import os
 
-import filereaders
+import InputFileReaders
 
 
 def processFSAfile(FSAfile, panel_info):
 
     print("****** Processing " + FSAfile + " **********")
 
-    trace_data, all_collected_data = FSAreader.readFSAFile(FSAfile)
+    dye_to_channel_mapping, all_collected_data = FSAreader.readFSAFile(FSAfile)
 
     output_dir="./tmp/"
     run_name =all_collected_data["SpNm1"]
@@ -18,7 +18,7 @@ def processFSAfile(FSAfile, panel_info):
             os.makedirs(run_folder )
 
 
-    relevant_loci = filereaders.figure_out_loci_from_run_name(panel_info,run_name)
+    relevant_loci = InputFileReaders.figure_out_loci_from_run_name(panel_info, run_name)
 
     if (relevant_loci == "FAIL" ):
         print("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
@@ -35,12 +35,14 @@ def processFSAfile(FSAfile, panel_info):
                      left_domain_limit, right_domain_limit,
                      sixteen_peaks, threshold )
 
-    channel_numbers=[1,2,3,4]
 
-    for data_channel in channel_numbers:
+    # Channels we care about are ones with dyes in our panel.
+    channels = set([loci_info_dict["dye"] for loci_info_dict in relevant_loci.values()])
+
+    for channel in channels:
         analysis.RemapDataTrace(run_folder,
-                        relevant_loci,
+                        relevant_loci, #ie, the loci for this primer set
                         all_collected_data ,mappingFxn,
                         left_domain_limit, right_domain_limit,
-                        sixteen_peaks, data_channel )
+                        sixteen_peaks, dye_to_channel_mapping[channel] )
 

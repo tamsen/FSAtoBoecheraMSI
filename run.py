@@ -1,6 +1,6 @@
 import sys, os
 import argparse
-import filereaders
+import InputFileReaders
 import tracefileprocessor
 
 #code snippets from
@@ -42,8 +42,8 @@ def main():
     args = parser.parse_args(opt_args)
     #M.main( args )
 
-    files_to_process = filereaders.readInputFile("./data/FSAlist.txt")
-    panel_info = filereaders.readPanelXml("./data/Panel.xml")
+    files_to_process = InputFileReaders.readInputFile("./data/FSAlist.txt")
+    panel_info = InputFileReaders.readPanelXml("./data/Panel.xml")
 
     for file in files_to_process:
         tracefileprocessor.processFSAfile(file, panel_info)

@@ -131,7 +131,7 @@ def RemapDataTrace(run_folder, relevant_loci,
 
     channel_name= 'DATA' + str(channel_number)
     wavelength = trace_data_dictionary['DyeW' + str(channel_number)]
-    dyename = trace_data_dictionary['DyeN' + str(channel_number)]
+    channel_dye_name = trace_data_dictionary['DyeN' + str(channel_number)]
     raw_trace_data = (trace_data_dictionary[channel_name])
 
 
@@ -144,7 +144,7 @@ def RemapDataTrace(run_folder, relevant_loci,
     visuals.plotUnmappedTraceByColor(
         run_folder,
         raw_trace_data,smoothed_trace,highest_peaks_tup,
-        wavelength, dyename, channel_number,"Raw")
+        wavelength, channel_dye_name, channel_number,"Raw")
 
 
     num_data_points=len(smoothed_trace)
@@ -166,20 +166,34 @@ def RemapDataTrace(run_folder, relevant_loci,
     visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
                               peak_x_new, peak_y_new,
                               threshold,
-                              wavelength, dyename, channel_number, "Remapped", plot_domain)
+                              wavelength, channel_dye_name, channel_number, "Remapped", plot_domain)
 
-    # plot a zoomed-in view for each loci
-    for loci in relevant_loci.keys():
+    # plot a zoomed-in view for each loci of interest,
+    # for this dye (usually one or two loci per dye)
+    for loci_name in relevant_loci.keys():
 
-        bp_start = relevant_loci[loci]["length"][0] - 20
-        bp_end = relevant_loci[loci]["length"][1] + 20
+        loci = relevant_loci[loci_name]
+        dye_in_panel = loci["dye"]
+        if dye_in_panel == channel_dye_name:
+            print("Scanning " +  dye_in_panel + " trace")
+
+        elif (dye_in_panel == "FAM" ) and \
+                (channel_dye_name== "6-FAM"):
+            #ok, good enough.
+            print("Scanning FAM trace")
+
+        else:
+            continue
+
+        bp_start = loci["length"][0] - 20
+        bp_end = loci["length"][1] + 20
         plot_domain = [bp_start, bp_end ]
 
         visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
                                   peak_x_new, peak_y_new,
                                   threshold,
-                                  wavelength, dyename, channel_number,
-                                  loci + "_Remapped",  plot_domain)
+                                  wavelength, channel_dye_name, channel_number,
+                                  loci_name + "_Remapped",  plot_domain)
 
 
 

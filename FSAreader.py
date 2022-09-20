@@ -255,7 +255,11 @@ def readFSAFile(in_file):
             channel_name = 'DATA' + str(channel_number)
             wavelength = all_keys['DyeW' + str(channel_number)]
             dyename = all_keys['DyeN' + str(channel_number)]
-            dye_to_channel_mapping[dyename ]= channel_name
+
+            if dyename =="6-FAM":
+                dyename = "FAM"
+
+            dye_to_channel_mapping[dyename ]= channel_number
             print(channel_name + ":\t" + dyename + ", wavelength " +  str(wavelength))
 
-    return data, all_keys
+    return dye_to_channel_mapping, all_keys
