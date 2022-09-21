@@ -43,7 +43,8 @@ def plotRemappedTrace(run_folder, new_x,old_y, peak_xs,  peak_ys, threshold,
                       wavelength, dyename, channel_number,
                       plot_prefix, plot_domain=False):
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    #fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots()
 
     plt.plot(new_x,old_y)
     plt.plot(new_x,[threshold for x in new_x], "-", color="g")
@@ -51,7 +52,7 @@ def plotRemappedTrace(run_folder, new_x,old_y, peak_xs,  peak_ys, threshold,
     for i in range(0,len(peak_xs)):
 
          formatBPstring=  str('{0:3.1f}'.format(peak_xs[i]))
-         ax.text(peak_xs[i], 6000, "BP="+str(formatBPstring), rotation=45)
+         ax.text(peak_xs[i],peak_ys[i]+100, "BP="+str(formatBPstring), rotation=45)
 
     plt.title(plot_prefix + " " + dyename )
     plt.xlabel("Distance Fragment Travelled (BP)")
@@ -59,6 +60,10 @@ def plotRemappedTrace(run_folder, new_x,old_y, peak_xs,  peak_ys, threshold,
 
     if (plot_domain):
         plt.xlim(plot_domain)
+
+    if (len(peak_ys) > 0):
+        y_max = max(peak_ys)
+        plt.ylim([0,y_max+1000])
 
     #ax.legend(loc="upper right", title="Legend")
     plt.savefig(run_folder + "/" + plot_prefix + "_" + dyename + "_plot" + ".png")
