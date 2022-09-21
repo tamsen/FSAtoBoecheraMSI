@@ -3,6 +3,7 @@ from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 import visuals
+import PeakAnalysis
 
 Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
@@ -197,50 +198,9 @@ def RemapDataTrace(run_folder, relevant_loci,
                                   wavelength, channel_dye_name, channel_number,
                                   loci_name + "_Remapped",  plot_domain)
 
-        peaks_in_loci_range=[]
-        for i in range(0, len(peak_x_new)):
-            x = peak_x_new[i]
-            y = peak_y_new[i]
-            if  ((x >=  loci["length"][0]) and (x <=  loci["length"][1])):
-                peaks_in_loci_range.append([x,y])
+        peaks = PeakAnalysis.FilterByRange(peak_x_new, peak_y_new, loci["length"])
 
-        peaks_in_loci_range.sort(key=lambda x: x[0])
-        Peaks_inside_loci[loci_name] = peaks_in_loci_range
+        Peaks_inside_loci[loci_name] = peaks
 
 
     return Peaks_inside_loci, trace_x_new, trace_y_new
-
-def PeaksToMsiCalls(peaks, trace_x_new, trace_y_new):
-
-    if len(peaks) <= 1:
-        consolidated_MSI=peaks
-    else:
-        #consoldate, if multiple peaks within one BP
-        consolidated_MSI=[]
-        i = 0
-        while i < (len(peaks)-1):
-
-            xi0=peaks[0][i]
-            yi0=peaks[1][i]
-            xi1=peaks[0][i+1]
-            yi1=peaks[1][i+1]
-
-            if (xi1 - xi0) < 1:
-                consolidated_MSI.append( [ xi1 - xi0 / 2.0 , yi1 - yi0 / 2.0] )
-                i = i +2
-            else:
-                consolidated_MSI.append(peaks[i])
-                i = i +1
-                if i == len(peaks)-1:
-                    consolidated_MSI.append(peaks[i])
-
-    #Check for stutter - do we have a sequence of peaks 2bp apart?
-    #Is the height always increasing over the stutter?
-    #if yes, skip the lower (left) peaks, and take the highest (right-most)
-
-
-
-    MSI_calls = [round(peak) for peak in consolidated_MSI]
-    MSI_calls = [ round(peak,1) for peak in consolidated_MSI]
-
-    return MSI_calls
