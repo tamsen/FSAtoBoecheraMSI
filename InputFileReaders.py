@@ -14,9 +14,6 @@ def readPanelXml(input_file_path):
     mytree = ET.parse(input_file_path)
     myroot = mytree.getroot()
 
-    primer_set_list=[ x.tag for x in myroot]
-    print(primer_set_list)
-    print(myroot[0].tag)
     primer_sets_data_by_primer_set_name={}
 
     for primer_set in myroot:
@@ -43,7 +40,9 @@ def readPanelXml(input_file_path):
 
         primer_sets_data_by_primer_set_name[primer_set_name]=primer_set_data_by_loci
 
+    print("Panel Data Loaded:")
     print(primer_sets_data_by_primer_set_name)
+
     return primer_sets_data_by_primer_set_name
 
 def figure_out_loci_from_run_name(panel, run_name):

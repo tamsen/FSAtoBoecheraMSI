@@ -136,6 +136,7 @@ def RemapDataTrace(run_folder, relevant_loci,
 
 
     highest_peaks_tup, smoothed_trace, threshold = findTop30PeaksLargestFirst(raw_trace_data)
+    highest_peaks_tup.sort(key=lambda x: x[0]) # sort, by x's, not y's
 
     peak_xs = [peak[0] for peak in highest_peaks_tup]
     peak_ys = [peak[1] for peak in highest_peaks_tup]
@@ -159,9 +160,11 @@ def RemapDataTrace(run_folder, relevant_loci,
                                       sixteen_peaks[1][0] + 10,
                                       sixteen_peaks[14][0] - 10)
 
-    print("old peaks: " + str(peak_xs) )
-    print("new peaks: " + str(peak_x_new) )
     plot_domain = [trace_x_new[0], trace_x_new[len(trace_x_new)-1]]
+    print("acceptable domain based on ladder: " + str(plot_domain))
+    #print("old peaks: " + str(peak_xs) )
+    print("peaks found: " + str(peak_x_new) )
+
 
     visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
                               peak_x_new, peak_y_new,

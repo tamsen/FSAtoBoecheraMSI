@@ -1,5 +1,4 @@
-import sys, os
-import argparse
+import sys
 import InputFileReaders
 import tracefileprocessor
 
@@ -14,36 +13,18 @@ def usage():
     print('\t%s command [options]' % sys.argv[0])
     sys.exit(0)
 
-def init_argparser():
-
-    parser = argparse.ArgumentParser( 'convert' )
-    parser.add_argument('infiles', nargs='+')
-
-    return parser
 
 def main():
 
     greet()
 
-    command = sys.argv[1]
-    opt_args = sys.argv[2:]
+    FSA_File_list = sys.argv[1]
+    Panel_File = sys.argv[2]
 
-    print('Running command: %s' % command)
+    print('Command Arguments Given: %s' % sys.argv)
 
-    #try:
-
-        #set up imports..
-
-    #except ImportError:
-    #    print('Cannot import script name: %s' % command)
-    #    raise
-
-    parser = init_argparser()
-    args = parser.parse_args(opt_args)
-    #M.main( args )
-
-    files_to_process = InputFileReaders.readInputFile("./data/FSAlist.txt")
-    panel_info = InputFileReaders.readPanelXml("./data/Panel.xml")
+    files_to_process = InputFileReaders.readInputFile(FSA_File_list)
+    panel_info = InputFileReaders.readPanelXml(Panel_File)
 
     for file in files_to_process:
         tracefileprocessor.processFSAfile(file, panel_info)
