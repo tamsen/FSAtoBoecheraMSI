@@ -4,6 +4,7 @@ import os
 import ResultsFile
 import InputFileReaders
 import PeakAnalysis
+import visuals
 
 
 def processFSAfile(FSAfile, panel_info):
@@ -50,13 +51,26 @@ def processFSAfile(FSAfile, panel_info):
                                                                                     sixteen_peaks, dye_to_channel_mapping[channel])
 
 
-
         for loci in Peaks_inside_loci:
+
             # convert peak calls to MSI calls.
             print("loci " + loci)
             MSI_calls = PeakAnalysis.PeaksToMsiCalls(
                 Peaks_inside_loci[loci],trace_x_new, trace_y_new, threshold)
 
+            #make a zoomed-in plot JUST around the MSI call
+            for final_call in MSI_calls:
+
+                final_call_x = final_call[0]
+                final_call_y = final_call[1]
+                domain = [final_call_x-20, final_call_x+20]
+                plot_prefix = "Loci" + loci + "CallAt" + str(final_call_x )
+                visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
+                                          [final_call_x], [final_call_y], threshold,
+                              "wavelength",str( dye_to_channel_mapping[channel]), channel,
+                              plot_prefix, plot_domain=domain)
+
+            #get the results ready to print to file
             allele_calls_for_loci = [str(x[0]) for x in MSI_calls ]
             data = [ FSAfile, loci ] + allele_calls_for_loci
             ResultsFile.WriteResults(output_dir, data)

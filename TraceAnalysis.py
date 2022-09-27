@@ -17,7 +17,7 @@ def getLadderPeaks(runName, trace_data_dictionary):
     #of the remaining peaks, keep the greatest.
     highest_tup=highest_peaks_tup[0]
 
-    #now, keep the best 15 startibng from the right-most index.
+    #now, keep the best 15 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
     right_most = highest_peaks_tup[0:15]
 

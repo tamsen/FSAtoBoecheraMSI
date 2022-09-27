@@ -1,10 +1,10 @@
 
 def PeaksToMsiCalls(peaks, trace_x_new, trace_y_new,threshold):
 
-    #intervals= FindThresholdCrossings(trace_x_new, trace_y_new,threshold)
-    peaks = Consolidate(peaks,trace_x_new, trace_y_new,threshold)
-    peaks = CheckForStutter(peaks)
-    peaks = InsistOnDropsBetweenPeaks(peaks, trace_x_new, trace_y_new, threshold)
+    merge_peaks_closer_than_this  = 1.5
+    required_drop_fraction = 0.5
+    peaks = Consolidate(peaks,merge_peaks_closer_than_this)
+    peaks = InsistOnDropsBetweenPeaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction)
 
     MSI_calls = [[round(peak[0]), peak[1]] for peak in peaks]
 
@@ -45,7 +45,8 @@ def FindMinimumBetweenPeaks(Peak1,Peak2, trace_x_new, trace_y_new):
     return [ x_for_lowest_y_value,lowest_y_value]
 
 
-def ThereIsNeverADropBetweenPeaks(Peak1, Peak2, trace_x_new, trace_y_new, threshold):
+def ThereIsNeverADropBetweenPeaks(Peak1, Peak2, trace_x_new, trace_y_new, threshold,
+                                  required_drop_fraction):
 
     [x_for_lowest_y_value, lowest_y_value] = FindMinimumBetweenPeaks(Peak1, Peak2, trace_x_new, trace_y_new)
 
@@ -55,13 +56,14 @@ def ThereIsNeverADropBetweenPeaks(Peak1, Peak2, trace_x_new, trace_y_new, thresh
     print("checking for drop between " + str(Peak1[0]) + " and " + str(Peak2[0]) )
 
     print("drop_distance " + str(drop_distance) )
+    print("required_drop_fraction " + str( required_drop_fraction) )
     print("distance_between_peak_and_threshold " + str(distance_between_peak_and_threshold) )
-    print(".20 * distance_between_peak_and_threshold " + str(.50 * distance_between_peak_and_threshold))
-    if drop_distance < .50 * distance_between_peak_and_threshold:
-        print("no drop observed")
+    print("required_drop_fraction * distance_between_peak_and_threshold " + str(required_drop_fraction * distance_between_peak_and_threshold))
+    if drop_distance < required_drop_fraction* distance_between_peak_and_threshold:
+        print("No drop between peaks observed. They are probably the same peak.")
         return True
     else:
-        print("drop observed")
+        print("Drop observed between peaks. They are probably true different peaks.")
         return False
 
 def FindThresholdCrossings(trace_x_new, trace_y_new,threshold):
@@ -84,9 +86,8 @@ def FindThresholdCrossings(trace_x_new, trace_y_new,threshold):
 
     return above_threshold_intervals
 
-def Consolidate(peaks,trace_x_new, trace_y_new,threshold):
+def Consolidate(peaks, how_close_is_too_close):
 
-    how_close_is_too_close = 1.2
     if (len(peaks)) <= 1:
         consolidated_peaks=peaks
     else:
@@ -98,7 +99,7 @@ def Consolidate(peaks,trace_x_new, trace_y_new,threshold):
         yi0=peaks[i][1]
         xi1=peaks[i+1][0]
         yi1=peaks[i+1][1]
-        print("checking peak" + str(peaks[i]))
+        print("checking peaks " + str(peaks[i]) + "and" + str(peaks[i+1]) + "for possible consolidation")
         if (xi1 - xi0) < how_close_is_too_close:
             consolidated_peaks.append( [ (xi1 + xi0) / 2.0 , (yi1 + yi0) / 2.0] )
             print("consolidating " + str(peaks[i]) + "and" + str(peaks[i+1]))
@@ -109,12 +110,10 @@ def Consolidate(peaks,trace_x_new, trace_y_new,threshold):
                 if i == len(peaks)-1:
                     consolidated_peaks.append(peaks[i])
 
-    #MSI_calls = [[round(peak[0]),peak[1]] for peak in consolidated_peaks]
-    MSI_calls = [[peak[0], peak[1]] for peak in consolidated_peaks]
+    return consolidated_peaks
 
-    return MSI_calls
 
-def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold):
+def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold, required_drop_fraction):
 
     if (len(peaks)) <= 1:
         consolidated_peaks=peaks
@@ -128,9 +127,10 @@ def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold):
         xi1=peaks[i+1][0]
         yi1=peaks[i+1][1]
         print("checking peak" + str(peaks[i]))
-        if ThereIsNeverADropBetweenPeaks(peaks[i],peaks[i+1], trace_x_new, trace_y_new, threshold):
+        if ThereIsNeverADropBetweenPeaks(peaks[i],peaks[i+1], trace_x_new, trace_y_new, threshold,
+                                         required_drop_fraction):
             if yi1 > yi0:
-                
+
                 if (i+1 == len(peaks) -1): #we are on the last one, and its the biggest
                     consolidated_peaks.append( [ xi1, yi1])
                 i = i + 1
@@ -144,10 +144,7 @@ def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold):
                 if i == len(peaks)-1:
                     consolidated_peaks.append(peaks[i])
 
-    #MSI_calls = [[round(peak[0]),peak[1]] for peak in consolidated_peaks]
-    MSI_calls = [[peak[0], peak[1]] for peak in consolidated_peaks]
-
-    return MSI_calls
+    return consolidated_peaks
 
 
 
