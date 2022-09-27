@@ -55,7 +55,7 @@ def processFSAfile(FSAfile, panel_info):
             # convert peak calls to MSI calls.
             print("loci " + loci)
             MSI_calls = PeakAnalysis.PeaksToMsiCalls(
-                Peaks_inside_loci[loci],trace_x_new, trace_y_new)
+                Peaks_inside_loci[loci],trace_x_new, trace_y_new, threshold)
 
             allele_calls_for_loci = [str(x[0]) for x in MSI_calls ]
             data = [ FSAfile, loci ] + allele_calls_for_loci
