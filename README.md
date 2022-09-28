@@ -22,8 +22,8 @@ For each file, it reads in the ladder channel and data channels in the FSA file.
   The  TraceAnalysis.getLadderPeaks picks off where the 16 ladder peaks are in the ladder trace.
   The code builds a cubic spline interpolation mapping between the peaks in base-pair-space and the x-axis of the trace (ie, the raw distance traveled by       the fragment in the gel).
 
-For each channel (dye color) there is a data channel trace. The code loops through each relevant data channel:
-    The mapping is used to map each data channels into basepair space (TraceAnalysis.RemapDataTrace) and returns the peaks in the data channels       (Peaks_inside_loci) in base-pair-space.
+For each channel (dye color) there is a data channel trace. The code loops through each relevant data channel.
+    The mapping (derived from the ladder) is used to map each data channels into basepair space (TraceAnalysis.RemapDataTrace) and returns the peaks in the data channels (Peaks_inside_loci) in base-pair-space.
     Guided by the panel data, only the peaks in the loci of interest according to the panel.xml file are kept.
     The peaks get filtered to remove noise (PeakAnalysis.PeaksToMsiCalls)
     And then get written out to file (ResultsFile.WriteResults(output_dir, data) )
