@@ -8,12 +8,10 @@ import visuals
 import log
 
 
-def processFSAfile(FSAfile, panel_info,output_dir):
+def process_fsa_file(fsa_file, panel_info, output_dir):
 
-    log.write_to_log("****** Processing " + FSAfile + " **********")
-
-    dye_to_channel_mapping, all_collected_data = fsa_file_reader.readFSAFile(FSAfile)
-
+    log.write_to_log("****** Processing " + fsa_file + " **********")
+    dye_to_channel_mapping, all_collected_data = fsa_file_reader.readFSAFile(fsa_file)
     run_name =all_collected_data["SpNm1"]
     run_folder = os.path.join(output_dir,run_name)
     if not(os.path.exists(run_folder )):
@@ -25,6 +23,8 @@ def processFSAfile(FSAfile, panel_info,output_dir):
     if (relevant_loci == "FAIL" ):
         log.WriteErrorToLog("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
         log.WriteErrorToLog("Quitting " + run_name)
+        results_files.write_results(output_dir,"Can't figure out what panel to use for this FSA file!!")
+        log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
     else:
         log.write_to_log("relevant_loci: " + str(relevant_loci))
@@ -32,18 +32,24 @@ def processFSAfile(FSAfile, panel_info,output_dir):
     gotLadderPeaks = trace_analysis.getLadderPeaks(run_folder, all_collected_data)
 
     if not(gotLadderPeaks):
-        log.write_to_log("**** Processing " + FSAfile + " failed ********")
+        log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
 
     else:
         sixteen_peaks, threshold =  gotLadderPeaks
 
-    mapping_fxn, left_domain_limit, right_domain_limit = \
-        trace_analysis.buildInterpolationdBasedOnLadder(run_folder, sixteen_peaks)
+    ladder_worked = trace_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
-    trace_analysis.RemapLadder(run_folder, all_collected_data, mapping_fxn,
-                               left_domain_limit, right_domain_limit,
-                               sixteen_peaks, threshold)
+    if not (ladder_worked):
+        results_files.write_results(output_dir, "Ladder failed monotonicity!!")
+        log.write_to_log("**** Processing " + fsa_file + " failed ********")
+        return {}
+
+    else:
+        mapping_fxn, left_domain_limit, right_domain_limit = ladder_worked
+
+    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_domain_limit, right_domain_limit,
+                                sixteen_peaks, threshold)
 
 
     # Channels we care about are ones with dyes in our panel.
@@ -51,11 +57,11 @@ def processFSAfile(FSAfile, panel_info,output_dir):
     final_calls_by_loci={}
 
     for channel in channels:
-        peaks_inside_loci, trace_x_new, trace_y_new = trace_analysis.RemapDataTrace(run_folder,
-                                                                                     relevant_loci,  #ie, the loci for this primer set
-                                                                                     all_collected_data, mapping_fxn,
-                                                                                     left_domain_limit, right_domain_limit,
-                                                                                     sixteen_peaks, dye_to_channel_mapping[channel])
+        peaks_inside_loci, trace_x_new, trace_y_new = trace_analysis.remap_data_trace(run_folder, relevant_loci,
+                                                                                      all_collected_data, mapping_fxn,
+                                                                                      left_domain_limit,
+                                                                                      right_domain_limit, sixteen_peaks,
+                                                                                      dye_to_channel_mapping[channel])
 
 
         for loci in peaks_inside_loci:
@@ -74,18 +80,17 @@ def processFSAfile(FSAfile, panel_info,output_dir):
                 final_call_y = final_call[1]
                 domain = [final_call_x-20, final_call_x+20]
                 plot_prefix = "Loci" + loci + "CallAt" + str(final_call_x )
-                visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
-                                          [final_call_x], [final_call_y], threshold,
-                              "wavelength",str( dye_to_channel_mapping[channel]), channel,
-                              plot_prefix, plot_domain=domain)
+                visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, [final_call_x], [final_call_y],
+                                            threshold, "wavelength", str(dye_to_channel_mapping[channel]), channel,
+                                            plot_prefix, plot_domain=domain)
 
             #get the results ready to print to file
             allele_calls_for_loci = [str(x[0]) for x in MSI_calls ]
-            data = [ FSAfile, loci ] + allele_calls_for_loci
-            results_files.WriteResults(output_dir, data)
+            data = [fsa_file, loci] + allele_calls_for_loci
+            results_files.write_results(output_dir, data)
             final_calls_by_loci[loci] = allele_calls_for_loci
             log.write_to_log("final calls for loci " + loci + ": " + str(allele_calls_for_loci))
 
-    log.write_to_log("**** Processing " + FSAfile + " completed  ********")
+    log.write_to_log("**** Processing " + fsa_file + " completed  ********")
 
     return final_calls_by_loci

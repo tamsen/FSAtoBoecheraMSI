@@ -41,13 +41,13 @@ def main():
             for file in os.listdir(path):
                 if file.endswith(".fsa"):
                     fsa_file=os.path.join(path, file)
-                    final_calls_by_loci = fsa_file_processor.processFSAfile(fsa_file, panel_info, output_dir)
+                    final_calls_by_loci = fsa_file_processor.process_fsa_file(fsa_file, panel_info, output_dir)
                     results_by_file[fsa_file] = final_calls_by_loci
         else:
-            final_calls_by_loci = fsa_file_processor.processFSAfile(path, panel_info, output_dir)
+            final_calls_by_loci = fsa_file_processor.process_fsa_file(path, panel_info, output_dir)
             results_by_file[path] = final_calls_by_loci
 
-    results_files.WriteSummaryFile(output_dir, results_by_file, panel_info)
+    results_files.write_summary_file(output_dir, results_by_file, panel_info)
 
     log.write_end_to_log()
 

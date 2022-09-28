@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plotLadder(run_folder, threshold,
-               smoothed_ladder_data, sixteen_peaks):
+def plot_ladder(run_folder, threshold,
+                smoothed_ladder_data, sixteen_peaks):
 
     peak_heights = [ x[1] for x in sixteen_peaks]
     peak_indexes = [x[0] for x in sixteen_peaks]
@@ -39,9 +39,9 @@ def plotLadder(run_folder, threshold,
     plt.close()
 
 
-def plotRemappedTrace(run_folder, new_x,old_y, peak_xs,  peak_ys, threshold,
-                      wavelength, dyename, channel_number,
-                      plot_prefix, plot_domain=False):
+def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
+                        wavelength, dyename, channel_number,
+                        plot_prefix, plot_domain=False):
 
     #fig, ax = plt.subplots(figsize=(10, 10))
     fig, ax = plt.subplots()
@@ -85,6 +85,11 @@ def plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f):
     ax.legend(loc="upper left", title="Legend")
     plt.savefig(run_folder + "/Raw_to_BP_mapping" + ".png")
     plt.close()
+
+    #check mapping gives monotonically increasing results. Otherwise, this is *sus*
+    monotonic_test = np.all((np.diff(x_new)) >=0)
+
+    return monotonic_test
 
 def plotUnmappedTraceByColor(run_folder, trace_data,smoothed_trace,highest_peaks_tup,
                              wavelength, dyename, channel_number, plot_prefix):

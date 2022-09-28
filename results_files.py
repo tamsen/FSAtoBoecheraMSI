@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-def WriteResults(outputDir, data):
+def write_results(outputDir, data):
 
         resultsFile = os.path.join(outputDir,"Results.csv")
         now = datetime.now()
@@ -13,7 +13,7 @@ def WriteResults(outputDir, data):
         with open(resultsFile, 'a') as f:
            f.write(time_stamp_string + "," + data_string + "\n")
 
-def ConsoliteByFileResultsToBySampleResults(results_by_file,panel_info ):
+def consolite_by_file_results_to_by_sample_results(results_by_file, panel_info):
 
         bySampleResults={}
         primer_sets = panel_info.keys()
@@ -34,7 +34,7 @@ def ConsoliteByFileResultsToBySampleResults(results_by_file,panel_info ):
 
         return bySampleResults
 
-def WriteSummaryFile(outputDir, results_by_file, panel_info ):
+def write_summary_file(outputDir, results_by_file, panel_info):
 
         now = datetime.now()
         day = now.strftime("%d_%m_%Y")
@@ -56,7 +56,7 @@ def WriteSummaryFile(outputDir, results_by_file, panel_info ):
         header1 = ",".join([str(p) for p in header1_data])
         header2 = ",".join([str(p) for p in header2_data])
 
-        bySampleResults = ConsoliteByFileResultsToBySampleResults(results_by_file, panel_info)
+        bySampleResults = consolite_by_file_results_to_by_sample_results(results_by_file, panel_info)
 
         with open(summaryFile , 'w') as f:
 
