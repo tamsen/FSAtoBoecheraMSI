@@ -3,12 +3,14 @@ from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 import visuals
-import PeakAnalysis
+import peak_analysis
+import log
 
 Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
 def getLadderPeaks(runName, trace_data_dictionary):
 
+    log.write_to_log("Reading through ladder trace for " + runName)
     #'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
 
@@ -30,11 +32,20 @@ def getLadderPeaks(runName, trace_data_dictionary):
     #bake LIZ500 into the peak tuple, for use later on.
     #note, we had an index out of range here - issue with the ladder.
     #need to throw exception
+
+    numLadderPeaks=len(sixteen_peaks)
+    log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
+
     sixteen_peaks= [ (sixteen_peaks[i][0],sixteen_peaks[i][1],Liz500[i])
-                       for i in range(0,16)]
+                       for i in range(0,numLadderPeaks)]
 
     visuals.plotLadder(runName, threshold, smoothed_trace,
                        sixteen_peaks)
+
+    if (numLadderPeaks != len(Liz500)):
+        log.write_to_log("There is a problem with this sample's ladder! Inspect plot. ")
+        log.write_to_log("Aborting run. ")
+        return False
 
     return sixteen_peaks, threshold
 
@@ -46,9 +57,14 @@ def findTop30PeaksLargestFirst(ladder_trace):
     kernel = np.ones(kernel_size) / kernel_size
     smoothed_trace = np.convolve(ladder_trace, kernel, mode='same')
 
-    # calculate the threshold:
+    # TODO, might be useful modification
+    # calculate the threshold on range 2000:8000, skipping crazy peak
+    #ladder_variance = np.var(smoothed_trace[2000:8000])
+    #ladder_mode = mode(smoothed_trace[2000:8000])[0][0]
+
     ladder_variance = np.var(smoothed_trace)
     ladder_mode = mode(smoothed_trace)[0][0]
+
     ladder_sigma = np.sqrt(ladder_variance)
     threshold = ladder_mode + 0.25 * ladder_sigma
 
@@ -163,9 +179,8 @@ def RemapDataTrace(run_folder, relevant_loci,
                                       sixteen_peaks[14][0] - 10)
 
     plot_domain = [trace_x_new[0], trace_x_new[len(trace_x_new)-1]]
-    print("acceptable domain based on ladder: " + str(plot_domain))
-    #print("old peaks: " + str(peak_xs) )
-    print("peaks found: " + str(peak_x_new) )
+    log.write_to_log("acceptable domain based on ladder: " + str(plot_domain))
+    log.write_to_log("peaks found: " + str(peak_x_new))
 
 
     visuals.plotRemappedTrace(run_folder, trace_x_new, trace_y_new,
@@ -183,12 +198,12 @@ def RemapDataTrace(run_folder, relevant_loci,
         loci = relevant_loci[loci_name]
         dye_in_panel = loci["dye"]
         if dye_in_panel == channel_dye_name:
-            print("Scanning " +  dye_in_panel + " trace")
+            log.write_to_log("Scanning " + dye_in_panel + " trace")
 
         elif (dye_in_panel == "FAM" ) and \
                 (channel_dye_name== "6-FAM"):
             #ok, good enough.
-            print("Scanning FAM trace")
+            log.write_to_log("Scanning FAM trace")
 
         else:
             continue
@@ -203,7 +218,7 @@ def RemapDataTrace(run_folder, relevant_loci,
                                   wavelength, channel_dye_name, channel_number,
                                   loci_name + "_Remapped",  plot_domain)
 
-        peaks = PeakAnalysis.FilterByRange(peak_x_new, peak_y_new, loci["length"])
+        peaks = peak_analysis.filter_by_range(peak_x_new, peak_y_new, loci["length"])
 
         Peaks_inside_loci[loci_name] = peaks
 

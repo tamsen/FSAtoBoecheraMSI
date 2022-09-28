@@ -1,7 +1,8 @@
-./data/TD21DG24PS1c10_C07.fsa
+#./data/TD21DG24PS1c10_C07.fsa
+/home/tamsen/Data/Eton/Frag_Order_16544/BD1200PS2c30_G01.fsa
 #/home/tamsen/Data/Eton/Frag_Order_16513
 #/home/tamsen/Data/Eton/Frag_Order_16528
 #/home/tamsen/Data/Eton/Frag_Order_16532
 #/home/tamsen/Data/Eton/Frag_Order_16618
 #/home/tamsen/Data/Eton/Frag_Order_16637
-#/home/tamsen/Data/Eton/Frag_Order_16544
+/home/tamsen/Data/Eton/Frag_Order_16544

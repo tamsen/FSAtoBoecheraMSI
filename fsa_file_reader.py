@@ -3,7 +3,6 @@
 
 import datetime
 import struct
-from os.path import splitext, basename
 
 from sys import version_info
 
@@ -13,7 +12,7 @@ __version__ = '.'.join(__version_info__)
 __version__ += '-dev' if not RELEASE else ''
 
 
-__all__ = ['Trace']
+#__all__ = ['Trace']
 
 FILTER_SETS = {
     'G5': {
@@ -170,7 +169,7 @@ class TraceDir(object):
         else:
             return None
 
-def parseFSAheader(header, handle):
+def parse_fsa_header(header, handle):
     """Generator for directory contents."""
     # header structure:
     # file signature, file version, tag name, tag number,
@@ -217,15 +216,14 @@ def readFSAFile(in_file):
         # file format version
         version = header[1]
         print("FSA file version: " + str(version))
-        #print("header: " + str(header))
 
         all_keys = {}
-        headerEntries = parseFSAheader(header, handle)
+        header_entries = parse_fsa_header(header, handle)
 
         # print("All Data keys in header: " +  str(keys))
 
         # build dictionary of data tags and metadata
-        for entry in headerEntries:
+        for entry in header_entries:
             key = entry.tag_name + str(entry.tag_num)
             tags[key] = entry
             # only extract data from tags we care about
@@ -254,12 +252,12 @@ def readFSAFile(in_file):
     for channel_number in channel_numbers:
             channel_name = 'DATA' + str(channel_number)
             wavelength = all_keys['DyeW' + str(channel_number)]
-            dyename = all_keys['DyeN' + str(channel_number)]
+            dye_name = all_keys['DyeN' + str(channel_number)]
 
-            if dyename =="6-FAM":
-                dyename = "FAM"
+            if dye_name =="6-FAM":
+                dye_name = "FAM"
 
-            dye_to_channel_mapping[dyename ]= channel_number
-            print(channel_name + ":\t" + dyename + ", wavelength " +  str(wavelength))
+            dye_to_channel_mapping[dye_name ]= channel_number
+            print(channel_name + ":\t" + dye_name + ", wavelength " +  str(wavelength))
 
     return dye_to_channel_mapping, all_keys

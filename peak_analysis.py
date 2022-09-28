@@ -1,16 +1,19 @@
+import log
 
-def PeaksToMsiCalls(peaks, trace_x_new, trace_y_new,threshold):
+def peaks_to_msi_calls(peaks, trace_x_new, trace_y_new, threshold):
 
+    #parameters
     merge_peaks_closer_than_this  = 1.5
     required_drop_fraction = 0.5
-    peaks = Consolidate(peaks,merge_peaks_closer_than_this)
-    peaks = InsistOnDropsBetweenPeaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction)
 
+    peaks = consolidate(peaks, merge_peaks_closer_than_this)
+    peaks = insist_on_drops_between_peaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction)
+    #skipping stutter check, dont seem to need it?
     MSI_calls = [[round(peak[0]), peak[1]] for peak in peaks]
 
     return MSI_calls
 
-def FilterByRange(peak_x, peak_y, expected_range):
+def filter_by_range(peak_x, peak_y, expected_range):
 
     peaks_in_loci_range=[]
     for i in range(0, len(peak_x)):
@@ -24,7 +27,7 @@ def FilterByRange(peak_x, peak_y, expected_range):
     return peaks_in_loci_range
 
 
-def FindMinimumBetweenPeaks(Peak1,Peak2, trace_x_new, trace_y_new):
+def find_minimum_between_peaks(Peak1, Peak2, trace_x_new, trace_y_new):
 
     lowest_y_value=max(trace_y_new)
     x_for_lowest_y_value=0
@@ -37,36 +40,36 @@ def FindMinimumBetweenPeaks(Peak1,Peak2, trace_x_new, trace_y_new):
                 lowest_y_value =y
                 x_for_lowest_y_value = x
 
-    print("PeakA:" + str(Peak1))
-    print("PeakB:" + str(Peak2))
-    print("PeakA:" + str(Peak1))
-    print("Lowest Y:" + str(lowest_y_value))
+    log.write_to_log("PeakA:" + str(Peak1))
+    log.write_to_log("PeakB:" + str(Peak2))
+    log.write_to_log("Lowest Y:" + str(lowest_y_value))
 
     return [ x_for_lowest_y_value,lowest_y_value]
 
 
-def ThereIsNeverADropBetweenPeaks(Peak1, Peak2, trace_x_new, trace_y_new, threshold,
-                                  required_drop_fraction):
+def there_is_never_a_drop_between_peaks(Peak1, Peak2, trace_x_new, trace_y_new, threshold,
+                                        required_drop_fraction):
 
-    [x_for_lowest_y_value, lowest_y_value] = FindMinimumBetweenPeaks(Peak1, Peak2, trace_x_new, trace_y_new)
+    [x_for_lowest_y_value, lowest_y_value] = find_minimum_between_peaks(Peak1, Peak2, trace_x_new, trace_y_new)
 
     drop_distance= abs( min( Peak1[1],Peak2[1]) - lowest_y_value )
     distance_between_peak_and_threshold =  abs( min( Peak1[1],Peak2[1]) - threshold )
 
-    print("checking for drop between " + str(Peak1[0]) + " and " + str(Peak2[0]) )
+    log.write_to_log("checking for drop between " + str(Peak1[0]) + " and " + str(Peak2[0]))
 
-    print("drop_distance " + str(drop_distance) )
-    print("required_drop_fraction " + str( required_drop_fraction) )
-    print("distance_between_peak_and_threshold " + str(distance_between_peak_and_threshold) )
-    print("required_drop_fraction * distance_between_peak_and_threshold " + str(required_drop_fraction * distance_between_peak_and_threshold))
+    log.write_to_log("drop_distance " + str(drop_distance))
+    log.write_to_log("required_drop_fraction " + str(required_drop_fraction))
+    log.write_to_log("distance_between_peak_and_threshold " + str(distance_between_peak_and_threshold))
+    log.write_to_log("required_drop_fraction * distance_between_peak_and_threshold " + str(
+        required_drop_fraction * distance_between_peak_and_threshold))
     if drop_distance < required_drop_fraction* distance_between_peak_and_threshold:
-        print("No drop between peaks observed. They are probably the same peak.")
+        log.write_to_log("No drop between peaks observed. They are probably the same peak.")
         return True
     else:
-        print("Drop observed between peaks. They are probably true different peaks.")
+        log.write_to_log("Drop observed between peaks. They are probably true different peaks.")
         return False
 
-def FindThresholdCrossings(trace_x_new, trace_y_new,threshold):
+def find_threshold_crossings(trace_x_new, trace_y_new, threshold):
 
     above_threshold_intervals=[]
     above_threshold=False
@@ -86,7 +89,7 @@ def FindThresholdCrossings(trace_x_new, trace_y_new,threshold):
 
     return above_threshold_intervals
 
-def Consolidate(peaks, how_close_is_too_close):
+def consolidate(peaks, how_close_is_too_close):
 
     if (len(peaks)) <= 1:
         consolidated_peaks=peaks
@@ -99,21 +102,22 @@ def Consolidate(peaks, how_close_is_too_close):
         yi0=peaks[i][1]
         xi1=peaks[i+1][0]
         yi1=peaks[i+1][1]
-        print("checking peaks " + str(peaks[i]) + "and" + str(peaks[i+1]) + "for possible consolidation")
+        log.write_to_log("checking peaks " + str(peaks[i]) + "and" + str(peaks[i + 1]) + "for possible consolidation")
         if (xi1 - xi0) < how_close_is_too_close:
             consolidated_peaks.append( [ (xi1 + xi0) / 2.0 , (yi1 + yi0) / 2.0] )
-            print("consolidating " + str(peaks[i]) + "and" + str(peaks[i+1]))
+            log.write_to_log("Consolidating " + str(peaks[i]) + "and" + str(peaks[i + 1]))
             i = i +2
         else:
+            log.write_to_log("No consolidation required.")
+            consolidated_peaks.append(peaks[i])
+            i = i +1
+            if i == len(peaks)-1:
                 consolidated_peaks.append(peaks[i])
-                i = i +1
-                if i == len(peaks)-1:
-                    consolidated_peaks.append(peaks[i])
 
     return consolidated_peaks
 
 
-def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold, required_drop_fraction):
+def insist_on_drops_between_peaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction):
 
     if (len(peaks)) <= 1:
         consolidated_peaks=peaks
@@ -126,9 +130,9 @@ def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold, required
         yi0=peaks[i][1]
         xi1=peaks[i+1][0]
         yi1=peaks[i+1][1]
-        print("checking peak" + str(peaks[i]))
-        if ThereIsNeverADropBetweenPeaks(peaks[i],peaks[i+1], trace_x_new, trace_y_new, threshold,
-                                         required_drop_fraction):
+        log.write_to_log("checking peak " + str(xi0) + "has a dip between itself and other peaks")
+        if there_is_never_a_drop_between_peaks(peaks[i], peaks[i + 1], trace_x_new, trace_y_new, threshold,
+                                               required_drop_fraction):
             if yi1 > yi0:
 
                 if (i+1 == len(peaks) -1): #we are on the last one, and its the biggest
@@ -148,7 +152,7 @@ def InsistOnDropsBetweenPeaks(peaks,trace_x_new, trace_y_new,threshold, required
 
 
 
-def CheckForStutter(peaks):
+def check_for_stutter(peaks):
 
     stutter_size=2
     stutter_peak_indexes=[]
@@ -176,8 +180,8 @@ def CheckForStutter(peaks):
                 else: #y1 is highest, so y0 and y2 are not real
                     stutter_peak_indexes = stutter_peak_indexes + [i+1,i+2]
 
-                print("Amplitude patterns doe not look like real alleles.")
-                print("peaks[i:i+3]:" + str(three_ys))
+                log.write_to_log("Amplitude patterns doe not look like real alleles.")
+                log.write_to_log("peaks[i:i+3]:" + str(three_ys))
 
     #keep unique stutter indexes
     stutter_peak_indexes = set(stutter_peak_indexes)
