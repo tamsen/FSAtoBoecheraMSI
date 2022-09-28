@@ -11,7 +11,7 @@ And "Panel.xml" decribes your multiplex primer set.
 
 Example, using the sample input files included in the "data" folder in the repo
 
-tamsen@tamsen-Inspiron-3847:~/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI$ /home/tamsen/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI/venv/bin/python run.py data/FSAlist.txt data/Panel.xml
+tamsen@tamsen:~/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI$ /home/tamsen/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI/venv/bin/python run.py data/FSAlist.txt data/Panel.xml
 
 
 # Code overview
