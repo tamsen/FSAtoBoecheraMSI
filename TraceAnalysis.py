@@ -28,6 +28,8 @@ def getLadderPeaks(runName, trace_data_dictionary):
     sixteen_peaks.sort(key=lambda x: x[0])
 
     #bake LIZ500 into the peak tuple, for use later on.
+    #note, we had an index out of range here - issue with the ladder.
+    #need to throw exception
     sixteen_peaks= [ (sixteen_peaks[i][0],sixteen_peaks[i][1],Liz500[i])
                        for i in range(0,16)]
 

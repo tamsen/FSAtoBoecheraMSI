@@ -1,3 +1,4 @@
+import os.path
 import sys
 import InputFileReaders
 import tracefileprocessor
@@ -23,10 +24,20 @@ def main():
 
     print('Command Arguments Given: %s' % sys.argv)
 
-    files_to_process = InputFileReaders.readInputFile(FSA_File_list)
+    paths_to_process = InputFileReaders.readInputFile(FSA_File_list)
+
     panel_info = InputFileReaders.readPanelXml(Panel_File)
 
-    for file in files_to_process:
-        tracefileprocessor.processFSAfile(file, panel_info)
+    for path in paths_to_process:
+
+        if os.path.isdir(path):
+
+            for file in os.listdir(path):
+                if file.endswith(".fsa"):
+                    fsa_file=os.path.join(path, file)
+                    tracefileprocessor.processFSAfile(fsa_file, panel_info)
+
+        else:
+            tracefileprocessor.processFSAfile(path, panel_info)
 
 main()
