@@ -3,7 +3,7 @@
 
 # Quick Start
 
-Command syntax:  python run.py Files.txt Panel.xml
+Command syntax:  python run_FSA_to_microsat_calls.py Files.txt Panel.xml
 
 "Files.txt" is a txt file with th list of FSA files you want to process.
 And "Panel.xml" decribes your multiplex primer set.
@@ -11,7 +11,7 @@ And "Panel.xml" decribes your multiplex primer set.
 
 Example, using the sample input files included in the "data" folder in the repo
 
-tamsen@tamsen:~/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI$ /venv/bin/python run.py data/FSAlist.txt data/Panel.xml
+tamsen@tamsen:~/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI$ /venv/bin/python run_FSA_to_microsat_calls.py data/FSAlist.txt data/Panel.xml
 
 
 # Code overview
