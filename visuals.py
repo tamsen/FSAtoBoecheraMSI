@@ -70,7 +70,8 @@ def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
 
     plt.close()
 
-def plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f):
+def plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f,
+                interpolation_type):
 
     num_data_points = (right_domain_limit - left_domain_limit) * .1 + 1.0
     x_original = list(np.linspace( left_domain_limit, right_domain_limit, int(num_data_points)))
@@ -79,11 +80,11 @@ def plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f):
     fig, ax = plt.subplots(figsize=(10, 10))
     plt.plot(A, B, "*", color="brown", label='Ladder Points')
     plt.plot(x_original, x_new, "-", color="blue", label='Cubic Spline Interpolation')
-    plt.title("Mapping According To Ladder")
+    plt.title("Mapping According To Ladder (" + interpolation_type +  ")")
     plt.xlabel("A = raw distance travelled in gel")
     plt.ylabel("B = basepair equivalent")
     ax.legend(loc="upper left", title="Legend")
-    plt.savefig(run_folder + "/Raw_to_BP_mapping" + ".png")
+    plt.savefig(run_folder + "/Raw_to_BP_mapping_" + interpolation_type + ".png")
     plt.close()
 
     #check mapping gives monotonically increasing results. Otherwise, this is *sus*

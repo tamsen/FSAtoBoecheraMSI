@@ -3,7 +3,7 @@ from datetime import datetime
 
 def write_results(outputDir, data):
 
-        resultsFile = os.path.join(outputDir,"Results.csv")
+        resultsFile = os.path.join(outputDir,"Results.txt")
         now = datetime.now()
         day = now.strftime("%d/%m/%Y")
         time = now.strftime("%H:%M:%S")

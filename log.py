@@ -17,13 +17,13 @@ def write_end_to_log( ):
     write_to_log("*******************************************")
     write_to_log("\n")
 
-def WriteErrorToLog(msg):
+def write_error_to_log(msg):
 
     write_to_log("*******Error******")
     write_to_log("Error: " + msg)
 
 
-def WriteWarningToLog(msg):
+def write_warning_to_log(msg):
     write_to_log("*******Warning******")
     write_to_log("Warning*: " + msg)
     write_to_log(msg)

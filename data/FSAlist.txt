@@ -1,8 +1,12 @@
 #./data/TD21DG24PS1c10_C07.fsa
+#./data/PSEDG2202_C01.fsa
+#./data/PSEDG2401_D01.fsa
 /home/tamsen/Data/Eton/Frag_Order_16544/BD1200PS2c30_G01.fsa
-#/home/tamsen/Data/Eton/Frag_Order_16513
-#/home/tamsen/Data/Eton/Frag_Order_16528
-#/home/tamsen/Data/Eton/Frag_Order_16532
-#/home/tamsen/Data/Eton/Frag_Order_16618
-#/home/tamsen/Data/Eton/Frag_Order_16637
+/home/tamsen/Data/Eton/Frag_Order_16436/PS1c2-BD1200fsa_A01.fsa
+/home/tamsen/Data/Eton/Frag_Order_16513
+/home/tamsen/Data/Eton/Frag_Order_16528
+/home/tamsen/Data/Eton/Frag_Order_16532
+/home/tamsen/Data/Eton/Frag_Order_16618
+/home/tamsen/Data/Eton/Frag_Order_16637
 /home/tamsen/Data/Eton/Frag_Order_16544
+/home/tamsen/Data/Eton/Frag_Order_16436

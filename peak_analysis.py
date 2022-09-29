@@ -9,7 +9,7 @@ def peaks_to_msi_calls(peaks, trace_x_new, trace_y_new, threshold):
     peaks = consolidate(peaks, merge_peaks_closer_than_this)
     peaks = insist_on_drops_between_peaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction)
     #skipping stutter check, dont seem to need it?
-    MSI_calls = [[round(peak[0]), peak[1]] for peak in peaks]
+    MSI_calls = [[round(peak[0],2), peak[1]] for peak in peaks]
 
     return MSI_calls
 

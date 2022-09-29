@@ -2,6 +2,7 @@ import numpy as np
 from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
+from scipy.interpolate import interp1d
 import visuals
 import peak_analysis
 import log
@@ -54,25 +55,30 @@ def find_top_30_Peaks_largest_first(ladder_trace):
     kernel = np.ones(kernel_size) / kernel_size
     smoothed_trace = np.convolve(ladder_trace, kernel, mode='same')
 
-    # TODO, might be useful modification
-    # calculate the threshold on range 2000:8000, skipping crazy peak
-    #ladder_variance = np.var(smoothed_trace[2000:8000])
-    #ladder_mode = mode(smoothed_trace[2000:8000])[0][0]
-
-    ladder_variance = np.var(smoothed_trace)
-    ladder_mode = mode(smoothed_trace)[0][0]
-
-    ladder_sigma = np.sqrt(ladder_variance)
-    threshold = ladder_mode + 0.25 * ladder_sigma
+    threshold = get_threshold_for_trace(smoothed_trace)
 
     # https://plotly.com/python/peak-finding/
-    indices = find_peaks(smoothed_trace, height=threshold, distance=10)[0]
+    min_distance_between_peaks = 50
+    min_peak_width = 10
+    indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width  )[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
     # sort, greatest peak height first. Keep the best 30
     peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
     highest_peaks_tup = peak_heights_tup[0:30]
 
     return highest_peaks_tup, smoothed_trace, threshold
+
+
+def get_threshold_for_trace(smoothed_trace):
+    # TODO, might be useful modification
+    # calculate the threshold on range 2000:8000, skipping crazy peak
+    # ladder_variance = np.var(smoothed_trace[2000:8000])
+    # ladder_mode = mode(smoothed_trace[2000:8000])[0][0]
+    ladder_variance = np.var(smoothed_trace)
+    ladder_mode = mode(smoothed_trace)[0][0]
+    ladder_sigma = np.sqrt(ladder_variance)
+    threshold = ladder_mode + 0.25 * ladder_sigma
+    return threshold
 
 
 def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
@@ -84,21 +90,31 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
     A = [x[0] for x in sixteen_peaks] #get the peak position, not intensity
     B = [x[2] for x in sixteen_peaks] #the LIZ 500 we baked in
 
-    f = CubicSpline(A, B, bc_type='natural')
+    f1 = CubicSpline(A, B, bc_type='natural')
 
     #dont appy the spline where we dont have data!
-    left_domain_limit = sixteen_peaks[0][0] - 100
-    right_domain_limit = sixteen_peaks[15][0] + 100
+    #left_domain_limit = sixteen_peaks[0][0] - 100
+    #right_domain_limit = sixteen_peaks[15][0] + 100
+    left_domain_limit = sixteen_peaks[0][0]
+    right_domain_limit = sixteen_peaks[15][0]
 
     #test it looks good
-    passed_monotonic_test = visuals.plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f)
+    passed_monotonic_test = visuals.plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit,
+                                                f1, "Spline")
     log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
 
     if not passed_monotonic_test:
-        log.WriteErrorToLog("abort. ladder peaks not well-spaced")
-        return False
+        log.write_warning_to_log("Ladder peaks are not well-spaced. Going to do linear interpolation instead of spine.")
+        f1 = interp1d(A, B)
+        log.write_to_log("Rebuilding and testing mapping... ")
+        passed_monotonic_test = visuals.plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit,
+                                                    f1, "Linear")
+        log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
 
-    return f, left_domain_limit, right_domain_limit
+        if not passed_monotonic_test:
+            return False
+
+    return f1, left_domain_limit, right_domain_limit
 
 def remap_a_trace(tracedata_x_coords, tracedata_y_coords,
                   fxn, left_domain_limit, right_domain_limit):

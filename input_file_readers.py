@@ -51,4 +51,4 @@ def figure_out_loci_from_run_name(panel, run_name):
         if primer_set in run_name:
             return panel[primer_set]
 
-    return "FAIL"
+    return False

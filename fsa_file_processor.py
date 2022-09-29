@@ -20,10 +20,11 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     relevant_loci = input_file_readers.figure_out_loci_from_run_name(panel_info, run_name)
 
-    if (relevant_loci == "FAIL" ):
-        log.WriteErrorToLog("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
-        log.WriteErrorToLog("Quitting " + run_name)
-        results_files.write_results(output_dir,"Can't figure out what panel to use for this FSA file!!")
+    if (relevant_loci == False):
+        log.write_error_to_log("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
+        log.write_error_to_log("Quitting " + run_name)
+        data = [fsa_file, "panel problem", "Can't figure out what panel to use for this FSA file!!"]
+        results_files.write_results(output_dir,data)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
     else:
@@ -33,6 +34,9 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     if not(gotLadderPeaks):
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
+        data = [fsa_file, "panel problem", "Couldn't get the right number of ladder peaks!!"]
+        results_files.write_results(output_dir, data)
+
         return {}
 
     else:
@@ -41,7 +45,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     ladder_worked = trace_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
     if not (ladder_worked):
-        results_files.write_results(output_dir, "Ladder failed monotonicity!!")
+        data = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
+        results_files.write_results(output_dir, data)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
 
@@ -71,7 +76,9 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            MSI_calls = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new, trace_y_new, threshold)
+            channel_specific_threshold = trace_analysis.get_threshold_for_trace(trace_y_new)
+            MSI_calls = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
+                                                         trace_y_new,channel_specific_threshold )
 
             #make a zoomed-in plot JUST around the MSI call
             for final_call in MSI_calls:
