@@ -1,6 +1,9 @@
 import os.path
 import sys
-import input_file_readers
+
+import accuracy_assessment
+import text_file_readers
+import xml_file_readers
 import fsa_file_processor
 import log
 import results_files
@@ -26,6 +29,12 @@ def main():
 
     FSA_File_list = sys.argv[1]
     Panel_File = sys.argv[2]
+    truth_info = {}
+
+    if (len(sys.argv)>3):
+        truth_file = sys.argv[3]
+        truth_info = xml_file_readers.read_truth_data(truth_file)
+
     output_dir="./tmp/"
     if not(os.path.exists(output_dir)):
             os.makedirs(output_dir)
@@ -33,8 +42,9 @@ def main():
     log.write_start_to_log(output_dir)
     log.write_to_log('Command Arguments Given: %s' % sys.argv)
 
-    paths_to_process = input_file_readers.readInputFile(FSA_File_list)
-    panel_info = input_file_readers.readPanelXml(Panel_File)
+    paths_to_process = text_file_readers.readInputFile(FSA_File_list)
+    panel_info = xml_file_readers.readPanelXml(Panel_File)
+
     results_by_file={}
 
     for path in paths_to_process:
@@ -53,12 +63,14 @@ def main():
                     separate_results_by_file[fsa_file] = final_calls_by_loci
 
             results_files.write_summary_file(separate_output_folder, separate_results_by_file, panel_info)
+            accuracy_assessment.assess_accuracy(separate_output_folder, separate_results_by_file, panel_info, truth_info)
 
         else:
             final_calls_by_loci = fsa_file_processor.process_fsa_file(path, panel_info, output_dir)
             results_by_file[path] = final_calls_by_loci
 
     results_files.write_summary_file(output_dir, results_by_file, panel_info)
+    accuracy_assessment.assess_accuracy(output_dir, results_by_file, panel_info, truth_info)
 
     log.write_end_to_log()
 

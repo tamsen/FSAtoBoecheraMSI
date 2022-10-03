@@ -1,13 +1,5 @@
 import xml.etree.ElementTree as ET
 
-def readInputFile(input_file_path):
-
-    with open(input_file_path) as f:
-        lines = f.readlines()
-
-    clean_lines = [line.strip() for line in lines]
-    clean_lines = [line for line in clean_lines if "#" not in line]
-    return clean_lines
 
 def readPanelXml(input_file_path):
 
@@ -52,3 +44,39 @@ def figure_out_loci_from_run_name(panel, run_name):
             return panel[primer_set]
 
     return False
+
+
+
+
+def read_truth_data(input_file_path):
+
+    mytree = ET.parse(input_file_path)
+    myroot = mytree.getroot()
+
+    truthdata_by_sample_name={}
+
+    for sample in myroot:
+
+        sample_name=sample.attrib["name"]
+        sample_data_by_loci = {}
+        for loci in sample:
+            loci_name = loci.attrib["name"]
+            loci_data= []
+
+            for data in loci:
+
+                incoming_txt=data.text.strip()
+                incoming_tag = data.tag.strip()
+
+                if (incoming_tag == "alleles"):
+                    alleles_splat = incoming_txt.split(',')
+                    loci_data = [int(a) for a in alleles_splat]
+
+            sample_data_by_loci[loci_name]=loci_data
+
+        truthdata_by_sample_name[sample_name]=sample_data_by_loci
+
+    print("Truth Data Loaded:")
+    print(truthdata_by_sample_name)
+
+    return truthdata_by_sample_name

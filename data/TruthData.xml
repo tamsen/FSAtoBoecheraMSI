@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+<Sample name="BD1200" >
+    <loci name="ICE3">
+        <alleles>69,89,131</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>209,218,219</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80,86</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>214,217</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>232,242,254</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>82,92,94</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>117</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>197,210</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>93,99,101</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>142,150</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>301,303</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>129</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>91,93,99</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>248</alleles>
+    </loci>
+</Sample>
+</metadata>
+

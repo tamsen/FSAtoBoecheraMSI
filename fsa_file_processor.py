@@ -2,7 +2,7 @@ import fsa_file_reader
 import trace_analysis
 import os
 import results_files
-import input_file_readers
+import xml_file_readers
 import peak_analysis
 import visuals
 import log
@@ -18,7 +18,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             os.makedirs(run_folder )
 
 
-    relevant_loci = input_file_readers.figure_out_loci_from_run_name(panel_info, run_name)
+    relevant_loci = xml_file_readers.figure_out_loci_from_run_name(panel_info, run_name)
 
     if (relevant_loci == False):
         log.write_error_to_log("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
