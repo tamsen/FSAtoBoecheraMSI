@@ -46,14 +46,13 @@ def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
     #fig, ax = plt.subplots(figsize=(10, 10))
     fig, ax = plt.subplots()
 
-    plt.plot(new_x,old_y)
-    plt.plot(new_x,[threshold for x in new_x], "-", color="g")
+    plt.plot(new_x, old_y)
 
-    for i in range(0,len(peak_xs)):
+    for i in range(0, len(peak_xs)):
+        formatBPstring = str('{0:3.1f}'.format(peak_xs[i]))
+        ax.text(peak_xs[i], peak_ys[i] + 100, "BP=" + str(formatBPstring), rotation=45)
 
-         formatBPstring=  str('{0:3.1f}'.format(peak_xs[i]))
-         ax.text(peak_xs[i],peak_ys[i]+100, "BP="+str(formatBPstring), rotation=45)
-
+    plt.plot(new_x, [threshold for x in new_x], "-", color="g")
     plt.title(plot_prefix + " " + dyename )
     plt.xlabel("Distance Fragment Travelled (BP)")
     plt.ylabel("Intensity")
@@ -67,6 +66,61 @@ def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
 
     #ax.legend(loc="upper right", title="Legend")
     plt.savefig(run_folder + "/" + plot_prefix + "_" + dyename + "_plot" + ".png")
+
+    plt.close()
+
+
+def plot_trace_and_special_points(fig, plot_index, new_x, new_y, peak_xs, peak_ys, plot_prefix, domain):
+
+    ax = fig.add_subplot(*plot_index)
+    ax = plt.plot(new_x, new_y, label=plot_prefix)
+    ax = plt.plot(peak_xs, peak_ys, marker="*")
+
+    #for i in range(0, len(peak_xs)):
+    #    formatBPstring = str('{0:3.1f}'.format(peak_xs[i]))
+    #    print("peak_xs[i]:" + str(peak_xs[i]))
+    #    print("peak_ys[i]:" + str(peak_ys[i]))
+    #    print("formatBPstring :" + str(formatBPstring))
+    #    plt.text(peak_xs[i], peak_ys[i] + 100, "BP=" + str(formatBPstring), rotation=45)
+
+    plt.legend(loc="upper right")
+
+    if (domain):
+        plt.xlim(domain)
+
+    if (len(peak_ys) > 0):
+        y_max = max(peak_ys)
+        plt.ylim([0,y_max+1000])
+
+    return ax
+
+def write_per_sample_summary_plots(run_folder, by_sample_results, panel_info):
+
+    for sample_name, sample_result in by_sample_results.items():
+      plot_traces_for_the_sample(run_folder, sample_name, sample_result, panel_info)
+
+def plot_traces_for_the_sample(run_folder, sample_name, sample_result, panel_info):
+
+    primer_sets= list(panel_info.keys())
+    loci_list=[]
+
+    for primer_set in primer_sets:
+        for loci in panel_info[primer_set].keys():
+            loci_list.append(loci)
+
+    [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain] = sample_result[loci].plotting_data_evidence
+    #fig, ax = plt.subplots(figsize=(10, 10))
+    fig = plt.figure(figsize=(10, 10))
+
+    for i in range(1,16):
+
+        loci=loci_list[i]
+        [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain] = sample_result[loci].plotting_data_evidence
+        ax = plot_trace_and_special_points(fig, (5,3,i), new_x, new_y, peak_xs, peak_ys, loci, domain)
+
+
+    plt.title(sample_name + " all loci " )
+    plt.savefig(run_folder + "/" + sample_name +"_all_loci"+ "_plot" + ".png")
 
     plt.close()
 

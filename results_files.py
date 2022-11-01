@@ -13,9 +13,9 @@ def write_results(outputDir, data):
         with open(resultsFile, 'a') as f:
            f.write(time_stamp_string + "," + data_string + "\n")
 
-def consolite_by_file_results_to_by_sample_results(results_by_file, panel_info):
+def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info):
 
-        bySampleResults={}
+        FSA_results_by_sample_by_loci={}
         primer_sets = panel_info.keys()
 
         for file in results_by_file.keys():
@@ -26,21 +26,25 @@ def consolite_by_file_results_to_by_sample_results(results_by_file, panel_info):
 
                 sampleNameGuess=base
 
-                if not(sampleNameGuess in bySampleResults):
-                        bySampleResults[sampleNameGuess] = results_by_file[file]
-                else:
-                        for loci in results_by_file[file].keys():
-                                bySampleResults[sampleNameGuess][loci] = results_by_file[file][loci]
+                if not(sampleNameGuess in FSA_results_by_sample_by_loci):
+                        #FSA_results_by_sample_by_loci[sampleNameGuess] = results_by_file[file]
+                        FSA_results_by_sample_by_loci[sampleNameGuess] = {}
 
-        return bySampleResults
+                for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
 
-def write_summary_file(outputDir, results_by_file, panel_info):
+                        FSA_results_by_sample_by_loci[sampleNameGuess][loci] = \
+                                results_by_file[file].MSI_loci_results_by_loci[loci]
+
+
+        return FSA_results_by_sample_by_loci
+
+def write_summary_file(outputDir, bySampleResults , panel_info):
 
         now = datetime.now()
         day = now.strftime("%d_%m_%Y")
         time = now.strftime("%H_%M_%S")
         time_stamp_string = "_".join([day,time])
-        summaryFile = os.path.join(outputDir,"Summary_"+ time_stamp_string +".csv")
+        summaryFile = os.path.join(outputDir,"Summary_"+ time_stamp_string +".tsv")
 
         primer_sets=panel_info.keys()
         expected_space_for_calls = 5
@@ -53,10 +57,8 @@ def write_summary_file(outputDir, results_by_file, panel_info):
                                 header1_data.append(primer_set)
                                 header2_data.append(loci)
 
-        header1 = ",".join([str(p) for p in header1_data])
-        header2 = ",".join([str(p) for p in header2_data])
-
-        bySampleResults = consolite_by_file_results_to_by_sample_results(results_by_file, panel_info)
+        header1 = "\t".join([str(p) for p in header1_data])
+        header2 = "\t".join([str(p) for p in header2_data])
 
         with open(summaryFile , 'w') as f:
 
@@ -76,7 +78,7 @@ def write_summary_file(outputDir, results_by_file, panel_info):
                                         for loci in panel_info[primer_set].keys():
 
                                                 if loci in results_for_file:
-                                                        allele_calls=results_for_file[loci]
+                                                        allele_calls=results_for_file[loci].alleles_called
                                                 else:
                                                         allele_calls=["" for x in range(0, expected_space_for_calls)]
 
@@ -90,5 +92,5 @@ def write_summary_file(outputDir, results_by_file, panel_info):
                                                                 #data_list.append(loci + ":" + "-")
                                                                 data_list.append("-")
 
-                        data_line=",".join(data_list)
+                        data_line="\t".join(data_list)
                         f.write(data_line+ "\n")
