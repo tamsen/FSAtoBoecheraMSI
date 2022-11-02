@@ -70,20 +70,21 @@ def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
     plt.close()
 
 
-def plot_trace_and_special_points(fig, plot_index, new_x, new_y, peak_xs, peak_ys, plot_prefix, domain):
+def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
+                                  peak_xs, peak_ys, loci, domain,dye_color):
 
     ax = fig.add_subplot(*plot_index)
-    ax = plt.plot(new_x, new_y, label=plot_prefix)
-    ax = plt.plot(peak_xs, peak_ys, marker="*")
+    #ax = plt.plot(new_x, new_y, label=loci, c=dye_color)
+    ax = plt.plot(new_x, new_y, c=dye_color)
+    ax = plt.scatter(peak_xs, peak_ys, marker="*", c='orange')
 
-    #for i in range(0, len(peak_xs)):
-    #    formatBPstring = str('{0:3.1f}'.format(peak_xs[i]))
-    #    print("peak_xs[i]:" + str(peak_xs[i]))
-    #    print("peak_ys[i]:" + str(peak_ys[i]))
-    #    print("formatBPstring :" + str(formatBPstring))
-    #    plt.text(peak_xs[i], peak_ys[i] + 100, "BP=" + str(formatBPstring), rotation=45)
+    ax = plt.gca()
+    ax = plt.text(0.05, 0.95, loci, horizontalalignment='left',
+         verticalalignment='top', transform=ax.transAxes)
 
-    plt.legend(loc="upper right")
+    ax = plt.gca()
+    ax = plt.text(0.95, 0.95, "obs: " + str(peak_xs), horizontalalignment='right',
+         verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
     if (domain):
         plt.xlim(domain)
@@ -101,25 +102,29 @@ def write_per_sample_summary_plots(run_folder, by_sample_results, panel_info):
 
 def plot_traces_for_the_sample(run_folder, sample_name, sample_result, panel_info):
 
-    primer_sets= list(panel_info.keys())
-    loci_list=[]
+    dye_to_color={"FAM":"blue", "VIC": "green"}
 
-    for primer_set in primer_sets:
-        for loci in panel_info[primer_set].keys():
-            loci_list.append(loci)
+    #specific order to arrange the plots
+    ordered_loci_list=  ["dummy_index","ICE3","BF20" , "A1",
+                        "BF11", "ICE14",  "C8",
+                        "BF9","BF18","E9",
+                        "BF3","BF19","B6",
+                        "Bdru266","BF15","A3"]
 
-    [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain] = sample_result[loci].plotting_data_evidence
-    #fig, ax = plt.subplots(figsize=(10, 10))
+
     fig = plt.figure(figsize=(10, 10))
 
     for i in range(1,16):
 
-        loci=loci_list[i]
-        [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain] = sample_result[loci].plotting_data_evidence
-        ax = plot_trace_and_special_points(fig, (5,3,i), new_x, new_y, peak_xs, peak_ys, loci, domain)
+        loci=ordered_loci_list[i]
+        [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain, dye] = sample_result[loci].plotting_data_evidence
+        ax = plot_trace_and_special_points(fig, (5,3,i), new_x, new_y, peak_xs, peak_ys,
+                                           loci, domain, dye_to_color[dye])
 
+        if i in [1,4,7,10,13,16]:
+            plt.ylabel("PS" + str(int((i + 2.0 )/3.0)),  fontsize=16)
 
-    plt.title(sample_name + " all loci " )
+    fig.suptitle(sample_name + " all loci " )
     plt.savefig(run_folder + "/" + sample_name +"_all_loci"+ "_plot" + ".png")
 
     plt.close()

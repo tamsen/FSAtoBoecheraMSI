@@ -46,8 +46,6 @@ def figure_out_loci_from_run_name(panel, run_name):
     return False
 
 
-
-
 def read_truth_data(input_file_path):
 
     mytree = ET.parse(input_file_path)

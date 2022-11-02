@@ -66,6 +66,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
 
     for channel in channels:
+
         peaks_inside_loci, trace_x_new, trace_y_new = trace_analysis.remap_data_trace(run_folder, relevant_loci,
                                                                                       all_collected_data, mapping_fxn,
                                                                                       left_domain_limit,
@@ -99,19 +100,19 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                             plot_prefix,plot_domain= domain)
 
             if (len(MSI_calls_for_loci) > 0):
-                print("MSI_calls_for_loci " + str(MSI_calls_for_loci))
-                print("domain " + str(domain))
                 whole_loci_domain = [MSI_calls_for_loci[0][0]-20,domain[1]]
 
                 loci_specific_plot_data=[trace_x_new, trace_y_new,
                                           [call[0] for call in MSI_calls_for_loci],
                                           [call[1] for call in MSI_calls_for_loci],
-                                           loci, whole_loci_domain]
+                                           loci, whole_loci_domain, channel]
             else:
+                where_loci_should_be=relevant_loci[loci]["length"]  #even though we didnt find them..
+                whole_loci_domain = [where_loci_should_be[0],where_loci_should_be[-1]]
                 loci_specific_plot_data=[trace_x_new, trace_y_new,
                                           [call[0] for call in MSI_calls_for_loci],
                                           [call[1] for call in MSI_calls_for_loci],
-                                           loci]
+                                           loci, whole_loci_domain, channel]
 
 
             #get the results ready to print to file

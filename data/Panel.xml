@@ -60,11 +60,11 @@
 <PrimerSet name="PS5">
     <loci name="Bdru266">
         <length>90-175</length>
-        <dye>FAM</dye>
+        <dye>VIC</dye>
     </loci>
     <loci name="BF15">
         <length>75-140</length>
-        <dye>VIC</dye>
+        <dye>FAM</dye>
     </loci>
     <loci name="A3">
         <length>205-310</length>
