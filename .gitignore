@@ -142,5 +142,6 @@ Training
 Blog
 About
 
-# anything in ./tmp
+# anything in ./tmp or ./test_case_output
 tmp
+test_case_output

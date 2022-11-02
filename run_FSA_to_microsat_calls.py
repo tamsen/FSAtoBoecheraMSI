@@ -1,13 +1,11 @@
 import os.path
 import sys
 
-import accuracy_assessment
-import text_file_readers
+from file_io import text_file_readers, xml_file_readers, results_files
 import visuals
-import xml_file_readers
 import fsa_file_processor
 import log
-import results_files
+
 
 #code snippets from
 #https://github.com/trmznt/fatools/

@@ -30,6 +30,9 @@ def write_warning_to_log(msg):
 
 def write_to_log(msg):
 
+        if len(log_file_path) == 0:
+            return
+
         now = datetime.now()
         day = now.strftime("%d/%m/%Y")
         time = now.strftime("%H:%M:%S")
@@ -37,6 +40,5 @@ def write_to_log(msg):
         log_line = time_stamp_string + ":\t" + msg + "\n"
         print(log_line)
 
-        #with open(resultsFile, 'a') as f:
         with open(log_file_path, 'a') as f:
            f.write(log_line)

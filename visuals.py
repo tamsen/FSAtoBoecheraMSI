@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
-def plot_ladder(run_folder, threshold,
+def plot_ladder(run_folder, plot_file_name, threshold,
                 smoothed_ladder_data, sixteen_peaks):
 
     peak_heights = [ x[1] for x in sixteen_peaks]
@@ -9,33 +10,48 @@ def plot_ladder(run_folder, threshold,
 
 
     fig, ax = plt.subplots(figsize=(10, 10))
-
+    plt.yscale("log")
     plt.plot(smoothed_ladder_data)
     plt.plot(peak_indexes,peak_heights,"*")
     plt.plot([threshold for x in smoothed_ladder_data], "-", color="g")
+    plot_min= threshold*0.5
 
     for peak in sixteen_peaks:
 
-        ax.text(peak[0], -2000, "raw="+str(int(peak[0])), rotation=-45)
-        ax.text(peak[0], peak[1]+500, "BP="+str(peak[2]), rotation=45)
+        #ax.text(peak[0], plot_min - 10, "raw="+str(int(peak[0])), rotation=-45)
+        ax.text(peak[0], peak[1]+500, str(peak[2]), rotation=45)
+
 
     plt.title("Ladder Trace")
     plt.xlabel("Distance Fragment Travelled (raw)")
     plt.ylabel("Intensity")
 
     sixteen_peaks.sort(key=lambda x: x[0])
-    ladder_string=str([x[0] for x in sixteen_peaks])
-    bp_string=str([x[2] for x in sixteen_peaks])
+    ladder_string="Ladder positions: " + str([x[0] for x in sixteen_peaks[0:7]]) + \
+            "\n                " + str([x[0] for x in sixteen_peaks[7:16]])
 
-    ax.text(20, 20000,
-            "Ladder positions: \n\n" + ladder_string, style='italic',
-            bbox={'facecolor': 'gray', 'alpha': 0.5, 'pad': 10})
+    bp_string="BP lengths: " + str([x[2] for x in sixteen_peaks])
+    full_string=ladder_string + "\n" + bp_string
 
-    ax.text(20, 15000,
-            "BP lengths: \n\n" + bp_string, style='italic',
-            bbox={'facecolor': 'gray', 'alpha': 0.5, 'pad': 10})
+    ax = plt.gca()
+    ax = plt.text(0.05, 0.9,full_string, horizontalalignment='left',
+         verticalalignment='top', transform=ax.transAxes,
+                  bbox={'facecolor': 'gray', 'alpha': 0.5, 'pad': 10}
+                  )
 
-    plt.savefig(run_folder  + "/Raw_Ladder_plot" + ".png")
+    #ax.text(20, 20000,
+    #        "Ladder positions: \n\n" + ladder_string, style='italic',
+    #        bbox={'facecolor': 'gray', 'alpha': 0.5, 'pad': 10})
+
+    #ax.text(20, 15000,
+    #        "BP lengths: \n\n" + bp_string, style='italic',
+    #        bbox={'facecolor': 'gray', 'alpha': 0.5, 'pad': 10})
+
+    if (len(smoothed_ladder_data) > 0):
+        y_max = max(smoothed_ladder_data)
+        plt.ylim([plot_min,y_max*1.2])
+
+    plt.savefig(os.path.join(run_folder, plot_file_name + ".png"))
     plt.close()
 
 

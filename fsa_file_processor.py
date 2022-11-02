@@ -1,12 +1,10 @@
-import fsa_file_reader
-import trace_analysis
 import os
-import results_files
-import xml_file_readers
-import peak_analysis
+from file_io import xml_file_readers, results_files, fsa_file_reader
+from signal_processing import peak_analysis, trace_analysis
+from results_for_fsa_file import FSA_File_Results, MSI_loci_results
 import visuals
 import log
-from results_for_fsa_file import FSA_File_Results, MSI_loci_results
+
 
 
 def process_fsa_file(fsa_file, panel_info, output_dir):
@@ -25,7 +23,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         log.write_error_to_log("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
         log.write_error_to_log("Quitting " + run_name)
         data = [fsa_file, "panel problem", "Can't figure out what panel to use for this FSA file!!"]
-        results_files.write_results(output_dir,data)
+        results_files.write_results(output_dir, data)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
     else:
@@ -84,7 +82,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
             channel_specific_threshold = trace_analysis.get_threshold_for_trace(trace_y_new)
             MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
-                                                         trace_y_new,channel_specific_threshold )
+                                                                  trace_y_new, channel_specific_threshold)
 
             #make a zoomed-in plot JUST around the MSI call
             for final_call in MSI_calls_for_loci:

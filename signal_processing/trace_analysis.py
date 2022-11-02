@@ -3,29 +3,34 @@ from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
+from signal_processing import peak_analysis
 import visuals
-import peak_analysis
 import log
 
 Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
 
-def getLadderPeaks(runName, trace_data_dictionary):
+def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     log.write_to_log("Reading through ladder trace for " + runName)
     # 'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
 
     highest_peaks_tup, smoothed_trace, threshold = find_top_30_Peaks_largest_first(ladder_trace)
 
+    #Option A
+    #if we keep the largest:
     # of the remaining peaks, keep the greatest.
     highest_tup = highest_peaks_tup[0]
 
     # now, keep the best 15 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
     right_most = highest_peaks_tup[0:15]
-
     # put it together
     sixteen_peaks = [highest_tup] + right_most
+
+    #Option B
+    #Highest 16 peaks, starting from the right
+    sixteen_peaks = highest_peaks_tup[0:16]
 
     # want your ladder peaks leftmost on the left! not sorted by size
     sixteen_peaks.sort(key=lambda x: x[0])
@@ -37,8 +42,8 @@ def getLadderPeaks(runName, trace_data_dictionary):
     sixteen_peaks = [(sixteen_peaks[i][0], sixteen_peaks[i][1], Liz500[i])
                      for i in range(0, numLadderPeaks)]
 
-    ladder_plot_data = [runName, threshold, smoothed_trace, sixteen_peaks]
-    visuals.plot_ladder(*ladder_plot_data)
+    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, sixteen_peaks]
+    visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
     if (numLadderPeaks != len(Liz500)):
@@ -58,7 +63,7 @@ def find_top_30_Peaks_largest_first(ladder_trace):
     threshold = get_threshold_for_trace(smoothed_trace)
 
     # https://plotly.com/python/peak-finding/
-    min_distance_between_peaks = 50
+    min_distance_between_peaks = 75
     min_peak_width = 10
     indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width)[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
@@ -77,7 +82,7 @@ def get_threshold_for_trace(smoothed_trace):
     ladder_variance = np.var(smoothed_trace)
     ladder_mode = mode(smoothed_trace)[0][0]
     ladder_sigma = np.sqrt(ladder_variance)
-    threshold = ladder_mode + 0.25 * ladder_sigma
+    threshold = ladder_mode + 0.15 * ladder_sigma
     return threshold
 
 
