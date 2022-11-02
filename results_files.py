@@ -3,7 +3,7 @@ from datetime import datetime
 
 def write_results(outputDir, data):
 
-        resultsFile = os.path.join(outputDir,"Results.txt")
+        resultsFile = os.path.join(outputDir,"ResultsByFile.txt")
         now = datetime.now()
         day = now.strftime("%d/%m/%Y")
         time = now.strftime("%H:%M:%S")
@@ -27,7 +27,6 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                 sampleNameGuess=base
 
                 if not(sampleNameGuess in FSA_results_by_sample_by_loci):
-                        #FSA_results_by_sample_by_loci[sampleNameGuess] = results_by_file[file]
                         FSA_results_by_sample_by_loci[sampleNameGuess] = {}
 
                 for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
@@ -44,7 +43,7 @@ def write_summary_file(outputDir, bySampleResults , panel_info):
         day = now.strftime("%d_%m_%Y")
         time = now.strftime("%H_%M_%S")
         time_stamp_string = "_".join([day,time])
-        summaryFile = os.path.join(outputDir,"Summary_"+ time_stamp_string +".tsv")
+        summaryFile = os.path.join(outputDir,"ResultsBySample" + time_stamp_string +".tsv")
 
         primer_sets=panel_info.keys()
         expected_space_for_calls = 5

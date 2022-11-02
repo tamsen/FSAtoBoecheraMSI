@@ -41,7 +41,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         return {}
 
     else:
-        sixteen_peaks, threshold =  gotLadderPeaks
+        sixteen_peaks, threshold, ladder_plot_data =  gotLadderPeaks
 
     ladder_worked = trace_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
@@ -52,7 +52,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         return {}
 
     else:
-        mapping_fxn, left_domain_limit, right_domain_limit = ladder_worked
+        mapping_fxn, left_domain_limit, right_domain_limit, mapping_plot_data_spline,mapping_plot_data_linear, \
+            = ladder_worked
 
     trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_domain_limit, right_domain_limit,
                                 sixteen_peaks, threshold)
@@ -120,7 +121,10 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             data = [fsa_file, loci] + allele_calls_for_loci
             results_files.write_results(output_dir, data)
 
-            loci_results=MSI_loci_results(allele_calls_for_loci,loci_specific_plot_data)
+            loci_results=MSI_loci_results(allele_calls_for_loci,
+                                          loci_specific_plot_data, ladder_plot_data,
+                                          [mapping_plot_data_spline, mapping_plot_data_linear])
+
             final_calls_by_loci[loci]=loci_results
 
             log.write_to_log("final calls for loci " + loci + ": " + str(allele_calls_for_loci))

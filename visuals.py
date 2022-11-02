@@ -71,10 +71,9 @@ def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
 
 
 def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
-                                  peak_xs, peak_ys, loci, domain,dye_color):
+                                  peak_xs, peak_ys, loci, domain,dye_color, add_special_point_text):
 
     ax = fig.add_subplot(*plot_index)
-    #ax = plt.plot(new_x, new_y, label=loci, c=dye_color)
     ax = plt.plot(new_x, new_y, c=dye_color)
     ax = plt.scatter(peak_xs, peak_ys, marker="*", c='orange')
 
@@ -82,35 +81,87 @@ def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
     ax = plt.text(0.05, 0.95, loci, horizontalalignment='left',
          verticalalignment='top', transform=ax.transAxes)
 
-    ax = plt.gca()
-    ax = plt.text(0.95, 0.95, "obs: " + str(peak_xs), horizontalalignment='right',
-         verticalalignment='top', transform=ax.transAxes, fontsize=8)
+    if (add_special_point_text):
+        ax = plt.gca()
+        ax = plt.text(0.95, 0.95, "obs: " + str(peak_xs), horizontalalignment='right',
+            verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
     if (domain):
         plt.xlim(domain)
 
     if (len(peak_ys) > 0):
         y_max = max(peak_ys)
-        plt.ylim([0,y_max+1000])
+        plt.ylim([0,(y_max*1.10)])
 
     return ax
 
 def write_per_sample_summary_plots(run_folder, by_sample_results, panel_info):
+    
+    # specific order to arrange the plots
+    ordered_loci_list = ["dummy_index", "ICE3", "BF20", "A1",
+                         "BF11", "ICE14", "C8",
+                         "BF9", "BF18", "E9",
+                         "BF3", "BF19", "B6",
+                         "BF15", "Bdru266", "A3"]
 
     for sample_name, sample_result in by_sample_results.items():
-      plot_traces_for_the_sample(run_folder, sample_name, sample_result, panel_info)
+      plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list)
+      plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list)
+      plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list)
 
-def plot_traces_for_the_sample(run_folder, sample_name, sample_result, panel_info):
+def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
+    
+    fig = plt.figure(figsize=(10, 10))
+    #ladder_plot_data = [runName, threshold, smoothed_trace, sixteen_peaks]
+
+    for i in range(0,5):
+
+        PS=i+1
+        loci=ordered_loci_list[(i*3)+1]
+        [runName, threshold, smoothed_trace, sixteen_peaks] = sample_result[loci].ladder_plotting_data
+        domain=[500,sixteen_peaks[-1][0]+200]
+        ax = plot_trace_and_special_points(fig, (5,1,PS),
+                                           range(0, len(smoothed_trace)),
+                                           smoothed_trace,
+                                           [x[0] for x in sixteen_peaks],
+                                           [x[1] for x in sixteen_peaks],
+                                           "", domain, 'black', False)
+
+        plt.ylabel("PS" + str(PS),  fontsize=16)
+
+    fig.suptitle(sample_name + " all loci " )
+    plt.savefig(run_folder + "/" + sample_name +"_ladder_for_loci"+ "_plot" + ".png")
+
+    plt.close()
+
+def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
+    
+    
+    #mapping_plot_data = [run_folder, x_new, y_new, peak_xs, peak_ys, threshold, "Ladder Trace", "Ladder Trace",
+    #                 "Ladder Trace", "Remapped"]
+    
+    fig = plt.figure(figsize=(10, 10))
+
+    for i in range(1,16):
+
+        loci=ordered_loci_list[i]
+        [mapping_plot_data_spline, mapping_plot_data_linear] = sample_result[loci].mapping_plotting_data
+        [x_original, x_new, A, B] = mapping_plot_data_spline
+
+        ax = plot_trace_and_special_points(fig, (5,3,i), x_original, x_new, A, B,
+                                           loci, False, "purple",  False)
+
+        if i in [1,4,7,10,13,16]:
+            plt.ylabel("PS" + str(int((i + 2.0 )/3.0)),  fontsize=16)
+
+    fig.suptitle(sample_name + " all loci " )
+    plt.savefig(run_folder + "/" + sample_name +"_mappings_for_loci"+ "_plot" + ".png")
+
+    plt.close()
+
+def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
 
     dye_to_color={"FAM":"blue", "VIC": "green"}
-
-    #specific order to arrange the plots
-    ordered_loci_list=  ["dummy_index","ICE3","BF20" , "A1",
-                        "BF11", "ICE14",  "C8",
-                        "BF9","BF18","E9",
-                        "BF3","BF19","B6",
-                        "Bdru266","BF15","A3"]
-
 
     fig = plt.figure(figsize=(10, 10))
 
@@ -119,7 +170,7 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, panel_inf
         loci=ordered_loci_list[i]
         [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain, dye] = sample_result[loci].plotting_data_evidence
         ax = plot_trace_and_special_points(fig, (5,3,i), new_x, new_y, peak_xs, peak_ys,
-                                           loci, domain, dye_to_color[dye])
+                                           loci, domain, dye_to_color[dye], True)
 
         if i in [1,4,7,10,13,16]:
             plt.ylabel("PS" + str(int((i + 2.0 )/3.0)),  fontsize=16)
@@ -146,10 +197,11 @@ def plotMapping(run_folder, A, B, left_domain_limit, right_domain_limit, f,
     plt.savefig(run_folder + "/Raw_to_BP_mapping_" + interpolation_type + ".png")
     plt.close()
 
+    plotting_data=[x_original, x_new, A,B]
     #check mapping gives monotonically increasing results. Otherwise, this is *sus*
     monotonic_test = np.all((np.diff(x_new)) >=0)
 
-    return monotonic_test
+    return monotonic_test,plotting_data
 
 def plotUnmappedTraceByColor(run_folder, trace_data,smoothed_trace,highest_peaks_tup,
                              wavelength, dyename, channel_number, plot_prefix):
