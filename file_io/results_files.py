@@ -24,6 +24,7 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                 for primer_set in primer_sets:
                         base = base.replace(primer_set,"")
 
+                base = base.split("--")[0]
                 sampleNameGuess=base
 
                 if not(sampleNameGuess in FSA_results_by_sample_by_loci):

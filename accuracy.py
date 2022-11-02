@@ -36,7 +36,6 @@ def assess_accuracy(outputDir, results_by_file, panel_info, truth_info):
             for file_path in results_by_file.keys():
 
                 have_truth_for_this_sample = False
-                truth_for_this_sample={}
 
                 # Get filename from FSA file path
                 file_name = os.path.basename(file_path)
@@ -44,9 +43,7 @@ def assess_accuracy(outputDir, results_by_file, panel_info, truth_info):
 
                 for sample in truth_info.keys():
                     if sample in file_name:
-                        have_truth_for_this_sample = True
-                        truth_for_this_sample = truth_info[sample]
-                        break
+                        truth_for_this_sample = find_truth_for_this_sample(sample, truth_info)
 
 
                 data_list = [file_path]
@@ -74,3 +71,19 @@ def assess_accuracy(outputDir, results_by_file, panel_info, truth_info):
 
                 data_line = "\t".join(data_list) + "\n"
                 f.writelines([data_line])
+
+
+def find_truth_for_this_sample(sample, truth_info):
+
+    truth_for_this_sample= False
+
+    if sample in truth_info.keys():
+        truth_for_this_sample = truth_info[sample]
+        return truth_for_this_sample
+
+    second_try= sample.split("c")[0]
+    if second_try in truth_info.keys():
+        truth_for_this_sample = truth_info[second_try]
+
+
+    return truth_for_this_sample

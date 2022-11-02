@@ -2,7 +2,8 @@ import os.path
 import sys
 
 from file_io import text_file_readers, xml_file_readers, results_files
-import visuals
+import per_file_visuals
+import per_sample_visuals
 import fsa_file_processor
 import log
 
@@ -60,21 +61,20 @@ def main():
                     FSA_file_results= fsa_file_processor.process_fsa_file(fsa_file,
                                                                               panel_info, output_folder_inside_data_folder)
 
-                    #final_calls_by_loci, all_loci_plot_data = fsa_file_processor.process_fsa_file(fsa_file,
-                    #                                                          panel_info, separate_output_folder)
-
                     all_results_by_file[fsa_file] = FSA_file_results.MSI_loci_results_by_loci
                     results_specific_to_this_subfolder[fsa_file] =  FSA_file_results
 
             bySampleResults = results_files.consolidate_by_file_results_to_by_sample_results(
                 results_specific_to_this_subfolder, panel_info)
 
-            visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
-                                             bySampleResults, panel_info)
+
             results_files.write_summary_file(output_folder_inside_data_folder,
                                              bySampleResults, panel_info)
             #accuracy_assessment.assess_accuracy(output_folder_inside_data_folder,
             #                                results_specific_to_this_subfolder, panel_info, truth_info)
+
+            per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
+                                                            bySampleResults, panel_info, truth_info)
 
         else:
             final_calls_by_loci = fsa_file_processor.process_fsa_file(path, panel_info, output_dir)

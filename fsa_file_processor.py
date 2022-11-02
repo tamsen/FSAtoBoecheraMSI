@@ -1,8 +1,8 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis
+from signal_processing import peak_analysis, trace_analysis, ladder_analysis
 from results_for_fsa_file import FSA_File_Results, MSI_loci_results
-import visuals
+import per_file_visuals
 import log
 
 
@@ -29,7 +29,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     else:
         log.write_to_log("relevant_loci: " + str(relevant_loci))
 
-    gotLadderPeaks = trace_analysis.getLadderPeaks(run_folder, all_collected_data)
+    gotLadderPeaks = ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data)
 
     if not(gotLadderPeaks):
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -41,7 +41,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     else:
         sixteen_peaks, threshold, ladder_plot_data =  gotLadderPeaks
 
-    ladder_worked = trace_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
+    ladder_worked = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
     if not (ladder_worked):
         data = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
@@ -80,7 +80,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            channel_specific_threshold = trace_analysis.get_threshold_for_trace(trace_y_new)
+            channel_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new)
             MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
                                                                   trace_y_new, channel_specific_threshold)
 
@@ -94,9 +94,9 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
 
 
-                visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, [final_call_x], [final_call_y],
-                                            threshold, "wavelength", str(dye_to_channel_mapping[channel]), channel,
-                                            plot_prefix,plot_domain= domain)
+                per_file_visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, [final_call_x], [final_call_y],
+                                                     threshold, "wavelength", str(dye_to_channel_mapping[channel]), channel,
+                                                     plot_prefix, plot_domain= domain)
 
             if (len(MSI_calls_for_loci) > 0):
                 whole_loci_domain = [MSI_calls_for_loci[0][0]-20,domain[1]]
