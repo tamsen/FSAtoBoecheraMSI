@@ -18,7 +18,7 @@ class Test(TestCase):
         if not (os.path.exists(test_output_dir)):
             os.makedirs(test_output_dir)
 
-    def test_get_ladder_peaks(self):
+    def test_get_ladder_peaks_easy_samples(self):
 
         #easy samples. clear peaks.
         fsa_file="../test_data/BD1200PS1c5_A01.fsa"
@@ -39,7 +39,12 @@ class Test(TestCase):
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
-        #difficult sample (one vey low peak)
+
+
+    def test_get_ladder_peaks_difficult_samples(self):
+
+
+        #difficult sample (one spurious low peak)
         fsa_file="../test_data/BD1200PS3c5_A02.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
         sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_output_dir,
@@ -50,4 +55,13 @@ class Test(TestCase):
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
-
+        #difficult sample (one spurious high peak)
+        fsa_file="../test_data/BD1200CNTRL-PS3-C4_B03.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_output_dir,
+                                                                                  "BD1200CNTRL-PS3-C4_B03_",
+                                                                                  trace_data_dictionary)
+        expected_peak_xs=[ 1234, 1418,1689,1952,2383,2492,2602,3057,3615,4238,4702,4823, 5446,6029,6515,6616]
+        
+        observed_peak_xs=[x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)

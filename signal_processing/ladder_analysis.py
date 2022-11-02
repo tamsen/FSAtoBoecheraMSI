@@ -36,8 +36,8 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # want your ladder peaks leftmost on the left! not sorted by size
     sixteen_peaks.sort(key=lambda x: x[0])
 
-    #Minor tweak, our vendor has a spurious peak that pops up between  2000 and 3000
-    # SO - if we see 4 peaks between 2000 and 3000, and we should see ony 3,
+    #Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
+    # SO - if we see 4 peaks between 2000 and 2800, and we should see ony 3,
     #throw out the smallest
     sixteen_peaks = remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup)
     sixteen_peaks.sort(key=lambda x: x[0])
@@ -63,7 +63,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
 
 
 def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
-    sus_peaks = [x for x in sixteen_peaks if 2000 <= x[0] <= 3000]
+    sus_peaks = [x for x in sixteen_peaks if 2000 <= x[0] <= 2800]
     sus_peaks.sort(key=lambda x: x[1])
     num_peaks_to_remove = len(sus_peaks) - 3
     peaks_to_go = sus_peaks[0:num_peaks_to_remove]
