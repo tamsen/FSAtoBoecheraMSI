@@ -1,4 +1,4 @@
-
+from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 import accuracy
 
@@ -19,10 +19,10 @@ def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
         ax = plt.text(0.95, 0.95, "obs: " + str(peak_xs), horizontalalignment='right',
                       verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
-    #if (ladder_peak_txt != False):
-    #    ax = plt.gca()
-    #    for x in peak_xs:
-    #        ax = plt.text(x 0.95, str(x), fontsize=8)
+    if (ladder_peak_txt != False):
+        ax = plt.gca()
+        for i in range(0,len(peak_xs)):
+           ax = plt.text(peak_xs[i], peak_ys[i]+500, str(GLOBAL_Liz500[i]), rotation=0)
 
     if (domain):
         plt.xlim(domain)
@@ -71,10 +71,6 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
                                            "", domain, 'black', False, True)
 
         ax = plt.plot(x_values, [threshold for x in x_values], c="green")
-
-        #ax = plt.gca()
-        #for peak in peak_xs:
-        #    ax.text(str(int(peak)), peak, -250, rotation=0)
 
         plt.ylabel("PS" + str(PS), fontsize=16)
 

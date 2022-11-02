@@ -84,6 +84,10 @@ def find_truth_for_this_sample(sample, truth_info):
     second_try= sample.split("c")[0]
     if second_try in truth_info.keys():
         truth_for_this_sample = truth_info[second_try]
+        return truth_for_this_sample
 
+    third_try= sample.split("C")[0]
+    if third_try in truth_info.keys():
+        truth_for_this_sample = truth_info[third_try]
 
     return truth_for_this_sample

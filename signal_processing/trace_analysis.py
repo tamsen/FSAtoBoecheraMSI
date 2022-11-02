@@ -1,8 +1,7 @@
 from signal_processing import peak_analysis, ladder_analysis
 import per_file_visuals
 import log
-
-Liz500 =  [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
+from signal_processing.ladder_analysis import GLOBAL_Liz500
 
 def remap_a_trace(tracedata_x_coords, tracedata_y_coords,
                   fxn, left_domain_limit, right_domain_limit):
@@ -32,7 +31,7 @@ def remap_ladder(run_folder, trace_data_dictionary, fxn,
     old_x_coords = [x for x in range(0, num_data_points)]
     x_raw, x_new, y_new = remap_a_trace(old_x_coords, original_ladder, fxn, left_domain_limit, right_domain_limit)
 
-    peak_xs = Liz500
+    peak_xs = GLOBAL_Liz500
     peak_ys = [peak[1] for peak in sixteen_peaks]
 
     per_file_visuals.plot_remapped_trace(run_folder, x_new, y_new, peak_xs, peak_ys, threshold,

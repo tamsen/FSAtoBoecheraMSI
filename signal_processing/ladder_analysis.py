@@ -1,4 +1,4 @@
-from signal_processing import ladder_analysis
+
 import numpy as np
 from scipy.stats import mode
 from scipy.signal import find_peaks
@@ -7,8 +7,7 @@ from scipy.interpolate import interp1d
 import per_file_visuals
 import log
 
-
-Liz500 =  [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
+GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
 def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     log.write_to_log("Reading through ladder trace for " + runName)
@@ -24,22 +23,30 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
 
     # now, keep the best 15 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
+
+
     right_most = highest_peaks_tup[0:15]
     # put it together
     sixteen_peaks = [highest_tup] + right_most
 
-    #Option B
+    #Option B (option B currently seems to work better)
     #Highest 16 peaks, starting from the right
     sixteen_peaks = highest_peaks_tup[0:16]
 
     # want your ladder peaks leftmost on the left! not sorted by size
     sixteen_peaks.sort(key=lambda x: x[0])
 
+    #Minor tweak, our vendor has a spurious peak that pops up between  2000 and 3000
+    # SO - if we see 4 peaks between 2000 and 3000, and we should see ony 3,
+    #throw out the smallest
+    sixteen_peaks = remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup)
+    sixteen_peaks.sort(key=lambda x: x[0])
+
     # bake LIZ500 into the peak tuple, for use later on.
     numLadderPeaks = len(sixteen_peaks)
     log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
 
-    sixteen_peaks = [(sixteen_peaks[i][0], sixteen_peaks[i][1], Liz500[i])
+    sixteen_peaks = [(sixteen_peaks[i][0], sixteen_peaks[i][1], GLOBAL_Liz500[i])
                      for i in range(0, numLadderPeaks)]
 
     ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, sixteen_peaks]
@@ -47,12 +54,30 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
 
     # note, we had an index out of range here - issue with the ladder - hence the check
 
-    if (numLadderPeaks != len(Liz500)):
+    if (numLadderPeaks != len(GLOBAL_Liz500)):
         log.write_to_log("There is a problem with this sample's ladder! Inspect plot. ")
         log.write_to_log("Aborting run. ")
         return False
 
     return sixteen_peaks, threshold, ladder_plot_data
+
+
+def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
+    sus_peaks = [x for x in sixteen_peaks if 2000 <= x[0] <= 3000]
+    sus_peaks.sort(key=lambda x: x[1])
+    num_peaks_to_remove = len(sus_peaks) - 3
+    peaks_to_go = sus_peaks[0:num_peaks_to_remove]
+
+    if num_peaks_to_remove > 0:
+        print("peaks to go:" + str(peaks_to_go))
+        print("sixteen_peaks:" + str(sixteen_peaks))
+        #sixteen_peaks.remove(peaks_to_go)
+
+        for i in range(0, num_peaks_to_remove):
+            sixteen_peaks.remove(peaks_to_go[i])
+            sixteen_peaks.append(highest_peaks_tup[i+16])
+
+    return sixteen_peaks
 
 
 def find_top_30_Peaks_largest_first(ladder_trace):

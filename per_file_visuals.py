@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import accuracy
 import os
 
 def plot_ladder(run_folder, plot_file_name, threshold,
