@@ -80,7 +80,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            channel_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new)
+            channel_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new, 0.5)
             MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
                                                                   trace_y_new, channel_specific_threshold)
 

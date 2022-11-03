@@ -50,7 +50,8 @@ def remap_data_trace(run_folder, relevant_loci,
     channel_dye_name = trace_data_dictionary['DyeN' + str(channel_number)]
     raw_trace_data = (trace_data_dictionary[channel_name])
 
-    highest_peaks_tup, smoothed_trace, threshold = ladder_analysis.find_top_30_Peaks_largest_first(raw_trace_data)
+    highest_peaks_tup, smoothed_trace, threshold = ladder_analysis.find_top_30_Peaks_largest_first(
+        raw_trace_data,20,20,10,.5)
     highest_peaks_tup.sort(key=lambda x: x[0])  # sort, by x's, not y's
 
     peak_xs = [peak[0] for peak in highest_peaks_tup]

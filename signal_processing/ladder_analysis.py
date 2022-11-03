@@ -14,7 +14,8 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # 'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
 
-    highest_peaks_tup, smoothed_trace, threshold = find_top_30_Peaks_largest_first(ladder_trace)
+    highest_peaks_tup, smoothed_trace, threshold = find_top_30_Peaks_largest_first(
+        ladder_trace,10,2,1,.35)
 
     #Option A
     #if we keep the largest:
@@ -32,16 +33,6 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     #Option B (option B currently seems to work better)
     #Highest 16 peaks, starting from the right
     sixteen_peaks = highest_peaks_tup[0:16]
-
-    #Option C (to clean up mess in the start)
-    #Highest 16 peaks, starting from the right
-    #fifteen_peaks = highest_peaks_tup[0:15]
-    #marker_for_50_bp=fifteen_peaks[0][0]
-    #highest_peaks_tup
-    #sus_peaks = [x for x in highest_peaks_tup if 0 <= x[0] <= marker_for_50_bp]
-    #sus_peaks.sort(key=lambda x: x[0], reverse=True)
-    #left_most = sus_peaks[0]
-    #sixteen_peaks = left_most + fifteen_peaks
 
     # want your ladder peaks leftmost on the left! not sorted by size
     sixteen_peaks.sort(key=lambda x: x[0])
@@ -90,24 +81,23 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
     return sixteen_peaks
 
 #best parameters for the ladder: (skinnier, cleaner spikes)
-# kernel of 10, distance between peaks 2, min_peak_width 1
+# kernel of 10, distance between peaks 2, min_peak_width 1;threshold_multiplier .35
 #best parameters for the trace data: (fatter, messier spikes)
-# kernel of 20, distance between peaks 20, min_peak_width 10
-
-def find_top_30_Peaks_largest_first(signal_trace):
+# kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
+def find_top_30_Peaks_largest_first(signal_trace,
+                                    kernel_size,
+                                    min_distance_between_peaks,
+                                    min_peak_width,
+                                    threshold_multiplier): #.35
     # very basic smoothing
-    #kernel_size = 20
-    kernel_size = 10
     kernel = np.ones(kernel_size) / kernel_size
     smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
-
-    threshold = get_threshold_for_trace(smoothed_trace)
+    threshold = get_threshold_for_trace(smoothed_trace, threshold_multiplier)
 
     # https://plotly.com/python/peak-finding/
-    min_distance_between_peaks = 2 # 75
-    min_peak_width = 1 #10
     indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width)[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
+    
     # sort, greatest peak height first. Keep the best 30
     peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
     highest_peaks_tup = peak_heights_tup[0:30]
@@ -115,7 +105,7 @@ def find_top_30_Peaks_largest_first(signal_trace):
     return highest_peaks_tup, smoothed_trace, threshold
 
 
-def get_threshold_for_trace(smoothed_trace):
+def get_threshold_for_trace(smoothed_trace, threshold_multiplier):
     # TODO, might be useful modification
     # calculate the threshold on range 2000:8000, skipping crazy peak
     # ladder_variance = np.var(smoothed_trace[2000:8000])
@@ -123,7 +113,7 @@ def get_threshold_for_trace(smoothed_trace):
     ladder_variance = np.var(smoothed_trace)
     ladder_mode = mode(smoothed_trace)[0][0]
     ladder_sigma = np.sqrt(ladder_variance)
-    threshold = ladder_mode + 0.35 * ladder_sigma
+    threshold = ladder_mode + threshold_multiplier * ladder_sigma
     return threshold
 
 
