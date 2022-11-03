@@ -133,6 +133,8 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plot_trace_and_special_points(fig, (5, 3, i), new_x, new_y, peak_xs, peak_ys,
                                            loci, domain, dye_to_color[dye], True, False)
 
+            #ax = plt.plot(x_values, [threshold for x in x_values], c="green")
+
         truth = sample_result[loci].truth_data
         accuracy = sample_result[loci].accuracy
 
