@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 
-def assess_accuracy(outputDir, results_by_file, panel_info, truth_info):
+def assess_accuracy(outputDir, bySampleResults, panel_info):
 
         now = datetime.now()
         day = now.strftime("%d_%m_%Y")
@@ -17,15 +17,14 @@ def assess_accuracy(outputDir, results_by_file, panel_info, truth_info):
         header2_data = ["Loci->"]
         for primer_set in primer_sets:
             for loci in panel_info[primer_set].keys():
-                #for i in range(0, expected_space_for_calls):
-                    header1_data.append(primer_set)
+                    header1_data= header1_data + [primer_set,primer_set,primer_set]
                     header2_data.append("observed " + loci)
                     header2_data.append("expected " + loci)
+                    header2_data.append("accuracy score for " + loci)
 
         header1 = "\t".join([str(p) for p in header1_data])
         header2 = "\t".join([str(p) for p in header2_data])
 
-        #bySampleResults = consolite_by_file_results_to_by_sample_results(results_by_file, panel_info)
 
         with open(summaryFile, 'w') as f:
 
@@ -33,41 +32,29 @@ def assess_accuracy(outputDir, results_by_file, panel_info, truth_info):
             f.write(header2 + "\n")
 
             # for file in results_by_file:
-            for file_path in results_by_file.keys():
+            for sample_name in bySampleResults.keys():
 
-                have_truth_for_this_sample = False
+                data_list=[sample_name]
+                sample_result=bySampleResults[sample_name]
 
-                # Get filename from FSA file path
-                file_name = os.path.basename(file_path)
-                # Figure out if we have truth data available for that sample
-
-                for sample in truth_info.keys():
-                    if sample in file_name:
-                        truth_for_this_sample = find_truth_for_this_sample(sample, truth_info)
+                #if len(results_for_file.keys()) < 1:
+                #    data_list.append("Analysis fail. No alleles detected")
 
 
-                data_list = [file_path]
-                results_for_file = results_by_file[file_path]
-                if len(results_for_file.keys()) < 1:
-                    data_list.append("Analysis fail. No alleles detected")
-                elif have_truth_for_this_sample  == False:
-                    data_list.append("Can't determine accuracy. No truth data for this sample.")
-                else:
+                for primer_set in primer_sets:
+                     for loci in panel_info[primer_set].keys():
 
-                    for primer_set in primer_sets:
-                        for loci in panel_info[primer_set].keys():
+                        if loci in sample_result:
+                            expected_alleles = sample_result[loci].truth_data
+                            called_alleles = sample_result[loci].alleles_called
+                            accuracy_score = "foo"
 
-                            expected_alleles = truth_for_this_sample[loci]
+                            if len(called_alleles) == 0:
+                                called_alleles = ["-"]
 
-                            if loci in results_for_file:
-                                allele_calls = results_for_file[loci]
-                            else:
-                                #allele_calls = ["" for x in range(0, expected_space_for_calls)]
-                                allele_calls = ["-"]
-
-                            data_list.append( str(allele_calls))
+                            data_list.append( str(called_alleles ))
                             data_list.append( str(expected_alleles))
-                            #data_list.append(str(allele_calls) + ',' + str(expected_alleles))
+                            data_list.append(str(accuracy_score))
 
                 data_line = "\t".join(data_list) + "\n"
                 f.writelines([data_line])

@@ -74,8 +74,8 @@ def main():
             per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
                                                             bySampleResults)
 
-            #accuracy.assess_accuracy(output_folder_inside_data_folder,
-            #                                results_specific_to_this_subfolder, panel_info, truth_info)
+            accuracy.assess_accuracy(output_folder_inside_data_folder,
+                                            bySampleResults, panel_info)
 
         else:
             final_calls_by_loci = fsa_file_processor.process_fsa_file(path, panel_info, output_dir)
