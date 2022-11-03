@@ -59,20 +59,17 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     # Channels we care about are ones with dyes in our panel.
     channels = set([loci_info_dict["dye"] for loci_info_dict in relevant_loci.values()])
-    #all_loci_plot_data=[]
 
     final_calls_by_loci={}
-
-
     for channel in channels:
 
         threshold_multiplier=0.5
         # best parameters for the trace data: (fatter, messier spikes)
         # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 
-
+        #note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
         peak_calling_parameters = [20, 20, 10, threshold_multiplier]
-        if "BF3" in relevant_loci.keys(): #BF3 has some really close together peaks
+        if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()):
             peak_calling_parameters = [13, 15, 6, threshold_multiplier]
 
         peaks_inside_loci, trace_x_new, trace_y_new,\

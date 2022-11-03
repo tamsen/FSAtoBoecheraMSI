@@ -75,5 +75,21 @@ class TestAlleleCalls(unittest.TestCase):
         self.assertEqual(2, len(bf19_results))
         self.assertEqual(3, len(b6_results))
 
+    def test_PS5(self):
+        panel_info = file_io.xml_file_readers.readPanelXml("../data/Panel.xml")
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_num_allele_calls",
+                                "BD1200PS5c5_G02.fsa")
+
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        bf15_results = FSA_file_results.MSI_loci_results_by_loci["BF15"].alleles_called
+        bdru266_results = FSA_file_results.MSI_loci_results_by_loci["Bdru266"].alleles_called
+        a3_results = FSA_file_results.MSI_loci_results_by_loci["A3"].alleles_called
+
+        self.assertEqual(4, len(bf15_results))
+        self.assertEqual(1, len(bdru266_results))
+        self.assertEqual(1, len(a3_results))
+
 if __name__ == '__main__':
     unittest.main()

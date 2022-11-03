@@ -16,7 +16,7 @@ def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
 
     if (msi_call_text):
         ax = plt.gca()
-        ax = plt.text(0.95, 0.95, "obs: " + str(peak_xs), horizontalalignment='right',
+        ax = plt.text(0.95, 0.95, "raw: " + str(peak_xs), horizontalalignment='right',
                       verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
     if (ladder_peak_txt != False):
