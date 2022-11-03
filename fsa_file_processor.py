@@ -66,11 +66,15 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     for channel in channels:
 
-        peaks_inside_loci, trace_x_new, trace_y_new = trace_analysis.remap_data_trace(run_folder, relevant_loci,
+        threshold_multiplier=0.5
+        peak_calling_parameters = [20, 20, 10, threshold_multiplier]
+        peaks_inside_loci, trace_x_new, trace_y_new,\
+            threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                       all_collected_data, mapping_fxn,
                                                                                       left_domain_limit,
                                                                                       right_domain_limit, sixteen_peaks,
-                                                                                      dye_to_channel_mapping[channel])
+                                                                                      dye_to_channel_mapping[channel],
+                                                                                peak_calling_parameters)
 
 
         for loci in peaks_inside_loci:
@@ -80,9 +84,36 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            channel_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new, 0.5)
+            loci_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new, threshold_multiplier)
             MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
-                                                                  trace_y_new, channel_specific_threshold)
+                                                                  trace_y_new, loci_specific_threshold)
+
+            #rescue a loci that might be low-intensity
+            # and thus falling below threshold
+            if (len(MSI_calls_for_loci)) > 0:
+                max_call_intensity = max(call[1] for call in MSI_calls_for_loci)
+            else :
+                max_call_intensity = 0
+
+            rescue_needed = (max_call_intensity < 3 * loci_specific_threshold)
+            if rescue_needed:
+
+                loci_range=relevant_loci[loci]["length"]
+                threshold_reduction=0.3
+                rescue_parameters = [20, 20, 10, threshold_multiplier*threshold_reduction]
+                peaks_inside_loci, trace_x_new2, trace_y_new2, \
+                threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
+                                                                                    all_collected_data, mapping_fxn,
+                                                                                    loci_range[0],
+                                                                                    loci_range[1], sixteen_peaks,
+                                                                                    dye_to_channel_mapping[channel],
+                                                                                    rescue_parameters)
+
+                loci_specific_threshold = ladder_analysis.get_threshold_for_trace(
+                    trace_y_new,threshold_multiplier*threshold_reduction)
+                unfiltered_peaks_in_loci = peaks_inside_loci[loci]
+                MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new2,
+                                                                      trace_y_new2, loci_specific_threshold)
 
             #make a zoomed-in plot JUST around the MSI call
             for final_call in MSI_calls_for_loci:
@@ -96,7 +127,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
                 per_file_visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, [final_call_x], [final_call_y],
                                                      threshold, "wavelength", str(dye_to_channel_mapping[channel]), channel,
-                                                     plot_prefix, plot_domain= domain)
+                                                     plot_prefix, plot_domain = domain)
 
             if (len(MSI_calls_for_loci) > 0):
                 whole_loci_domain = [MSI_calls_for_loci[0][0]-20,domain[1]]
@@ -104,6 +135,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 loci_specific_plot_data = [trace_x_new, trace_y_new,
                                           [call[0] for call in MSI_calls_for_loci],
                                           [call[1] for call in MSI_calls_for_loci],
+                                           loci_specific_threshold,
                                            loci, whole_loci_domain, channel]
             else:
                 where_loci_should_be = relevant_loci[loci]["length"]  #even though we didnt find them..
@@ -111,6 +143,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 loci_specific_plot_data = [trace_x_new, trace_y_new,
                                           [call[0] for call in MSI_calls_for_loci],
                                           [call[1] for call in MSI_calls_for_loci],
+                                           loci_specific_threshold,
                                            loci, whole_loci_domain, channel]
 
 

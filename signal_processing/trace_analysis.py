@@ -41,17 +41,20 @@ def remap_ladder(run_folder, trace_data_dictionary, fxn,
     return True
 
 
-def remap_data_trace(run_folder, relevant_loci,
+def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                      trace_data_dictionary, fxn,
                      left_domain_limit, right_domain_limit,
-                     sixteen_peaks, channel_number):
+                     sixteen_peaks, channel_number, peak_calling_parameters):
+
     channel_name = 'DATA' + str(channel_number)
     wavelength = trace_data_dictionary['DyeW' + str(channel_number)]
     channel_dye_name = trace_data_dictionary['DyeN' + str(channel_number)]
     raw_trace_data = (trace_data_dictionary[channel_name])
 
     highest_peaks_tup, smoothed_trace, threshold = ladder_analysis.find_top_30_Peaks_largest_first(
-        raw_trace_data,20,20,10,.5)
+        raw_trace_data,*peak_calling_parameters)
+    #peak_calling_parameters=20,20,10,.5
+
     highest_peaks_tup.sort(key=lambda x: x[0])  # sort, by x's, not y's
 
     peak_xs = [peak[0] for peak in highest_peaks_tup]
@@ -111,4 +114,4 @@ def remap_data_trace(run_folder, relevant_loci,
 
         Peaks_inside_loci[loci_name] = peaks
 
-    return Peaks_inside_loci, trace_x_new, trace_y_new
+    return Peaks_inside_loci, trace_x_new, trace_y_new, threshold

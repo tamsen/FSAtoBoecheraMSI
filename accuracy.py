@@ -115,7 +115,10 @@ def assess_accuracy(outputDir, bySampleResults, panel_info):
             if loci in accuracy_by_loci:
                 avg_accuracy_for_loci_list.append("-")
                 avg_accuracy_for_loci_list.append("-")
-                avg_accuracy_for_loci_list.append(str(statistics.mean(accuracy_by_loci[loci])))
+                if len(accuracy_by_loci[loci]) > 0:
+                    avg_accuracy_for_loci_list.append(str(statistics.mean(accuracy_by_loci[loci])))
+                else:
+                    avg_accuracy_for_loci_list.append("-")
             else:
                 avg_accuracy_for_loci_list.append("-1")
 

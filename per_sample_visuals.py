@@ -117,8 +117,8 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 
 
 def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
-    dye_to_color = {"FAM": "blue", "VIC": "green"}
 
+    dye_to_color = {"FAM": "blue", "VIC": "green"}
     fig = plt.figure(figsize=(10, 10))
 
     for i in range(1, 16):
@@ -126,18 +126,23 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
         loci = ordered_loci_list[i]
 
         if loci not in sample_result.keys():
+            dye="FAM"
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1],[1], [1],[1],
                                                loci, [0,1], dye_to_color[dye], True, False)
         else:
-            [new_x, new_y, peak_xs, peak_ys, plot_prefix, domain, dye] = sample_result[loci].plotting_data_evidence
+            [new_x, new_y, peak_xs, peak_ys, threshold, plot_prefix, domain, dye] = \
+                sample_result[loci].plotting_data_evidence
+
             ax = plot_trace_and_special_points(fig, (5, 3, i), new_x, new_y, peak_xs, peak_ys,
                                            loci, domain, dye_to_color[dye], True, False)
 
-            #ax = plt.plot(x_values, [threshold for x in x_values], c="green")
+            ax = plt.plot(new_x, [threshold for x in new_x], c="gray")
 
-        truth = sample_result[loci].truth_data
-        accuracy = sample_result[loci].accuracy
-
+        if loci in sample_result:
+            truth = sample_result[loci].truth_data
+            accuracy = sample_result[loci].accuracy
+        else:
+            truth = False
 
         if truth != False:
             ax = plt.gca()
