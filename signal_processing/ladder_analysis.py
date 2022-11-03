@@ -14,24 +14,19 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # 'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
 
+    #parameters_for_right_side_of_ladder
+    kernel_size=10
+    min_distance_between_peaks=5#2
+    min_peak_width=5 #2
+    threshold_multiplier=.50
+    parameters_for_right_side_of_ladder=[10,200,2,.5]
+    parameters_for_left_side_of_ladder=[10,2,1,.5]
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks_largest_first(
-        ladder_trace,30,10,2,1,.50)
+        ladder_trace,30,kernel_size,min_distance_between_peaks,min_peak_width,threshold_multiplier)
 
-    #Option A
-    #if we keep the largest:
-    # of the remaining peaks, keep the greatest.
-    highest_tup = highest_peaks_tup[0]
 
-    # now, keep the best 15 starting from the right-most index.
+    # now, keep the best 16 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
-
-
-    right_most = highest_peaks_tup[0:15]
-    # put it together
-    #sixteen_peaks = [highest_tup] + right_most
-
-    #Option B (option B currently seems to work better)
-    #Highest 16 peaks, starting from the right
     sixteen_peaks = highest_peaks_tup[0:16]
 
     # want your ladder peaks leftmost on the left! not sorted by size
