@@ -15,7 +15,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     ladder_trace = trace_data_dictionary['DATA105']
 
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks_largest_first(
-        ladder_trace,30,10,2,1,.35)
+        ladder_trace,30,10,2,1,.50)
 
     #Option A
     #if we keep the largest:
