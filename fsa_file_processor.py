@@ -50,10 +50,10 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         return {}
 
     else:
-        mapping_fxn, left_domain_limit, right_domain_limit, mapping_plot_data_spline,mapping_plot_data_linear, \
+        mapping_fxn, left_panel_domain_limit, right_panel_domain_limit, mapping_plot_data_spline,mapping_plot_data_linear, \
             = ladder_worked
 
-    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_domain_limit, right_domain_limit,
+    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_panel_domain_limit, right_panel_domain_limit,
                                 sixteen_peaks, threshold)
 
 
@@ -67,17 +67,24 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     for channel in channels:
 
         threshold_multiplier=0.5
+        # best parameters for the trace data: (fatter, messier spikes)
+        # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
+
+
         peak_calling_parameters = [20, 20, 10, threshold_multiplier]
+        if "BF3" in relevant_loci.keys(): #BF3 has some really close together peaks
+            peak_calling_parameters = [13, 15, 6, threshold_multiplier]
+
         peaks_inside_loci, trace_x_new, trace_y_new,\
             threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                       all_collected_data, mapping_fxn,
-                                                                                      left_domain_limit,
-                                                                                      right_domain_limit, sixteen_peaks,
+                                                                                      left_panel_domain_limit,
+                                                                                      right_panel_domain_limit, sixteen_peaks,
                                                                                       dye_to_channel_mapping[channel],
                                                                                 peak_calling_parameters)
 
 
-        for loci in peaks_inside_loci:
+        for loci in peaks_inside_loci.keys():
 
             # convert peak calls to MSI calls.
             unfiltered_peaks_in_loci=peaks_inside_loci[loci]
@@ -99,8 +106,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             if rescue_needed:
 
                 loci_range=relevant_loci[loci]["length"]
-                threshold_reduction=0.3
-                rescue_parameters = [20, 20, 10, threshold_multiplier*threshold_reduction]
+                threshold_reduction = 0.3
+                rescue_parameters = [*peak_calling_parameters[0:3],  threshold_multiplier*threshold_reduction]
                 peaks_inside_loci, trace_x_new2, trace_y_new2, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                     all_collected_data, mapping_fxn,

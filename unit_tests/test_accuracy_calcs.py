@@ -25,12 +25,12 @@ class TestAccuracy(unittest.TestCase):
         called_alleles=[2,8, 100]
         expected_alleles=[2,50]
         result=accuracy.allele_accuracy(called_alleles, expected_alleles)
-        self.assertAlmostEqual(result, 66.6666, 2)
+        self.assertEqual(result, 66.7)
 
         called_alleles=[2,8]
         expected_alleles=[2,8,100]
         result=accuracy.allele_accuracy(called_alleles, expected_alleles)
-        self.assertAlmostEqual(result, 66.6666, 2)
+        self.assertEqual(result, 66.7)
 
 if __name__ == '__main__':
     unittest.main()

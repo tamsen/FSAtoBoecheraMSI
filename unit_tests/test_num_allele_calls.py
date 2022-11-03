@@ -19,9 +19,9 @@ class TestAlleleCalls(unittest.TestCase):
         bf20_results= FSA_file_results.MSI_loci_results_by_loci["BF20"].alleles_called
         a1_results= FSA_file_results.MSI_loci_results_by_loci["A1"].alleles_called
 
-        self.assertEqual(len(ice3_results), 3)
-        self.assertEqual(len(bf20_results), 4)
-        self.assertEqual(len(a1_results), 1)
+        self.assertEqual(3,len(ice3_results))
+        self.assertEqual(4,len(bf20_results))
+        self.assertEqual(1,len(a1_results))
 
     def test_PS2(self):
 
@@ -71,9 +71,9 @@ class TestAlleleCalls(unittest.TestCase):
         bf19_results = FSA_file_results.MSI_loci_results_by_loci["BF19"].alleles_called
         b6_results = FSA_file_results.MSI_loci_results_by_loci["B6"].alleles_called
 
-        self.assertEqual(len(bf3_results), 3)
-        self.assertEqual(len(bf19_results), 2)
-        self.assertEqual(len(b6_results), 3)
+        self.assertEqual(4, len(bf3_results))
+        self.assertEqual(2, len(bf19_results))
+        self.assertEqual(3, len(b6_results))
 
 if __name__ == '__main__':
     unittest.main()

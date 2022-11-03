@@ -14,8 +14,8 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # 'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
 
-    highest_peaks_tup, smoothed_trace, threshold = find_top_30_Peaks_largest_first(
-        ladder_trace,10,2,1,.35)
+    highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks_largest_first(
+        ladder_trace,30,10,2,1,.35)
 
     #Option A
     #if we keep the largest:
@@ -84,7 +84,7 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
 # kernel of 10, distance between peaks 2, min_peak_width 1;threshold_multiplier .35
 #best parameters for the trace data: (fatter, messier spikes)
 # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
-def find_top_30_Peaks_largest_first(signal_trace,
+def find_top_N_Peaks_largest_first(signal_trace, num_peaks_to_find,
                                     kernel_size,
                                     min_distance_between_peaks,
                                     min_peak_width,
@@ -98,9 +98,9 @@ def find_top_30_Peaks_largest_first(signal_trace,
     indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width)[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
 
-    # sort, greatest peak height first. Keep the best 30
+    # sort, greatest peak height first. Keep the best N=num_peaks_to_find
     peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
-    highest_peaks_tup = peak_heights_tup[0:30]
+    highest_peaks_tup = peak_heights_tup[0:num_peaks_to_find]
 
     return highest_peaks_tup, smoothed_trace, threshold
 
