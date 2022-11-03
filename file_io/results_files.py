@@ -1,4 +1,5 @@
 import os
+import accuracy
 from datetime import datetime
 
 def write_results(outputDir, data):
@@ -13,7 +14,7 @@ def write_results(outputDir, data):
         with open(resultsFile, 'a') as f:
            f.write(time_stamp_string + "," + data_string + "\n")
 
-def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info):
+def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info, truth_info):
 
         FSA_results_by_sample_by_loci={}
         primer_sets = panel_info.keys()
@@ -25,15 +26,20 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                         base = base.replace(primer_set,"")
 
                 base = base.split("--")[0]
-                sampleNameGuess=base
+                sample_name=base
 
-                if not(sampleNameGuess in FSA_results_by_sample_by_loci):
-                        FSA_results_by_sample_by_loci[sampleNameGuess] = {}
+                if not(sample_name in FSA_results_by_sample_by_loci):
+                        FSA_results_by_sample_by_loci[sample_name] = {}
+
+                truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
 
                 for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
 
-                        FSA_results_by_sample_by_loci[sampleNameGuess][loci] = \
-                                results_by_file[file].MSI_loci_results_by_loci[loci]
+                        truth_for_loci = truth_for_this_sample[loci]
+                        msi_results_for_loci=results_by_file[file].MSI_loci_results_by_loci[loci]
+                        msi_results_for_loci.truth_data = truth_for_loci
+
+                        FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
 
 
         return FSA_results_by_sample_by_loci

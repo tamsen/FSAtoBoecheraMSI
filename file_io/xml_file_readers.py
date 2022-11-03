@@ -60,9 +60,10 @@ def read_truth_data(input_file_path):
         for loci in sample:
             loci_name = loci.attrib["name"]
             loci_data= []
-
+            print(loci_name )
             for data in loci:
 
+                print(data.text)
                 incoming_txt=data.text.strip()
                 incoming_tag = data.tag.strip()
 

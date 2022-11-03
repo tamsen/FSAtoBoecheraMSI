@@ -47,5 +47,359 @@
         <alleles>248</alleles>
     </loci>
 </Sample>
+
+<Sample name="FW346" >
+    <loci name="ICE3">
+        <alleles>69,89,131</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>209</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>86</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>214</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>242</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>82</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>117</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>210</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>101</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>142</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>-1</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>129</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>99</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>248</alleles>
+    </loci>
+</Sample>
+
+<Sample name="JB277" >
+    <loci name="ICE3">
+        <alleles>87</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>222</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>217</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>234</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>80</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>115</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>205</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>93</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>161,163</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>303</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>0</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>93</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>249,251</alleles>
+    </loci>
+</Sample>
+
+
+<Sample name="LA846" >
+    <loci name="ICE3">
+        <alleles>69,89,125</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>218,219</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80,86</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>214,217</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>234,242,-1</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>82,92,94</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>117</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>-1,-1</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>93,99,101</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>142,151</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>0,301,303</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>-1,129</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>91,93,101</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>0,248</alleles>
+    </loci>
+</Sample>
+
+
+
+<Sample name="FW415" >
+    <loci name="ICE3">
+        <alleles>141</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>221</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>214</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>248</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>94,96</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>117</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>197</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>109</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>151</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>301</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>129</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>101</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>248</alleles>
+    </loci>
+</Sample>
+
+
+
+<Sample name="JB276" >
+    <loci name="ICE3">
+        <alleles>87</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>210,218</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>217</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>234,256</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>80,89</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>115</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>205,207</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>93</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>147,159</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>300,304</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>131</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>89,93</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>250,252</alleles>
+    </loci>
+</Sample>
+
+
+<Sample name="FW428" >
+    <loci name="ICE3">
+        <alleles>113</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>221</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>214</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>248</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>110</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>117</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>197</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>101</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>153</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>303</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>121</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>101</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>248</alleles>
+    </loci>
+</Sample>
+
+
+<Sample name="FW1379" >
+    <loci name="ICE3">
+        <alleles>87,145</alleles>
+    </loci>
+    <loci name="BF20">
+        <alleles>210,217</alleles>
+    </loci>
+    <loci name="A1">
+        <alleles>238</alleles>
+    </loci>
+    <loci name="BF11">
+        <alleles>80</alleles>
+    </loci>
+    <loci name="ICE14">
+        <alleles>214,217</alleles>
+    </loci>
+    <loci name="C8">
+        <alleles>248,256</alleles>
+    </loci>
+    <loci name="BF9">
+        <alleles>80,96</alleles>
+    </loci>
+    <loci name="BF18">
+        <alleles>115,117</alleles>
+    </loci>
+    <loci name="E9">
+        <alleles>0,197</alleles>
+    </loci>
+    <loci name="BF3">
+        <alleles>93,101</alleles>
+    </loci>
+    <loci name="BF19">
+        <alleles>151,155</alleles>
+    </loci>
+    <loci name="B6">
+        <alleles>303,304</alleles>
+    </loci>
+    <loci name="Bdru266">
+        <alleles>129</alleles>
+    </loci>
+    <loci name="BF15">
+        <alleles>93,99</alleles>
+    </loci>
+    <loci name="A3">
+        <alleles>0,248</alleles>
+    </loci>
+</Sample>
+
+<!--
+
+
+
+FW1379
+BP27
+FW437
+BP28
+JB617
+JB1488-->
 </metadata>
 
