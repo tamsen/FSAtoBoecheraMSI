@@ -134,9 +134,15 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
                                            loci, domain, dye_to_color[dye], True, False)
 
         truth = sample_result[loci].truth_data
+        accuracy = sample_result[loci].accuracy
+
+
         if truth != False:
             ax = plt.gca()
             ax = plt.text(0.95, 0.85, "exp: " + str(truth), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
+            ax = plt.gca()
+            ax = plt.text(0.95, 0.75, "accuracy: " + str(accuracy), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
         if i in [1, 4, 7, 10, 13, 16]:

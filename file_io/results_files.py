@@ -36,9 +36,8 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                 for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
 
                         truth_for_loci = truth_for_this_sample[loci]
-                        msi_results_for_loci=results_by_file[file].MSI_loci_results_by_loci[loci]
-                        msi_results_for_loci.truth_data = truth_for_loci
-
+                        msi_results_for_loci = results_by_file[file].MSI_loci_results_by_loci[loci]
+                        msi_results_for_loci.set_truth_and_accuracy(truth_for_loci)
                         FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
 
 

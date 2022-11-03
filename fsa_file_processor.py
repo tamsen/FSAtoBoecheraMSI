@@ -22,8 +22,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     if (relevant_loci == False):
         log.write_error_to_log("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
         log.write_error_to_log("Quitting " + run_name)
-        data = [fsa_file, "panel problem", "Can't figure out what panel to use for this FSA file!!"]
-        results_files.write_results(output_dir, data)
+        data_string = [fsa_file, "panel problem", "Can't figure out what panel to use for this FSA file!!"]
+        results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
     else:
@@ -33,8 +33,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     if not(gotLadderPeaks):
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
-        data = [fsa_file, "panel problem", "Couldn't get the right number of ladder peaks!!"]
-        results_files.write_results(output_dir, data)
+        data_string = [fsa_file, "panel problem", "Couldn't get the right number of ladder peaks!!"]
+        results_files.write_results(output_dir, data_string)
 
         return {}
 
@@ -44,8 +44,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     ladder_worked = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
     if not (ladder_worked):
-        data = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
-        results_files.write_results(output_dir, data)
+        data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
+        results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return {}
 
@@ -101,23 +101,23 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             if (len(MSI_calls_for_loci) > 0):
                 whole_loci_domain = [MSI_calls_for_loci[0][0]-20,domain[1]]
 
-                loci_specific_plot_data=[trace_x_new, trace_y_new,
+                loci_specific_plot_data = [trace_x_new, trace_y_new,
                                           [call[0] for call in MSI_calls_for_loci],
                                           [call[1] for call in MSI_calls_for_loci],
                                            loci, whole_loci_domain, channel]
             else:
-                where_loci_should_be=relevant_loci[loci]["length"]  #even though we didnt find them..
+                where_loci_should_be = relevant_loci[loci]["length"]  #even though we didnt find them..
                 whole_loci_domain = [where_loci_should_be[0],where_loci_should_be[-1]]
-                loci_specific_plot_data=[trace_x_new, trace_y_new,
+                loci_specific_plot_data = [trace_x_new, trace_y_new,
                                           [call[0] for call in MSI_calls_for_loci],
                                           [call[1] for call in MSI_calls_for_loci],
                                            loci, whole_loci_domain, channel]
 
 
             #get the results ready to print to file
-            allele_calls_for_loci = [str(x[0]) for x in MSI_calls_for_loci ]
-            data = [fsa_file, loci] + allele_calls_for_loci
-            results_files.write_results(output_dir, data)
+            allele_calls_for_loci = [x[0] for x in MSI_calls_for_loci ]
+            data_string = [fsa_file, loci] + [str(x) for x in allele_calls_for_loci ]
+            results_files.write_results(output_dir, data_string)
 
             loci_results=MSI_loci_results(allele_calls_for_loci,
                                           loci_specific_plot_data, ladder_plot_data,

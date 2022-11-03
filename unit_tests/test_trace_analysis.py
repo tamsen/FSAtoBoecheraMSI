@@ -9,7 +9,7 @@ from signal_processing import trace_analysis, ladder_analysis
 global test_output_dir
 
 
-class Test(TestCase):
+class TestLadder(TestCase):
 
 
     def setUp(self):

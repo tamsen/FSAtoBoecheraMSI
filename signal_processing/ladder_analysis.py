@@ -97,7 +97,7 @@ def find_top_30_Peaks_largest_first(signal_trace,
     # https://plotly.com/python/peak-finding/
     indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width)[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
-    
+
     # sort, greatest peak height first. Keep the best 30
     peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
     highest_peaks_tup = peak_heights_tup[0:30]
