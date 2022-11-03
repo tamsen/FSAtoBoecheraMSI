@@ -27,11 +27,21 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
 
     right_most = highest_peaks_tup[0:15]
     # put it together
-    sixteen_peaks = [highest_tup] + right_most
+    #sixteen_peaks = [highest_tup] + right_most
 
     #Option B (option B currently seems to work better)
     #Highest 16 peaks, starting from the right
     sixteen_peaks = highest_peaks_tup[0:16]
+
+    #Option C (to clean up mess in the start)
+    #Highest 16 peaks, starting from the right
+    #fifteen_peaks = highest_peaks_tup[0:15]
+    #marker_for_50_bp=fifteen_peaks[0][0]
+    #highest_peaks_tup
+    #sus_peaks = [x for x in highest_peaks_tup if 0 <= x[0] <= marker_for_50_bp]
+    #sus_peaks.sort(key=lambda x: x[0], reverse=True)
+    #left_most = sus_peaks[0]
+    #sixteen_peaks = left_most + fifteen_peaks
 
     # want your ladder peaks leftmost on the left! not sorted by size
     sixteen_peaks.sort(key=lambda x: x[0])
@@ -79,18 +89,23 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
 
     return sixteen_peaks
 
+#best parameters for the ladder: (skinnier, cleaner spikes)
+# kernel of 10, distance between peaks 2, min_peak_width 1
+#best parameters for the trace data: (fatter, messier spikes)
+# kernel of 20, distance between peaks 20, min_peak_width 10
 
-def find_top_30_Peaks_largest_first(ladder_trace):
+def find_top_30_Peaks_largest_first(signal_trace):
     # very basic smoothing
-    kernel_size = 20
+    #kernel_size = 20
+    kernel_size = 10
     kernel = np.ones(kernel_size) / kernel_size
-    smoothed_trace = np.convolve(ladder_trace, kernel, mode='same')
+    smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
 
     threshold = get_threshold_for_trace(smoothed_trace)
 
     # https://plotly.com/python/peak-finding/
-    min_distance_between_peaks = 75
-    min_peak_width = 10
+    min_distance_between_peaks = 2 # 75
+    min_peak_width = 1 #10
     indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width)[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
     # sort, greatest peak height first. Keep the best 30
@@ -122,9 +137,7 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
 
     f1 = CubicSpline(A, B, bc_type='natural')
 
-    # dont appy the spline where we dont have data!
-    # left_domain_limit = sixteen_peaks[0][0] - 100
-    # right_domain_limit = sixteen_peaks[15][0] + 100
+    # dont apply the spline where we dont have data!
     left_domain_limit = sixteen_peaks[0][0]
     right_domain_limit = sixteen_peaks[15][0]
 
