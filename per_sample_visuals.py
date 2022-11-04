@@ -2,11 +2,11 @@ from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 import accuracy
 
-def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
-                                  peak_xs, peak_ys, loci, domain, dye_color,
+def plot_trace_and_special_points(fig, plot_index, xs, ys,
+                                  peak_xs, peak_ys, loci, plot_domain, dye_color,
                                   msi_call_text, ladder_peak_txt):
     ax = fig.add_subplot(*plot_index)
-    ax = plt.plot(new_x, new_y, c=dye_color)
+    ax = plt.plot(xs, ys, c=dye_color)
     ax = plt.scatter(peak_xs, peak_ys, marker="*", c='orange')
 
 
@@ -24,12 +24,24 @@ def plot_trace_and_special_points(fig, plot_index, new_x, new_y,
         for i in range(0,len(peak_xs)):
            ax = plt.text(peak_xs[i], peak_ys[i]+500, str(GLOBAL_Liz500[i]), rotation=0)
 
-    if (domain):
-        plt.xlim(domain)
+    #if (len(peak_ys) > 0):
+    #    y_max = max(peak_ys)
+    #    plt.ylim([0, (y_max * 1.10)])
 
+    if (plot_domain):
+
+        plt.xlim(plot_domain)
+        ys_within_domain = [ys[i] for i in range(0, len(xs))
+                            if plot_domain[0] < xs[i] < plot_domain[1]]
     if (len(peak_ys) > 0):
         y_max = max(peak_ys)
-        plt.ylim([0, (y_max * 1.10)])
+        plt.ylim([0,y_max+1000])
+
+    if plot_domain:
+        if len(ys_within_domain) > 0:
+            y_max = max(ys_within_domain)
+            plt.ylim([0, y_max*1.1])
+
 
     return ax
 

@@ -53,7 +53,6 @@ def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
 
     highest_peaks_tup, smoothed_trace, threshold = ladder_analysis.find_top_N_Peaks(
         raw_trace_data,100, *peak_calling_parameters, True)
-    #peak_calling_parameters=20,20,10,.5
 
     highest_peaks_tup.sort(key=lambda x: x[0])  # sort, by x's, not y's
 

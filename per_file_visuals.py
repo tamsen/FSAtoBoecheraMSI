@@ -47,29 +47,37 @@ def plot_ladder(run_folder, plot_file_name, threshold,
     plt.close()
 
 
-def plot_remapped_trace(run_folder, new_x, old_y, peak_xs, peak_ys, threshold,
+def plot_remapped_trace(run_folder, xs, ys, peak_xs, peak_ys, threshold,
                         wavelength, dyename, channel_number,
                         plot_prefix, plot_domain=False):
 
     fig, ax = plt.subplots()
 
-    plt.plot(new_x, old_y)
+    plt.plot(xs, ys)
 
     for i in range(0, len(peak_xs)):
         formatBPstring = str('{0:3.1f}'.format(peak_xs[i]))
         ax.text(peak_xs[i], peak_ys[i] + 100, "BP=" + str(formatBPstring), rotation=45)
 
-    plt.plot(new_x, [threshold for x in new_x], "-", color="g")
+    plt.plot(xs, [threshold for x in xs], "-", color="g")
     plt.title(plot_prefix + " " + dyename )
     plt.xlabel("Distance Fragment Travelled (BP)")
     plt.ylabel("Intensity")
 
     if (plot_domain):
-        plt.xlim(plot_domain)
 
+        plt.xlim(plot_domain)
+        ys_within_domain = [ys[i] for i in range(0, len(xs))
+                            if plot_domain[0] < xs[i] < plot_domain[1]]
     if (len(peak_ys) > 0):
         y_max = max(peak_ys)
         plt.ylim([0,y_max+1000])
+
+    if plot_domain:
+        if len(ys_within_domain) > 0:
+            y_max = max(ys_within_domain)
+            plt.ylim([0, y_max*1.1])
+
 
     #ax.legend(loc="upper right", title="Legend")
     plt.savefig(run_folder + "/" + plot_prefix + "_" + dyename + "_plot" + ".png")

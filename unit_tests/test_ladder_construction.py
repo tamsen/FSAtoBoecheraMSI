@@ -75,7 +75,6 @@ class TestLadder(TestCase):
 
     def test_get_ladder_peaks_samples_with_false_peaks(self):
 
-
         #difficult sample (one spurious low peak)
         fsa_file="../test_data/test_ladder/BD1200PS3c5_A02.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
