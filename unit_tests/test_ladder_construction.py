@@ -45,6 +45,18 @@ class TestLadder(TestCase):
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
+        #easy samples. clear peaks.
+        fsa_file="../test_data/test_ladder/FW428-PS5-E2_E02.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(
+            test_globals.GLOBAL_test_output_dir,
+            "FW428-PS5-E2_E02_",
+            trace_data_dictionary)
+
+        expected_peak_xs=[1320,1469,1745,2007,2447,2557,2667,3129,3691,4320, 4788,4913,5544,6132,6624,6725]
+        observed_peak_xs=[x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+
     def test_get_ladder_peaks_samples_with_messy_start(self):
 
         fsa_file="../test_data/test_ladder/BD1200PS2c5_H01.fsa"
