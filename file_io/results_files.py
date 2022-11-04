@@ -47,7 +47,8 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                     if len(truth_for_loci) > 0:
                         msi_results_for_loci.set_truth_and_accuracy(truth_for_loci)
 
-            # TODO - special handling for PSE here
+            # Note: special handling for PSE here, where we had to run a second FSA file
+            # to rescue the E9 loci that failed in the original PS3
             loci_already_processed_for_this_sample=FSA_results_by_sample_by_loci[sample_name].keys()
             if loci == "E9":
                 if("PS3" in file) and ("E9" in loci_already_processed_for_this_sample):
@@ -56,6 +57,8 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                     prior_E9_data = FSA_results_by_sample_by_loci[sample_name]["E9"].alleles_called
                     log.write_to_log("Prior E9 calls: " + str(prior_E9_data))
                     log.write_to_log("Will not override prior E9 data. " )
+                else:
+                    FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
             else:
                 FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
 
