@@ -19,7 +19,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
         ax = plt.text(0.95, 0.95, "raw: " + str(peak_xs), horizontalalignment='right',
                       verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
-    if (ladder_peak_txt != False):
+    if (ladder_peak_txt):
         ax = plt.gca()
         for i in range(0,len(peak_xs)):
            ax = plt.text(peak_xs[i], peak_ys[i]+500, str(GLOBAL_Liz500[i]), rotation=0)
@@ -28,6 +28,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     #    y_max = max(peak_ys)
     #    plt.ylim([0, (y_max * 1.10)])
 
+    ys_within_domain=[]
     if (plot_domain):
 
         plt.xlim(plot_domain)
@@ -35,9 +36,9 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
                             if plot_domain[0] < xs[i] < plot_domain[1]]
     if (len(peak_ys) > 0):
         y_max = max(peak_ys)
-        plt.ylim([0,y_max+1000])
+        plt.ylim([0,y_max*1.1])
 
-    if plot_domain:
+    if not ladder_peak_txt:
         if len(ys_within_domain) > 0:
             y_max = max(ys_within_domain)
             plt.ylim([0, y_max*1.1])
