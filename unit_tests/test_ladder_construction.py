@@ -61,6 +61,18 @@ class TestLadder(TestCase):
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
+
+        #difficult sample (multiple spurious high peaks)
+        fsa_file="../test_data/test_ladder/JB277PS1F2_D02.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+                                                                                  "JB277PS1F2_D02_",
+                                                                                  trace_data_dictionary)
+
+        expected_peak_xs=[1183,1333,1607,1872,2301,2411,2522,2976,3536,4154,4616,4734,5348,5917,6389,6487]
+        observed_peak_xs=[x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+
     def test_get_ladder_peaks_samples_with_false_peaks(self):
 
 

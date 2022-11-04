@@ -16,7 +16,7 @@ import log
 
 def greet():
     print('Tool to convert ABI FSA trace files to allele calls')
-
+    print('Example input: ' + "./data/FSAlist.txt ./data/Panel.xml ./data/TruthData.xml")
 
 def usage():
     print('Usage:')
