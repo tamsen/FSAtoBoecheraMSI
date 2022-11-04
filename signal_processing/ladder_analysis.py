@@ -92,7 +92,7 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
     sus_peak_index = []
     for i in range(0,expected_num_peaks):
         peak = sixteen_peaks[i]
-        if 1800 <= peak[0] <= 2800 :
+        if 2000 <= peak[0] <= 2800 :
             sus_peaks.append(peak)
             sus_peak_index.append(i)
 
@@ -109,7 +109,7 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
         for i in range(0, num_peaks_to_remove):
 
             peak_to_go=peaks_to_go[i]
-            if peak_to_go[1] < peak_before_sus[1]:
+            if peak_to_go[1] < .9 * peak_before_sus[1]:
                 sixteen_peaks.remove(peaks_to_go[i])
                 sixteen_peaks.append(highest_peaks_tup[i + 16])
 
