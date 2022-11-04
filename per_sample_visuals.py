@@ -1,6 +1,5 @@
 from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
-import accuracy
 
 def plot_trace_and_special_points(fig, plot_index, xs, ys,
                                   peak_xs, peak_ys, loci, plot_domain, dye_color,
@@ -23,10 +22,6 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
         ax = plt.gca()
         for i in range(0,len(peak_xs)):
            ax = plt.text(peak_xs[i], peak_ys[i]+500, str(GLOBAL_Liz500[i]), rotation=0)
-
-    #if (len(peak_ys) > 0):
-    #    y_max = max(peak_ys)
-    #    plt.ylim([0, (y_max * 1.10)])
 
     ys_within_domain=[]
     if (plot_domain):

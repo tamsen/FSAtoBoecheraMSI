@@ -33,13 +33,17 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
 
         truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
 
+        #TODO - special handling for PSE here
         for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
 
             msi_results_for_loci = results_by_file[file].MSI_loci_results_by_loci[loci]
 
             if truth_for_this_sample:
-                truth_for_loci = truth_for_this_sample[loci]
-                msi_results_for_loci.set_truth_and_accuracy(truth_for_loci)
+
+                if loci in truth_for_this_sample:
+                    truth_for_loci = truth_for_this_sample[loci]
+                    if len(truth_for_loci) > 0:
+                        msi_results_for_loci.set_truth_and_accuracy(truth_for_loci)
 
             FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
 

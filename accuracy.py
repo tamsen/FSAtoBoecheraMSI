@@ -4,6 +4,13 @@ from datetime import datetime
 
 
 def allele_accuracy(called_alleles, expected_alleles):
+
+    if len(expected_alleles) == 0:
+        return -1
+
+    if len(called_alleles) == 0:
+        return 0
+
     # dont put a null or missing allele in this calculation
 
     have_a_missing_allele_in_expectations = False
