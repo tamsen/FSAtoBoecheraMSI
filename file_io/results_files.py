@@ -2,6 +2,8 @@ import os
 import accuracy
 from datetime import datetime
 
+import log
+
 
 def write_results(outputDir, data):
     resultsFile = os.path.join(outputDir, "ResultsByFile.txt")
@@ -33,7 +35,7 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
 
         truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
 
-        #TODO - special handling for PSE here
+
         for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
 
             msi_results_for_loci = results_by_file[file].MSI_loci_results_by_loci[loci]
@@ -45,7 +47,17 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                     if len(truth_for_loci) > 0:
                         msi_results_for_loci.set_truth_and_accuracy(truth_for_loci)
 
-            FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
+            # TODO - special handling for PSE here
+            loci_already_processed_for_this_sample=FSA_results_by_sample_by_loci[sample_name].keys()
+            if loci == "E9":
+                if("PS3" in file) and ("E9" in loci_already_processed_for_this_sample):
+                    log.write_to_log("Processing file " + file )
+                    log.write_to_log("Loci already called: " + str(loci_already_processed_for_this_sample))
+                    prior_E9_data = FSA_results_by_sample_by_loci[sample_name]["E9"].alleles_called
+                    log.write_to_log("Prior E9 calls: " + str(prior_E9_data))
+                    log.write_to_log("Will not override prior E9 data. " )
+            else:
+                FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
 
     return FSA_results_by_sample_by_loci
 

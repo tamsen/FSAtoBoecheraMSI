@@ -64,8 +64,6 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
 
 def fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder, sixteen_peaks):
 
-    #highest_peaks_tup_2, smoothed_trace_2, threshold_2 = find_top_N_Peaks(
-    #    ladder_trace[0:int(len(ladder_trace) * 0.1)], *parameters_for_left_side_of_ladder, False)
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
             ladder_trace, *parameters_for_left_side_of_ladder, False)
 
@@ -87,19 +85,33 @@ def fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder, s
 
 
 def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
-    sus_peaks = [x for x in sixteen_peaks if 2000 <= x[0] <= 2800]
+
+    expected_num_peaks=len(sixteen_peaks)
+
+    sus_peaks = []
+    sus_peak_index = []
+    for i in range(0,expected_num_peaks):
+        peak = sixteen_peaks[i]
+        if 1800 <= peak[0] <= 2800 :
+            sus_peaks.append(peak)
+            sus_peak_index.append(i)
+
+    sus_start=min(sus_peak_index)
+    #sus_end=max(sus_peak_index)
+    peak_before_sus =sixteen_peaks[sus_start-1]
+
     sus_peaks.sort(key=lambda x: x[1])
     num_peaks_to_remove = len(sus_peaks) - 3
     peaks_to_go = sus_peaks[0:num_peaks_to_remove]
 
     if num_peaks_to_remove > 0:
-        print("peaks to go:" + str(peaks_to_go))
-        print("sixteen_peaks:" + str(sixteen_peaks))
-        # sixteen_peaks.remove(peaks_to_go)
 
         for i in range(0, num_peaks_to_remove):
-            sixteen_peaks.remove(peaks_to_go[i])
-            sixteen_peaks.append(highest_peaks_tup[i + 16])
+
+            peak_to_go=peaks_to_go[i]
+            if peak_to_go[1] < peak_before_sus[1]:
+                sixteen_peaks.remove(peaks_to_go[i])
+                sixteen_peaks.append(highest_peaks_tup[i + 16])
 
     return sixteen_peaks
 

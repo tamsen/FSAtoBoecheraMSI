@@ -155,7 +155,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             data_string = [fsa_file, loci] + [str(x) for x in allele_calls_for_loci ]
             results_files.write_results(output_dir, data_string)
 
-            loci_results=MSI_loci_results(allele_calls_for_loci,
+            loci_results=MSI_loci_results(allele_calls_for_loci,fsa_file,
                                           loci_specific_plot_data, ladder_plot_data,
                                           [mapping_plot_data_spline, mapping_plot_data_linear])
 

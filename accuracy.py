@@ -86,9 +86,6 @@ def assess_accuracy(outputDir, bySampleResults, panel_info):
             sample_result = bySampleResults[sample_name]
             accuracies_for_this_sample = []
 
-            # if len(results_for_file.keys()) < 1:
-            #    data_list.append("Analysis fail. No alleles detected")
-
             for primer_set in primer_sets:
                 for loci in panel_info[primer_set].keys():
 

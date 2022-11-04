@@ -7,8 +7,10 @@ class FSA_File_Results:
 
 class MSI_loci_results:
 
-    def __init__(self, alleles_called, trace_data, ladder_data, mapping_data):
+    def __init__(self, alleles_called,
+                 original_file_name, trace_data, ladder_data, mapping_data):
         self.alleles_called = alleles_called
+        self.original_file_name = original_file_name
         self.plotting_data_evidence = trace_data
         self.ladder_plotting_data = ladder_data
         self.mapping_plotting_data = mapping_data
