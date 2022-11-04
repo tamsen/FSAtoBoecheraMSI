@@ -101,15 +101,14 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
             rescue_needed = (max_call_intensity < 3 * loci_specific_threshold)
             if rescue_needed:
-
-                loci_range=relevant_loci[loci]["length"]
                 threshold_reduction = 0.3
                 rescue_parameters = [*peak_calling_parameters[0:3],  threshold_multiplier*threshold_reduction]
                 peaks_inside_loci, trace_x_new2, trace_y_new2, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                     all_collected_data, mapping_fxn,
-                                                                                    loci_range[0],
-                                                                                    loci_range[1], sixteen_peaks,
+                                                                                    left_panel_domain_limit,
+                                                                                    right_panel_domain_limit,
+                                                                                    sixteen_peaks,
                                                                                     dye_to_channel_mapping[channel],
                                                                                     rescue_parameters)
 
