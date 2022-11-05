@@ -15,9 +15,16 @@ def allele_accuracy(called_alleles, expected_alleles):
 
     have_a_missing_allele_in_expectations = False
     null_or_missing_allele_codes = [0, -1]
-    for a in null_or_missing_allele_codes:
-        if a in expected_alleles:
-            expected_alleles.remove(a)
+    cleaned_expected_alleles=[]
+    for a in expected_alleles:
+        if a not in null_or_missing_allele_codes:
+            cleaned_expected_alleles.append(a)
+
+    if len(cleaned_expected_alleles) == 0:
+        return 100.0
+
+    for null in null_or_missing_allele_codes:
+        if null in expected_alleles:
             have_a_missing_allele_in_expectations = True
 
     num_expected = float(len(expected_alleles))
@@ -33,7 +40,7 @@ def allele_accuracy(called_alleles, expected_alleles):
 
     percent_differences = 0
 
-    for a_exp in expected_alleles:
+    for a_exp in cleaned_expected_alleles:
         # get distance to closest called allele
         diffs = [abs(a_exp - a_obs) for a_obs in called_alleles]
         closest_it_comes = min(diffs)
