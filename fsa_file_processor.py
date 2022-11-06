@@ -69,6 +69,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 
         #note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
+        #also, B6 FW1379
         peak_calling_parameters = [20, 20, 10, threshold_multiplier]
         if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()):
             peak_calling_parameters = [13, 15, 6, threshold_multiplier]
