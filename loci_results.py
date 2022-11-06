@@ -2,10 +2,10 @@ import accuracy
 
 class loci_results:
 
-    def __init__(self, raw_alleles_called,
+    def __init__(self, raw_alleles_called, final_allels_called,
                  original_file_name, trace_data, ladder_data, mapping_data):
         self.raw_alleles_called = raw_alleles_called
-        self.final_alleles_called = False
+        self.final_alleles_called = final_allels_called,
         self.original_file_name = original_file_name
         self.plotting_data_evidence = trace_data
         self.ladder_plotting_data = ladder_data

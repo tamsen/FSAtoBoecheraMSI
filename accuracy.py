@@ -51,8 +51,9 @@ def allele_accuracy(called_alleles, expected_alleles):
 
 def write_accuracy_files(outputDir, bySampleResults, panel_info):
 
-    avg_loci_accuracy = write_sample_accuracy_file(outputDir, bySampleResults, panel_info)
+    avg_loci_accuracy, avg_sample_accuracy = write_big_accuracy_file(outputDir, bySampleResults, panel_info)
     write_loci_accuracy_file(outputDir, avg_loci_accuracy)
+    write_sample_accuracy_file(outputDir, avg_sample_accuracy)
 
 def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
     now = datetime.now()
@@ -80,12 +81,60 @@ def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
             data_line = "\t".join(data_list) + "\n"
             f.write(data_line)
 
-def write_sample_accuracy_file(outputDir, bySampleResults, panel_info):
+
+def write_sample_accuracy_file(outputDir, avg_sample_accuracy ):
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
     time = now.strftime("%H_%M_%S")
     time_stamp_string = "_".join([day, time])
-    summaryFile = os.path.join(outputDir, "SampleAccuracy_" + time_stamp_string + ".tsv")
+    outFile = os.path.join(outputDir, "SampleAccuracy_" + time_stamp_string + ".tsv")
+
+    sample_list = avg_sample_accuracy.keys()
+
+    header1 = "Sample\tAccuracy"
+
+    with open(outFile, 'w') as f:
+        f.write(header1 + "\n")
+
+        for sample in sample_list :
+
+            data_list = [sample, str(avg_sample_accuracy[sample])]
+            data_line = "\t".join(data_list) + "\n"
+            f.write(data_line)
+
+
+def write_big_accuracy_file(outputDir, avg_accuracy_for_loci_list):
+    now = datetime.now()
+    day = now.strftime("%d_%m_%Y")
+    time = now.strftime("%H_%M_%S")
+    time_stamp_string = "_".join([day, time])
+    outFile = os.path.join(outputDir, "LociAccuracy_" + time_stamp_string + ".tsv")
+
+    ordered_loci_list = ["ICE3", "BF20", "A1",
+                         "BF11", "ICE14", "C8",
+                         "BF9", "BF18", "E9",
+                         "BF3", "BF19", "B6",
+                         "BF15", "Bdru266", "A3"]
+
+    header1 = "Loci\tAccuracy"
+
+
+    with open(outFile, 'w') as f:
+
+        f.write(header1 + "\n")
+
+        for i in range(0, len(ordered_loci_list)):
+            loci = ordered_loci_list[i]
+            data_list = [loci, avg_accuracy_for_loci_list[i]]
+            data_line = "\t".join(data_list) + "\n"
+            f.write(data_line)
+
+def write_big_accuracy_file(outputDir, bySampleResults, panel_info):
+    now = datetime.now()
+    day = now.strftime("%d_%m_%Y")
+    time = now.strftime("%H_%M_%S")
+    time_stamp_string = "_".join([day, time])
+    summaryFile = os.path.join(outputDir, "BigAccuracyFile_" + time_stamp_string + ".tsv")
 
     ordered_loci_list = ["ICE3", "BF20", "A1",
                          "BF11", "ICE14", "C8",
@@ -95,6 +144,8 @@ def write_sample_accuracy_file(outputDir, bySampleResults, panel_info):
 
     primer_sets = panel_info.keys()
     samples = list(bySampleResults.keys())
+
+    avg_accuracy_by_sample = {}
     accuracy_by_sample = dict(zip(samples, [[] for s in samples]))
     accuracy_by_loci = dict(zip(ordered_loci_list, [[] for l in ordered_loci_list]))
 
@@ -165,7 +216,7 @@ def write_sample_accuracy_file(outputDir, bySampleResults, panel_info):
 
         loci_accuracy_line = "\t".join(avg_accuracy_for_loci_list) + "\n"
         f.writelines(["Avg accuracy for loci\t" + loci_accuracy_line])
-        return avg_accuracy_for_loci_list
+        return avg_accuracy_for_loci_list, accuracy_by_sample
 
 
 def find_truth_for_this_sample(sample, truth_info):

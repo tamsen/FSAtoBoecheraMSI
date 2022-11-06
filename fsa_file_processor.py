@@ -1,6 +1,6 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, ladder_analysis
+from signal_processing import peak_analysis, trace_analysis, ladder_analysis, mw_wisdom
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from visualization import per_file_visuals
@@ -90,13 +90,13 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
             loci_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new, threshold_multiplier)
-            MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
+            raw_calls  = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
                                                                   trace_y_new, loci_specific_threshold)
 
             #rescue a loci that might be low-intensity
             # and thus falling below threshold
-            if (len(MSI_calls_for_loci)) > 0:
-                max_call_intensity = max(call[1] for call in MSI_calls_for_loci)
+            if (len(raw_calls)) > 0:
+                max_call_intensity = max(call[1] for call in raw_calls)
             else :
                 max_call_intensity = 0
 
@@ -116,11 +116,13 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 loci_specific_threshold = ladder_analysis.get_threshold_for_trace(
                     trace_y_new,threshold_multiplier*threshold_reduction)
                 unfiltered_peaks_in_loci = peaks_inside_loci[loci]
-                MSI_calls_for_loci = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new2,
+                raw_calls = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new2,
                                                                       trace_y_new2, loci_specific_threshold)
 
+            final_calls = mw_wisdom.make_adjustments(raw_calls,loci)
+
             #make a zoomed-in plot JUST around the MSI call
-            for final_call in MSI_calls_for_loci:
+            for final_call in final_calls:
 
                 final_call_x = final_call[0]
                 final_call_y = final_call[1]
@@ -133,30 +135,31 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                      threshold, "wavelength", str(dye_to_channel_mapping[channel]), channel,
                                                      plot_prefix, plot_domain = domain)
 
-            if (len(MSI_calls_for_loci) > 0):
-                whole_loci_domain = [MSI_calls_for_loci[0][0]-20,domain[1]]
+            if (len(final_calls) > 0):
+                whole_loci_domain = [final_calls[0][0]-20,domain[1]]
 
                 loci_specific_plot_data = [trace_x_new, trace_y_new,
-                                          [call[0] for call in MSI_calls_for_loci],
-                                          [call[1] for call in MSI_calls_for_loci],
+                                          [call[0] for call in final_calls],
+                                          [call[1] for call in final_calls],
                                            loci_specific_threshold,
                                            loci, whole_loci_domain, channel]
             else:
                 where_loci_should_be = relevant_loci[loci]["length"]  #even though we didnt find them..
                 whole_loci_domain = [where_loci_should_be[0],where_loci_should_be[-1]]
                 loci_specific_plot_data = [trace_x_new, trace_y_new,
-                                          [call[0] for call in MSI_calls_for_loci],
-                                          [call[1] for call in MSI_calls_for_loci],
+                                          [call[0] for call in final_calls],
+                                          [call[1] for call in final_calls],
                                            loci_specific_threshold,
                                            loci, whole_loci_domain, channel]
 
 
             #get the results ready to print to file
-            allele_calls_for_loci = [x[0] for x in MSI_calls_for_loci ]
+            raw_calls_for_loci = [x[0] for x in raw_calls ]
+            allele_calls_for_loci = [x[0] for x in final_calls ]
             data_string = [fsa_file, loci] + [str(x) for x in allele_calls_for_loci ]
             results_files.write_results(output_dir, data_string)
 
-            results_for_loci=loci_results(allele_calls_for_loci, fsa_file,
+            results_for_loci=loci_results(raw_calls_for_loci, allele_calls_for_loci, fsa_file,
                                       loci_specific_plot_data, ladder_plot_data,
                                       [mapping_plot_data_spline, mapping_plot_data_linear])
 
