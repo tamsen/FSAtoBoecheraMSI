@@ -127,6 +127,6 @@ class TestLadder(TestCase):
         sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "JB617-PS1-A7_G12.fsa_",
                                                                                   trace_data_dictionary)
-        expected_peak_xs = [1256,1295,1477,1763,2465,2577,2688,3155,3722,4365,4840,4968,5611,6211,6713,6818]
+        expected_peak_xs = [1329,1477,1763,2026, 2465,2577,2688,3155,3722,4365,4840,4968,5611,6211,6713,6818]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)

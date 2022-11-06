@@ -99,7 +99,7 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
     # the distance between bp100 and bp139 is supposed to be significantly
     # bigger than
     # the distance between bp75 and bp100, and between bp139 and bp150.
-    significantly_bigger= 1.8
+    significantly_bigger= 1.6
     BP75=sixteen_peaks[2]
     BP139=sixteen_peaks[4]
     BP150=sixteen_peaks[5]
@@ -107,6 +107,7 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
     dist100to139= BP139[0]- typical_sus_peak_BP100[0]
     dist139to50=BP150[0] - BP139[0]
     if (dist100to139 > significantly_bigger*dist75to100) and (dist100to139 > significantly_bigger*dist139to50):
+    #if False:
         return sixteen_peaks
 
     sus_peaks = []
@@ -135,42 +136,6 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
             if peak_to_go[1] < .95 * height_of_shortest_nieghbor:
                 sixteen_peaks.remove(peaks_to_go[i])
                 sixteen_peaks.append(highest_peaks_tup[i + expected_num_peaks])
-
-    return sixteen_peaks
-
-
-
-
-def remove_known_sus_ladder_peak_orignal(sixteen_peaks, highest_peaks_tup):
-
-    expected_num_peaks=len(sixteen_peaks)
-
-    sus_peaks = []
-    sus_peak_index = []
-    for i in range(0,expected_num_peaks):
-        peak = sixteen_peaks[i]
-        if 2000 <= peak[0] <= 2800 :
-            sus_peaks.append(peak)
-            sus_peak_index.append(i)
-
-    sus_start=min(sus_peak_index)
-    sus_end=max(sus_peak_index)
-    peak_before_sus =sixteen_peaks[sus_start-1]
-    peak_after_sus =sixteen_peaks[sus_end+1]
-    height_of_shortest_nieghbor=min(peak_before_sus[1],peak_after_sus[1])
-
-    sus_peaks.sort(key=lambda x: x[1])
-    num_peaks_to_remove = len(sus_peaks) - 3
-    peaks_to_go = sus_peaks[0:num_peaks_to_remove]
-
-    if num_peaks_to_remove > 0:
-
-        for i in range(0, num_peaks_to_remove):
-
-            peak_to_go=peaks_to_go[i]
-            if peak_to_go[1] < .8 * height_of_shortest_nieghbor:
-                sixteen_peaks.remove(peaks_to_go[i])
-                sixteen_peaks.append(highest_peaks_tup[i + 16])
 
     return sixteen_peaks
 
