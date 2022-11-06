@@ -1,5 +1,10 @@
 import xml.etree.ElementTree as ET
 
+class TruthDataForSample:
+
+    def __init__(self, species_name, sample_data_by_loci):
+        self.sample_data_by_loci = sample_data_by_loci
+        self.species_name = species_name
 
 def readPanelXml(input_file_path):
 
@@ -55,7 +60,13 @@ def read_truth_data(input_file_path):
 
     for sample in myroot:
 
-        sample_name=sample.attrib["name"]
+        sample_name = sample.attrib["name"]
+
+        if 'species' in sample.attrib:
+            species_name = sample.attrib['species']
+        else:
+            species_name = False
+
         sample_data_by_loci = {}
         for loci in sample:
             loci_name = loci.attrib["name"]
@@ -73,7 +84,7 @@ def read_truth_data(input_file_path):
 
             sample_data_by_loci[loci_name]=loci_data
 
-        truthdata_by_sample_name[sample_name]=sample_data_by_loci
+        truthdata_by_sample_name[sample_name]=TruthDataForSample(species_name,sample_data_by_loci)
 
     print("Truth Data Loaded:")
     print(truthdata_by_sample_name)

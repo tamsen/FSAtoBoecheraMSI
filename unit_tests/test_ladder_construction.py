@@ -13,10 +13,10 @@ class TestLadder(TestCase):
 
 
     def setUp(self):
-        global test_output_dir
-        test_output_dir="../test_case_output/"
-        if not (os.path.exists(test_output_dir)):
-            os.makedirs(test_output_dir)
+        #global test_output_dir
+        #test_output_dir="../test_case_output/"
+        if not (os.path.exists(test_globals.GLOBAL_test_output_dir)):
+            os.makedirs(test_globals.GLOBAL_test_output_dir)
 
     def test_get_ladder_peaks_easy_samples(self):
 

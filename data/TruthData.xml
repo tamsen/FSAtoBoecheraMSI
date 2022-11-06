@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-<Sample name="BD1200" >
+<Sample name="BD1200" species="lxpxr" >
     <loci name="ICE3">
         <alleles>69,89,131</alleles>
     </loci>
@@ -48,9 +48,9 @@
     </loci>
 </Sample>
 
-<Sample name="FW346" >
+<Sample name="FW346" species="paupercula" >
     <loci name="ICE3">
-        <alleles>69,89,131</alleles>
+        <alleles>69</alleles>
     </loci>
     <loci name="BF20">
         <alleles>209</alleles>
@@ -96,7 +96,7 @@
     </loci>
 </Sample>
 
-<Sample name="JB277" >
+<Sample name="JB277" species="retrofratca" >
     <loci name="ICE3">
         <alleles>87</alleles>
     </loci>
@@ -145,7 +145,7 @@
 </Sample>
 
 
-<Sample name="LA846" >
+<Sample name="LA846" species="lxpxr (holotype)"  >
     <loci name="ICE3">
         <alleles>69,89,125</alleles>
     </loci>
@@ -195,7 +195,7 @@
 
 
 
-<Sample name="FW415" >
+<Sample name="FW415" species="lemmonii" >
     <loci name="ICE3">
         <alleles>141</alleles>
     </loci>
@@ -245,7 +245,7 @@
 
 
 
-<Sample name="JB276" >
+<Sample name="JB276" species="rxr" >
     <loci name="ICE3">
         <alleles>87</alleles>
     </loci>
@@ -294,7 +294,7 @@
 </Sample>
 
 
-<Sample name="FW428" >
+<Sample name="FW428" species="lemmonii" >
     <loci name="ICE3">
         <alleles>113</alleles>
     </loci>
@@ -343,7 +343,7 @@
 </Sample>
 
 
-<Sample name="FW1379" >
+<Sample name="FW1379" species="lxr (holboellii)" >
     <loci name="ICE3">
         <alleles>87,145</alleles>
     </loci>
@@ -393,7 +393,7 @@
 
 
 
-<Sample name="BP27" >
+<Sample name="BP27" species="lxr (holboellii)" >
     <loci name="ICE3">
         <alleles>87,-1</alleles>
     </loci>
@@ -441,7 +441,7 @@
     </loci>
 </Sample>
     
-<Sample name="FW437" >
+<Sample name="FW437" species="paupercula">
     <loci name="ICE3">
         <alleles>69</alleles>
     </loci>
@@ -491,7 +491,7 @@
     
 
     
-<Sample name="BP28" >
+<Sample name="BP28" species="lxpxr" >
     <loci name="ICE3">
         <alleles>69,89,-1</alleles>
     </loci>
@@ -539,7 +539,7 @@
     </loci>
 </Sample>
         
-<Sample name="JB617" >
+<Sample name="JB617" species="lem x nub x ret" >
     <loci name="ICE3">
         <alleles>73,75</alleles>
     </loci>
@@ -587,7 +587,7 @@
     </loci>
 </Sample>
 
-<Sample name="JB1488" >
+<Sample name="JB1488" species="fern. x fern.">
     <loci name="ICE3">
         <alleles>103,113</alleles>
     </loci>
