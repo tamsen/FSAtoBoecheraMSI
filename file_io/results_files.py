@@ -57,7 +57,7 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                 if("PS3" in file) and ("E9" in loci_already_processed_for_this_sample):
                     log.write_to_log("Processing file " + file )
                     log.write_to_log("Loci already called: " + str(loci_already_processed_for_this_sample))
-                    prior_E9_data = FSA_results_by_sample_by_loci[sample_name]["E9"].alleles_called
+                    prior_E9_data = FSA_results_by_sample_by_loci[sample_name]["E9"].raw_alleles_called
                     log.write_to_log("Prior E9 calls: " + str(prior_E9_data))
                     log.write_to_log("Will not override prior E9 data. " )
                 else:
@@ -107,14 +107,13 @@ def write_summary_file(outputDir, bySampleResults, panel_info):
                     for loci in panel_info[primer_set].keys():
 
                         if loci in results_for_file:
-                            allele_calls = results_for_file[loci].alleles_called
+                            allele_calls = results_for_file[loci].raw_alleles_called
                         else:
                             allele_calls = ["" for x in range(0, expected_space_for_calls)]
 
                         for i in range(0, expected_space_for_calls):
 
                             if (i < len(allele_calls)):
-                                # data_list.append(loci + ":" + str(allele_calls[i]))
                                 data_list.append(str(allele_calls[i]))
 
                             else:

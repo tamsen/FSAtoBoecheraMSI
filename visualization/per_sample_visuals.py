@@ -155,7 +155,7 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
         if loci in sample_result:
             truth = sample_result[loci].truth_data
             species = sample_result[loci].true_species
-            accuracy = sample_result[loci].accuracy
+            raw_accuracy = sample_result[loci].raw_accuracy
         else:
             truth = False
 
@@ -164,7 +164,7 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plt.text(0.95, 0.85, "exp: " + str(truth), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
             ax = plt.gca()
-            ax = plt.text(0.95, 0.75, "accuracy: " + str(accuracy), horizontalalignment='right',
+            ax = plt.text(0.95, 0.75, "accuracy: " + str(raw_accuracy), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
 

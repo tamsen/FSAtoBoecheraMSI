@@ -128,8 +128,8 @@ def write_sample_accuracy_file(outputDir, bySampleResults, panel_info):
 
                     if loci in sample_result:
                         expected_alleles = sample_result[loci].truth_data
-                        called_alleles = sample_result[loci].alleles_called
-                        accuracy_score = sample_result[loci].accuracy
+                        called_alleles = sample_result[loci].raw_alleles_called
+                        accuracy_score = sample_result[loci].raw_accuracy
                         accuracy_by_loci[loci].append(accuracy_score)
                         accuracies_for_this_sample.append(accuracy_score)
 
