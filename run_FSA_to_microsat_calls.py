@@ -70,10 +70,11 @@ def main():
             results_files.write_summary_file(output_folder_inside_data_folder,
                                              bySampleResults, panel_info)
 
+            log.write_to_log("writing summary results for folder" + output_folder_inside_data_folder)
             per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
                                                               bySampleResults)
 
-            accuracy.assess_accuracy(output_folder_inside_data_folder,
+            accuracy.write_accuracy_files(output_folder_inside_data_folder,
                                      bySampleResults, panel_info)
 
         else:

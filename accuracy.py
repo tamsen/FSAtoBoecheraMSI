@@ -49,13 +49,43 @@ def allele_accuracy(called_alleles, expected_alleles):
 
     return round(100.0 - percent_differences, 1)
 
+def write_accuracy_files(outputDir, bySampleResults, panel_info):
 
-def assess_accuracy(outputDir, bySampleResults, panel_info):
+    avg_loci_accuracy = write_sample_accuracy_file(outputDir, bySampleResults, panel_info)
+    write_loci_accuracy_file(outputDir, avg_loci_accuracy)
+
+def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
     time = now.strftime("%H_%M_%S")
     time_stamp_string = "_".join([day, time])
-    summaryFile = os.path.join(outputDir, "Accuracy_" + time_stamp_string + ".tsv")
+    outFile = os.path.join(outputDir, "LociAccuracy_" + time_stamp_string + ".tsv")
+
+    ordered_loci_list = ["ICE3", "BF20", "A1",
+                         "BF11", "ICE14", "C8",
+                         "BF9", "BF18", "E9",
+                         "BF3", "BF19", "B6",
+                         "BF15", "Bdru266", "A3"]
+
+    header1 = "Loci\tAccuracy"
+
+
+    with open(outFile, 'w') as f:
+
+        f.write(header1 + "\n")
+
+        for i in range(0, len(ordered_loci_list)):
+            loci = ordered_loci_list[i]
+            data_list = [loci, avg_accuracy_for_loci_list[i]]
+            data_line = "\t".join(data_list) + "\n"
+            f.write(data_line)
+
+def write_sample_accuracy_file(outputDir, bySampleResults, panel_info):
+    now = datetime.now()
+    day = now.strftime("%d_%m_%Y")
+    time = now.strftime("%H_%M_%S")
+    time_stamp_string = "_".join([day, time])
+    summaryFile = os.path.join(outputDir, "SampleAccuracy_" + time_stamp_string + ".tsv")
 
     ordered_loci_list = ["ICE3", "BF20", "A1",
                          "BF11", "ICE14", "C8",
@@ -135,6 +165,7 @@ def assess_accuracy(outputDir, bySampleResults, panel_info):
 
         loci_accuracy_line = "\t".join(avg_accuracy_for_loci_list) + "\n"
         f.writelines(["Avg accuracy for loci\t" + loci_accuracy_line])
+        return avg_accuracy_for_loci_list
 
 
 def find_truth_for_this_sample(sample, truth_info):

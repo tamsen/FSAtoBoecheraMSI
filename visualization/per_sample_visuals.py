@@ -1,3 +1,5 @@
+import os
+
 from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 
@@ -89,7 +91,11 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
         plt.ylabel("PS" + str(PS), fontsize=16)
 
     fig.suptitle(str(sample_name) + " ladder (x=fragment travel distance, y=intensity) ")
-    plt.savefig(str(run_folder) + "/" + str(sample_name) + "_ladder_for_loci" + "_plot" + ".png")
+
+    out_path = os.path.join(run_folder, "ladders")
+    if not (os.path.exists(out_path)):
+        os.makedirs(out_path)
+    plt.savefig(out_path + "/" + str(sample_name) + "_ladder_for_loci" + "_plot" + ".png")
 
     plt.close()
 
@@ -115,7 +121,11 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
             plt.ylabel("PS" + str(int((i + 2.0) / 3.0)), fontsize=16)
 
     fig.suptitle(sample_name + " mapping for all loci (x=base pair length estimate, y= fragment travel distance)")
-    plt.savefig(run_folder + "/" + sample_name + "_mappings_for_loci" + "_plot" + ".png")
+
+    out_path = os.path.join(run_folder, "mappings")
+    if not (os.path.exists(out_path)):
+        os.makedirs(out_path)
+    plt.savefig(out_path + "/" + sample_name + "_mappings_for_loci" + "_plot" + ".png")
 
     plt.close()
 
@@ -166,6 +176,10 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
     if species:
         plot_title = plot_title + "\n" + species
     fig.suptitle(plot_title)
-    plt.savefig(run_folder + "/" + sample_name + "_all_loci" + "_plot" + ".png")
+
+    out_path= os.path.join(run_folder,"allele_calls")
+    if not (os.path.exists(out_path)):
+        os.makedirs(out_path)
+    plt.savefig(out_path + "/" + sample_name + "_all_loci" + "_plot" + ".png")
 
     plt.close()
