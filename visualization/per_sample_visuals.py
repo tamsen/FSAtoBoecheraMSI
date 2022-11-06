@@ -1,13 +1,13 @@
 from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 
+
 def plot_trace_and_special_points(fig, plot_index, xs, ys,
                                   peak_xs, peak_ys, loci, plot_domain, dye_color,
                                   msi_call_text, ladder_peak_txt):
     ax = fig.add_subplot(*plot_index)
     ax = plt.plot(xs, ys, c=dye_color)
     ax = plt.scatter(peak_xs, peak_ys, marker="*", c='orange')
-
 
     ax = plt.gca()
     ax = plt.text(0.05, 0.95, loci, horizontalalignment='left',
@@ -20,24 +20,22 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
 
     if (ladder_peak_txt):
         ax = plt.gca()
-        for i in range(0,len(peak_xs)):
-           ax = plt.text(peak_xs[i], peak_ys[i]+500, str(GLOBAL_Liz500[i]), rotation=0)
+        for i in range(0, len(peak_xs)):
+            ax = plt.text(peak_xs[i], peak_ys[i] + 500, str(GLOBAL_Liz500[i]), rotation=0)
 
-    ys_within_domain=[]
+    ys_within_domain = []
     if (plot_domain):
-
         plt.xlim(plot_domain)
         ys_within_domain = [ys[i] for i in range(0, len(xs))
                             if plot_domain[0] < xs[i] < plot_domain[1]]
     if (len(peak_ys) > 0):
         y_max = max(peak_ys)
-        plt.ylim([0,y_max*1.1])
+        plt.ylim([0, y_max * 1.1])
 
     if not ladder_peak_txt:
         if len(ys_within_domain) > 0:
             y_max = max(ys_within_domain)
-            plt.ylim([0, y_max*1.1])
-
+            plt.ylim([0, y_max * 1.1])
 
     return ax
 
@@ -51,8 +49,7 @@ def write_per_sample_summary_plots(run_folder, by_sample_results):
                          "BF15", "Bdru266", "A3"]
 
     for sample_name, sample_result in by_sample_results.items():
-
-        #truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
+        # truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
 
         plot_traces_for_the_sample(run_folder, sample_name,
                                    sample_result, ordered_loci_list)
@@ -67,19 +64,19 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
     for i in range(0, 5):
         PS = i + 1
         loci = ordered_loci_list[(i * 3) + 1]
-        warning=""
+        warning = ""
         if loci in sample_result.keys():
             [runName, plot_name, threshold, smoothed_trace, sixteen_peaks] = sample_result[loci].ladder_plotting_data
         else:
-            #some dummy todata
-            threshold=0
-            smoothed_trace=[1,2,3]
-            sixteen_peaks = [[1,2],[2,3]]
-            warning="this loci had no ladder data"
+            # some dummy todata
+            threshold = 0
+            smoothed_trace = [1, 2, 3]
+            sixteen_peaks = [[1, 2], [2, 3]]
+            warning = "this loci had no ladder data"
 
         domain = [500, sixteen_peaks[-1][0] + 200]
         x_values = range(0, len(smoothed_trace))
-        peak_xs=[x[0] for x in sixteen_peaks]
+        peak_xs = [x[0] for x in sixteen_peaks]
         ax = plot_trace_and_special_points(fig, (5, 1, PS),
                                            x_values,
                                            smoothed_trace,
@@ -98,7 +95,6 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
 
 
 def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
-
     fig = plt.figure(figsize=(10, 10))
 
     for i in range(1, 16):
@@ -112,8 +108,8 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
                                                loci, False, "purple", False, False)
 
         else:
-            ax = plot_trace_and_special_points(fig, (5, 3, i), [1,2,3], [1,2,3], [1,2,3], [1,2,3],
-                                           loci + "Failed", False, "purple", False, False)
+            ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
+                                               loci + "Failed", False, "purple", False, False)
 
         if i in [1, 4, 7, 10, 13, 16]:
             plt.ylabel("PS" + str(int((i + 2.0) / 3.0)), fontsize=16)
@@ -125,34 +121,35 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 
 
 def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
-
     dye_to_color = {"FAM": "blue", "VIC": "green"}
     fig = plt.figure(figsize=(10, 10))
+    species = False
 
     for i in range(1, 16):
 
         loci = ordered_loci_list[i]
 
         if loci not in sample_result.keys():
-            dye="FAM"
-            ax = plot_trace_and_special_points(fig, (5, 3, i), [1],[1], [1],[1],
-                                               loci, [0,1], dye_to_color[dye], True, False)
+            dye = "FAM"
+            ax = plot_trace_and_special_points(fig, (5, 3, i), [1], [1], [1], [1],
+                                               loci, [0, 1], dye_to_color[dye], True, False)
         else:
             [new_x, new_y, peak_xs, peak_ys, threshold, plot_prefix, domain, dye] = \
                 sample_result[loci].plotting_data_evidence
 
             ax = plot_trace_and_special_points(fig, (5, 3, i), new_x, new_y, peak_xs, peak_ys,
-                                           loci, domain, dye_to_color[dye], True, False)
+                                               loci, domain, dye_to_color[dye], True, False)
 
             ax = plt.plot(new_x, [threshold for x in new_x], c="gray")
 
         if loci in sample_result:
             truth = sample_result[loci].truth_data
+            species = sample_result[loci].true_species
             accuracy = sample_result[loci].accuracy
         else:
             truth = False
 
-        if truth != False:
+        if truth:
             ax = plt.gca()
             ax = plt.text(0.95, 0.85, "exp: " + str(truth), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
@@ -160,10 +157,15 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plt.text(0.95, 0.75, "accuracy: " + str(accuracy), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
+
         if i in [1, 4, 7, 10, 13, 16]:
             plt.ylabel("PS" + str(int((i + 2.0) / 3.0)), fontsize=16)
 
-    fig.suptitle(sample_name + " all loci ")
+
+    plot_title = sample_name + " all loci"
+    if species:
+        plot_title = plot_title + "\n" + species
+    fig.suptitle(plot_title)
     plt.savefig(run_folder + "/" + sample_name + "_all_loci" + "_plot" + ".png")
 
     plt.close()

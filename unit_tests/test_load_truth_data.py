@@ -16,7 +16,7 @@ class test_load_truth_data(unittest.TestCase):
         bd1200data=truth_data_by_sample_name["BD1200"]
 
         self.assertEqual(expected_num_calibration_samples, len(truth_data_by_sample_name.keys()))
-        self.assertEqual(expected_num_loci_for_bd1200, len(bd1200data.sample_data_by_loci))
+        self.assertEqual(expected_num_loci_for_bd1200, len(bd1200data.truth_by_loci))
         self.assertEqual(expected_species_name, bd1200data.species_name)
 
 if __name__ == '__main__':

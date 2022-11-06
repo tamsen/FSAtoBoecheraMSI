@@ -3,7 +3,7 @@ from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
-import per_file_visuals
+from visualization import per_file_visuals
 import log
 
 GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]

@@ -1,5 +1,5 @@
 from signal_processing import peak_analysis, ladder_analysis
-import per_file_visuals
+from visualization import per_file_visuals
 import log
 from signal_processing.ladder_analysis import GLOBAL_Liz500
 

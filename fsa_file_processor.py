@@ -2,7 +2,7 @@ import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
 from signal_processing import peak_analysis, trace_analysis, ladder_analysis
 from results_for_fsa_file import FSA_File_Results, MSI_loci_results
-import per_file_visuals
+from visualization import per_file_visuals
 import log
 
 

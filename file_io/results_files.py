@@ -42,10 +42,13 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
 
             if truth_for_this_sample:
 
-                if loci in truth_for_this_sample:
-                    truth_for_loci = truth_for_this_sample[loci]
+                truth_by_loci = truth_for_this_sample.truth_by_loci
+                true_species = truth_for_this_sample.species_name
+
+                if truth_by_loci and loci in truth_by_loci:
+                    truth_for_loci = truth_by_loci [loci]
                     if len(truth_for_loci) > 0:
-                        msi_results_for_loci.set_truth_and_accuracy(truth_for_loci)
+                        msi_results_for_loci.set_truth_and_accuracy(truth_for_loci,true_species)
 
             # Note: special handling for PSE here, where we had to run a second FSA file
             # to rescue the E9 loci that failed in the original PS3

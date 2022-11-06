@@ -3,7 +3,7 @@ import sys
 
 from file_io import text_file_readers, xml_file_readers, results_files
 import accuracy
-import per_sample_visuals
+from visualization import per_sample_visuals
 import fsa_file_processor
 import log
 

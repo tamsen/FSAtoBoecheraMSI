@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 class TruthDataForSample:
 
     def __init__(self, species_name, sample_data_by_loci):
-        self.sample_data_by_loci = sample_data_by_loci
+        self.truth_by_loci = sample_data_by_loci
         self.species_name = species_name
 
 def readPanelXml(input_file_path):

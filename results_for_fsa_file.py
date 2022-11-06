@@ -17,6 +17,7 @@ class MSI_loci_results:
         self.truth_data = False
         self.accuracy = 0
 
-    def set_truth_and_accuracy(self, truth_data):
-        self.truth_data = truth_data
+    def set_truth_and_accuracy(self, truth_alleles, true_species):
+        self.truth_data = truth_alleles
+        self.true_species = true_species
         self.accuracy = accuracy.allele_accuracy(self.alleles_called,self.truth_data)
