@@ -65,13 +65,15 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # best parameters for the trace data: (fatter, messier spikes)
         # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 
+        # most Loci are good with more smoothing
+        peak_calling_parameters = [20, 20, 10, threshold_multiplier]
+        #peak_calling_parameters = [13, 5, 2, threshold_multiplier]
+
         # note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
         # also, B6 FW1379
-        #peak_calling_parameters = [13, 20, 10, threshold_multiplier]
-        peak_calling_parameters = [13, 5, 2, threshold_multiplier]
-        #if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
-        #     ("B6" in relevant_loci.keys()):
-        #   peak_calling_parameters = [13, 5, 2, threshold_multiplier]
+        if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
+            ("B6" in relevant_loci.keys()) or ("BF20" in relevant_loci.keys()) :
+            peak_calling_parameters = [13, 5, 2, threshold_multiplier]
 
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
