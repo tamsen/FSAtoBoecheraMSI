@@ -1,7 +1,7 @@
 import os
-
 from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
+
 
 
 def plot_trace_and_special_points(fig, plot_index, xs, ys,
@@ -144,27 +144,41 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1], [1], [1], [1],
                                                loci, [0, 1], dye_to_color[dye], True, False)
         else:
-            [new_x, new_y, peak_xs, peak_ys, threshold, plot_prefix, domain, dye] = \
+            [new_x, new_y, raw_peak_xs, raw_peak_ys, filtered_peak_xs, filtered_peak_ys,
+             threshold, plot_prefix, domain, dye] = \
                 sample_result[loci].plotting_data_evidence
 
-            ax = plot_trace_and_special_points(fig, (5, 3, i), new_x, new_y, peak_xs, peak_ys,
+            ax = plot_trace_and_special_points(fig, (5, 3, i), new_x, new_y, raw_peak_xs, raw_peak_ys,
                                                loci, domain, dye_to_color[dye], True, False)
 
+            ax = plt.scatter(filtered_peak_xs, filtered_peak_ys, s=80, facecolors='none', edgecolors='r')
             ax = plt.plot(new_x, [threshold for x in new_x], c="gray")
 
         if loci in sample_result:
-            truth = sample_result[loci].truth_data
-            species = sample_result[loci].true_species
-            raw_accuracy = sample_result[loci].raw_accuracy
+            loci_result=sample_result[loci]
+            truth = loci_result.truth_data
+            species = loci_result.true_species
+            final_accuracy = loci_result.final_accuracy
+            raw_accuracy = loci_result.raw_accuracy
+            raw_alleles_called = loci_result.raw_alleles_called
+            final_alleles_called = loci_result.final_alleles_called
         else:
             truth = False
 
         if truth:
             ax = plt.gca()
-            ax = plt.text(0.95, 0.85, "exp: " + str(truth), horizontalalignment='right',
+            ax = plt.text(0.95, 0.85, "final: " + str(filtered_peak_xs), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
+
+            ax = plt.gca()
+            ax = plt.text(0.95, 0.75, "exp: " + str(truth), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
             ax = plt.gca()
-            ax = plt.text(0.95, 0.75, "accuracy: " + str(raw_accuracy), horizontalalignment='right',
+            ax = plt.text(0.95, 0.65, "raw accuracy: " + str(raw_accuracy), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
+
+            ax = plt.gca()
+            ax = plt.text(0.95, 0.55, "final accuracy: " + str(final_accuracy), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
 
