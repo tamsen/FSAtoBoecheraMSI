@@ -5,7 +5,7 @@ class loci_results:
     def __init__(self, raw_alleles_called, final_alleles_called,
                  original_file_name, trace_data, ladder_data, mapping_data):
         self.raw_alleles_called = raw_alleles_called
-        self.final_alleles_called = final_alleles_called,
+        self.final_alleles_called = final_alleles_called
         self.original_file_name = original_file_name
         self.plotting_data_evidence = trace_data
         self.ladder_plotting_data = ladder_data
@@ -18,5 +18,4 @@ class loci_results:
         self.truth_data = truth_alleles
         self.true_species = true_species
         self.raw_accuracy = accuracy.allele_accuracy(self.raw_alleles_called, self.truth_data)
-        #self.final_accuracy = accuracy.allele_accuracy(self.final_alleles_called, self.truth_data)
-        #TODO self.adjusted_accuracy = accuracy.allele_accuracy(self.final_alleles_called, self.truth_data)
+        self.final_accuracy = accuracy.allele_accuracy(self.final_alleles_called, self.truth_data)

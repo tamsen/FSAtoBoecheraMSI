@@ -37,7 +37,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     if not ladder_peak_txt:
         if len(ys_within_domain) > 0:
             y_max = max(ys_within_domain)
-            plt.ylim([0, y_max * 1.1])
+            plt.ylim([0, y_max * 1.5])
 
     return ax
 
@@ -174,11 +174,11 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plt.text(0.95, 0.75, "exp: " + str(truth), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
             ax = plt.gca()
-            ax = plt.text(0.95, 0.65, "raw accuracy: " + str(raw_accuracy), horizontalalignment='right',
+            ax = plt.text(0.95, 0.65, "raw acc.: " + str(raw_accuracy), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
             ax = plt.gca()
-            ax = plt.text(0.95, 0.55, "final accuracy: " + str(final_accuracy), horizontalalignment='right',
+            ax = plt.text(0.95, 0.55, "final acc.: " + str(final_accuracy), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
 
