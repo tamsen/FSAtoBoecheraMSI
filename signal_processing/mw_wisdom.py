@@ -2,14 +2,19 @@ import log
 from signal_processing import peak_analysis
 
 
-def make_adjustments(raw_calls, loci):
+def make_adjustments(peaks, loci):
     if loci == 'B6':
-        return raw_calls
+        return peaks
 
     merge_peaks_closer_than_this = 2.5
     required_drop_fraction = 0.5
-    un_stuttered= peak_analysis.check_for_stutter(raw_calls)
-    peaks = consolidate(un_stuttered, merge_peaks_closer_than_this)
+
+    #fw1379 has issue with PS5, there is a bug in stutter check
+    #peaks = peak_analysis.check_for_stutter(peaks)
+    #but proably nees some code so for some peaks, if they are within 2bp, take the leading (smaller distance)
+    # #or try the larger peak.
+
+    peaks = consolidate(peaks, merge_peaks_closer_than_this)
 
     return peaks
 
