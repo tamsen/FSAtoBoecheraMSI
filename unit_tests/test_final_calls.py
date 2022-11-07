@@ -133,12 +133,96 @@ class TestFinalCalls(unittest.TestCase):
         print("raw alleles called:" + str(raw_alleles_called))
         print("filtered alleles called:" + str(filtered_alleles_called))
         print("final alleles called:" + str(final_alleles_called))
-        # expected are 80,86,95
 
         self.assertEqual(3, len(raw_alleles_called))
         self.assertEqual(3, len(filtered_alleles_called))
         self.assertEqual(3, len(filtered_alleles_called))
         self.assertEqual([80,86,95], final_alleles_called)
+
+    def test_PS2_ICE14_final_calls(self):
+        panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
+                                "BD1200PS2_B04.fsa")
+
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        results = FSA_file_results.MSI_loci_results_by_loci["ICE14"]
+        raw_alleles_called = results.raw_alleles_called
+        filtered_alleles_called = results.filtered_alleles_called
+        final_alleles_called = results.final_alleles_called
+
+
+        print("raw alleles called:" + str(raw_alleles_called))
+        print("filtered alleles called:" + str(filtered_alleles_called))
+        print("final alleles called:" + str(final_alleles_called))
+
+        self.assertEqual(3, len(raw_alleles_called))
+        self.assertEqual(2, len(filtered_alleles_called))
+        self.assertEqual(2, len(filtered_alleles_called))
+        self.assertEqual([214,217], final_alleles_called)
+
+    def test_PS2_C8_final_calls(self):
+        panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
+                                "BD1200PS2_B04.fsa")
+
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        results = FSA_file_results.MSI_loci_results_by_loci["C8"]
+        raw_alleles_called = results.raw_alleles_called
+        filtered_alleles_called = results.filtered_alleles_called
+        final_alleles_called = results.final_alleles_called
+
+
+        print("raw alleles called:" + str(raw_alleles_called))
+        print("filtered alleles called:" + str(filtered_alleles_called))
+        print("final alleles called:" + str(final_alleles_called))
+
+        self.assertEqual(3, len(raw_alleles_called))
+        self.assertEqual(3, len(filtered_alleles_called))
+        self.assertEqual(3, len(filtered_alleles_called))
+        self.assertEqual([232,242,253], final_alleles_called) #ideally, wuold be 254 instead of 253
+
+
+
+    def test_PS3_BF9_and_BF18_final_calls(self):
+        panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
+                                "BD1200PS3_C04.fsa")
+
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        results = FSA_file_results.MSI_loci_results_by_loci["BF9"]
+        self.assertEqual(6, len(results.raw_alleles_called))
+        self.assertEqual(4, len(results.filtered_alleles_called))
+        self.assertEqual(3, len(results.final_alleles_called))
+        self.assertEqual([82,87,94], results.final_alleles_called) #ideally 82,92, 94
+
+        results = FSA_file_results.MSI_loci_results_by_loci["BF18"]
+        self.assertEqual(1, len(results.raw_alleles_called))
+        self.assertEqual(1, len(results.filtered_alleles_called))
+        self.assertEqual(1, len(results.final_alleles_called))
+        self.assertEqual([117], results.final_alleles_called)
+
+    def test_PS3_E9_final_calls(self):
+
+        panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
+                                    "BD1200PSE_F04.fsa")
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        results = FSA_file_results.MSI_loci_results_by_loci["E9"]
+        self.assertEqual(3, len(results.raw_alleles_called))
+        self.assertEqual(2, len(results.filtered_alleles_called))
+        self.assertEqual(2, len(results.final_alleles_called))
+        self.assertEqual([197,210], results.final_alleles_called)
+
+
+
 
 
 if __name__ == '__main__':
