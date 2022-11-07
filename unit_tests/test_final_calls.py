@@ -222,7 +222,41 @@ class TestFinalCalls(unittest.TestCase):
         self.assertEqual([197,210], results.final_alleles_called)
 
 
+    def test_PS4_BF3_and_BF19_and_B6_final_calls(self):
+        panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
+                                "BD1200PS4_D04.fsa")
 
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        results = FSA_file_results.MSI_loci_results_by_loci["BF3"]
+        self.assertEqual(3, len(results.raw_alleles_called))
+        self.assertEqual(3, len(results.filtered_alleles_called))
+        self.assertEqual(3, len(results.final_alleles_called))
+        self.assertEqual([92,98,100], results.final_alleles_called)
+
+
+        results = FSA_file_results.MSI_loci_results_by_loci["BF19"]
+        self.assertEqual(2, len(results.raw_alleles_called))
+        self.assertEqual(2, len(results.filtered_alleles_called))
+        self.assertEqual(2, len(results.final_alleles_called))
+        self.assertEqual([142,150], results.final_alleles_called)
+
+
+        results = FSA_file_results.MSI_loci_results_by_loci["B6"]
+        self.assertEqual(3, len(results.raw_alleles_called))
+        self.assertEqual(3, len(results.filtered_alleles_called))
+        self.assertEqual(3, len(results.final_alleles_called))
+        self.assertEqual([301,303,309], results.final_alleles_called)
+
+    def test_PS5_BF15_and_Bdru266_and_A3_final_calls(self):
+        panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
+        fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
+                                "BD1200PS5_E04.fsa")
+
+        FSA_file_results = fsa_file_processor.process_fsa_file(
+            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
 
 
 if __name__ == '__main__':

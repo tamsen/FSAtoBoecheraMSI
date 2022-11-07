@@ -148,8 +148,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 loci_specific_plot_data = [trace_x_new, trace_y_new,
                                            [call[0] for call in raw_calls],
                                            [call[1] for call in raw_calls],
-                                           [call[0] for call in final_calls],
-                                           [call[1] for call in final_calls],
+                                           [call[0] for call in filtered_calls],
+                                           [call[1] for call in filtered_calls],
                                            loci_specific_threshold,
                                            loci, whole_loci_domain, channel]
             else:

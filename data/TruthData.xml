@@ -36,7 +36,8 @@
         <alleles>142,150</alleles>
     </loci>
     <loci name="B6">
-        <alleles>301,303</alleles>
+        <alleles>301,303,309</alleles>
+        <!-- tjd, is adding 309 bc seems real-->
     </loci>
     <loci name="Bdru266">
         <alleles>129</alleles>

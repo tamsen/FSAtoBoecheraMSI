@@ -9,6 +9,9 @@ def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
 def peaks_to_filtered_calls(peaks, loci, trace_x_new, trace_y_new, threshold):
 
+    left_step_width=3
+    left_step_proportion=0.6
+    peaks = left_step_check(peaks, left_step_width,left_step_proportion)
 
     #----------- PS1 extra filtering --------------
 
@@ -31,6 +34,7 @@ def peaks_to_filtered_calls(peaks, loci, trace_x_new, trace_y_new, threshold):
     if loci == 'E9':
         merge_peaks_closer_than_this = 2.5
         peaks = stutter_check_2(peaks, merge_peaks_closer_than_this,take_right_most)
+
 
     return [[round(peak[0],1), peak[1]] for peak in peaks]
 
@@ -110,6 +114,33 @@ def find_threshold_crossings(trace_x_new, trace_y_new, threshold):
 
     return above_threshold_intervals
 
+def left_step_check(peaks, how_close_is_too_close,left_step_proportion):
+
+    if len(peaks) == 0:
+        return peaks
+
+    xs=[p[0] for p in peaks]
+    ys=[p[1] for p in peaks]
+    print("xs: " + str(xs))
+    print("ys: " + str(ys))
+    xs_diffs=np.diff(xs)
+    print ("xs_diffs: " + str(xs_diffs))
+    ps_to_remove=[]
+
+    for i in range(0,len(peaks)-1):
+
+        d=xs_diffs[i]
+        p_last= peaks[i]
+        p_now= peaks[i+1]
+        if d <= how_close_is_too_close:
+            if p_now[1]*left_step_proportion > p_last[1]:
+                ps_to_remove.append(p_last)
+
+    for p in ps_to_remove:
+        peaks.remove(p)
+
+    return peaks
+
 def stutter_check_2(peaks, how_close_is_too_close, f):
 
     if len(peaks) == 0:
@@ -174,39 +205,6 @@ def take_run_centroid(run):
         x_weighted_avg = x_weighted_avg+x
     return [x_weighted_avg / weight_sum, max_y]
 
-def consolidate(peaks, how_close_is_too_close):
-
-    if (len(peaks)) <= 1:
-        consolidated_peaks=peaks
-    else:
-        consolidated_peaks = []
-    i = 0
-    while i < (len(peaks)-1):
-
-        xi0=peaks[i][0]
-        yi0=peaks[i][1]
-        xi1=peaks[i+1][0]
-        yi1=peaks[i+1][1]
-        log.write_to_log("checking peaks " + str(peaks[i]) + "and" + str(peaks[i + 1]) + "for possible consolidation")
-        if (xi1 - xi0) < how_close_is_too_close:
-            #consolidated_peaks.append( [ (xi1 + xi0) / 2.0 , (yi1 + yi0) / 2.0] )
-
-            if yi1 > yi0:
-                consolidated_peaks.append([xi1, yi1])
-            else:
-                consolidated_peaks.append([xi0, yi0])
-
-            log.write_to_log("Consolidating " + str(peaks[i]) + "and" + str(peaks[i + 1]))
-            i = i +2
-        else:
-            log.write_to_log("No consolidation required.")
-            consolidated_peaks.append(peaks[i])
-            i = i +1
-            if i == len(peaks)-1:
-                consolidated_peaks.append(peaks[i])
-
-    return consolidated_peaks
-
 
 def insist_on_drops_between_peaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction):
 
@@ -241,44 +239,3 @@ def insist_on_drops_between_peaks(peaks, trace_x_new, trace_y_new, threshold, re
 
     return consolidated_peaks
 
-
-
-def check_for_stutter(peaks):
-
-    stutter_size=2
-    stutter_peak_indexes=[]
-    for i in range(0,len(peaks)-2):
-
-        three_xs= [peak[0] for peak in peaks[i:i+3]]
-        three_ys= [peak[1] for peak in peaks[i:i+3]]
-
-        if (three_xs[1]-three_xs[0] <= stutter_size) \
-           and (three_xs[2]-three_xs[1]  <= stutter_size):
-
-            print("Peaks frequently 2bp apart detected..")
-            print("peak_xs[i:i+3]:" + str(three_xs))
-            print("peak_ys[i:i+3]:" + str(three_ys))
-
-            #if they neatly have decreasing magnitude, we accept them.
-            # Otherwise, possible stutter run
-
-            if (three_ys[1] - three_ys[0] >= 0) \
-                    or (three_ys[2] - three_ys[1] >= 0):
-
-                #if we got hear, either y1 or y2 is the highest.
-                if (three_ys[2] - three_ys[1] >= 0): #y2 is highest, so y0 and y1 are not real
-                    stutter_peak_indexes = stutter_peak_indexes + [i,i+1]
-                else: #y1 is highest, so y0 and y2 are not real
-                    stutter_peak_indexes = stutter_peak_indexes + [i+1,i+2]
-
-                log.write_to_log("Amplitude patterns doe not look like real alleles.")
-                log.write_to_log("peaks[i:i+3]:" + str(three_ys))
-
-    #keep unique stutter indexes
-    stutter_peak_indexes = set(stutter_peak_indexes)
-    de_stuttered_peaks=[]
-    for i in range(0,len(peaks)):
-        if i not in  stutter_peak_indexes:
-            de_stuttered_peaks.append(peaks[i])
-
-    return de_stuttered_peaks
