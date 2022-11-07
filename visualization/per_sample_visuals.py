@@ -15,10 +15,10 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     ax = plt.text(0.05, 0.95, loci, horizontalalignment='left',
                   verticalalignment='top', transform=ax.transAxes)
 
-    if (msi_call_text):
-        ax = plt.gca()
-        ax = plt.text(0.95, 0.95, "raw: " + str(peak_xs), horizontalalignment='right',
-                      verticalalignment='top', transform=ax.transAxes, fontsize=8)
+    #if (msi_call_text):
+    #    ax = plt.gca()
+    #    ax = plt.text(0.95, 0.95, "raw: " + str(peak_xs), horizontalalignment='right',
+    #                  verticalalignment='top', transform=ax.transAxes, fontsize=8)
 
     if (ladder_peak_txt):
         ax = plt.gca()
@@ -160,26 +160,47 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             species = loci_result.true_species
             final_accuracy = loci_result.final_accuracy
             raw_accuracy = loci_result.raw_accuracy
-            raw_alleles_called = loci_result.raw_alleles_called
+            raw_alleles_called  = loci_result.raw_alleles_called
+            filtered_alleles_called  = loci_result.filtered_alleles_called
             final_alleles_called = loci_result.final_alleles_called
         else:
             truth = False
 
         if truth:
             ax = plt.gca()
-            ax = plt.text(0.95, 0.85, "final: " + str(filtered_peak_xs), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
+            base_text_height=0.95
+            font_size=6
+            if len(raw_alleles_called) < 6:
+                ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+            else:
+                base_text_height = 0.85
+                ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called[0:4]),
+                                  horizontalalignment='right',
+                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+                ax = plt.gca()
+                ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
+                                  horizontalalignment='right',
+                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
             ax = plt.gca()
-            ax = plt.text(0.95, 0.75, "exp: " + str(truth), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
-            ax = plt.gca()
-            ax = plt.text(0.95, 0.65, "raw acc.: " + str(raw_accuracy), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
+            ax = plt.text(0.95,base_text_height-0.1, "filtered: " + str(filtered_alleles_called), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
             ax = plt.gca()
-            ax = plt.text(0.95, 0.55, "final acc.: " + str(final_accuracy), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=8)
+            ax = plt.text(0.95, base_text_height-0.2, "final: " + str(final_alleles_called ), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
+            ax = plt.gca()
+            ax = plt.text(0.95, base_text_height-0.3, "exp: " + str(truth), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+            ax = plt.gca()
+            ax = plt.text(0.95, base_text_height-0.4, "raw acc.: " + str(raw_accuracy), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
+            ax = plt.gca()
+            ax = plt.text(0.95,base_text_height-0.5, "final acc.: " + str(final_accuracy), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
 
         if i in [1, 4, 7, 10, 13, 16]:

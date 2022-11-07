@@ -11,7 +11,8 @@
         <alleles>238</alleles>
     </loci>
     <loci name="BF11">
-        <alleles>80,86</alleles>
+        <alleles>80,86,95</alleles> 
+        <!-- tjd, is adding 95 bc seems real-->
     </loci>
     <loci name="ICE14">
         <alleles>214,217</alleles>

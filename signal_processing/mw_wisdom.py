@@ -3,49 +3,46 @@ from signal_processing import peak_analysis
 
 
 def make_adjustments(peaks, loci):
+
     if loci == 'B6':
-        return peaks
+        return [[round(p[0], 0), p[1]] for p in peaks]
 
-    merge_peaks_closer_than_this = 2.5
-    required_drop_fraction = 0.5
+    #-------------PS1--------------
 
-    #fw1379 has issue with PS5, there is a bug in stutter check
-    #peaks = peak_analysis.check_for_stutter(peaks)
-    #but proably nees some code so for some peaks, if they are within 2bp, take the leading (smaller distance)
-    # #or try the larger peak.
+    if loci == 'ICE3':
 
-    peaks = consolidate(peaks, merge_peaks_closer_than_this)
+        adjusted_peaks=[]
+        for p in peaks:
 
-    return peaks
-
-
-def consolidate(peaks, how_close_is_too_close):
-    if (len(peaks)) <= 1:
-        consolidated_peaks = peaks
-    else:
-        consolidated_peaks = []
-    i = 0
-    while i < (len(peaks) - 1):
-
-        xi0 = peaks[i][0]
-        yi0 = peaks[i][1]
-        xi1 = peaks[i + 1][0]
-        yi1 = peaks[i + 1][1]
-        log.write_to_log("checking peaks " + str(peaks[i]) + "and" + str(peaks[i + 1]) + "for possible consolidation")
-        if (xi1 - xi0) < how_close_is_too_close:
-
-            if yi1 > yi0:
-                consolidated_peaks.append([xi1, yi1])
+            p0=p[0]
+            if p0 < 100:
+                p0=p[0]-3.0
             else:
-                consolidated_peaks.append([xi0, yi0])
-            #consolidated_peaks.append([(xi1 + xi0) / 2.0, (yi1 + yi0) / 2.0])
-            log.write_to_log("Consolidating " + str(peaks[i]) + "and" + str(peaks[i + 1]))
-            i = i + 2
-        else:
-            log.write_to_log("No consolidation required.")
-            consolidated_peaks.append(peaks[i])
-            i = i + 1
-            if i == len(peaks) - 1:
-                consolidated_peaks.append(peaks[i])
+                p0=p[0]-2.0
 
-    return consolidated_peaks
+            adjusted_peaks.append([p0,p[1]])
+
+        peaks = adjusted_peaks
+
+    if loci == 'BF20':
+        [peaks.remove(p) for p in peaks if 203 < p[0] < 204.5]
+        peaks = [[p[0] + 0.5, p[1]] for p in peaks]
+
+    #-------------PS2--------------
+
+    if loci == 'ICE14':
+        [peaks.remove(p) for p in peaks if 209.5 < p[0] < 210.5]
+        peaks = [[p[0] + 0.5, p[1]] for p in peaks]
+
+    if loci == 'BF11':
+        peaks = [[p[0] - 0.5, p[1]] for p in peaks]
+
+    #-------------PS3--------------
+
+    if loci == 'BF9':
+        [peaks.remove(p) for p in peaks if 120 < p[0] < 122]
+
+    if loci == 'E9':
+        peaks = [[p[0] + 0.5, p[1]] for p in peaks]
+
+    return [[int(round(p[0], 0)), p[1]] for p in peaks]

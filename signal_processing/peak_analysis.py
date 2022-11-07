@@ -1,17 +1,38 @@
 import log
+import numpy as np
 
-def peaks_to_msi_calls(peaks, trace_x_new, trace_y_new, threshold):
+def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
-    #parameters
-    merge_peaks_closer_than_this  = 1.5
-    required_drop_fraction = 0.5
-
-    #peaks = consolidate(peaks, merge_peaks_closer_than_this)
-    #peaks = insist_on_drops_between_peaks(peaks, trace_x_new, trace_y_new, threshold, required_drop_fraction)
-    #skipping stutter check, dont seem to need it?
     MSI_calls = [[round(peak[0],1), peak[1]] for peak in peaks]
 
     return MSI_calls
+
+def peaks_to_filtered_calls(peaks, loci, trace_x_new, trace_y_new, threshold):
+
+
+    #----------- PS1 extra filtering --------------
+
+    if loci == 'ICE3':
+        merge_peaks_closer_than_this = 3.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this,take_run_centroid)
+
+    if loci == 'BF20':
+        #print("BF20")
+        #print(str(peaks))
+        merge_peaks_closer_than_this = 1.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this,take_run_maximum)
+
+    #----------- PS3 extra filtering --------------
+
+    if loci == 'BF9':
+        merge_peaks_closer_than_this = 4.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this,take_run_maximum)
+
+    if loci == 'E9':
+        merge_peaks_closer_than_this = 2.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this,take_right_most)
+
+    return [[round(peak[0],1), peak[1]] for peak in peaks]
 
 def filter_by_range(peak_x, peak_y, expected_range):
 
@@ -89,6 +110,70 @@ def find_threshold_crossings(trace_x_new, trace_y_new, threshold):
 
     return above_threshold_intervals
 
+def stutter_check_2(peaks, how_close_is_too_close, f):
+
+    if len(peaks) == 0:
+        return peaks
+
+    xs=[p[0] for p in peaks]
+    ys=[p[1] for p in peaks]
+    print("xs: " + str(xs))
+    print("ys: " + str(ys))
+    xs_diffs=np.diff(xs)
+    print ("xs_diffs: " + str(xs_diffs))
+
+    stutter_runs=[[]]
+    peaks_in_stutter_runs=[[peaks[0]]]
+
+    for i in range(0,len(peaks)-1):
+
+        d=xs_diffs[i]
+        pi= peaks[i+1]
+        print("d:" + str(d))
+        if d <= how_close_is_too_close:
+            peaks_in_stutter_runs[-1].append(pi)
+            stutter_runs[-1].append(d)
+
+        if d > how_close_is_too_close:
+            peaks_in_stutter_runs.append([pi])
+            stutter_runs.append([d])
+
+    best_peaks_in_a_run=[]
+    print("stutter_runs: " + str(stutter_runs))
+    print("peaks_in_stutter_runs: " )
+    for run in peaks_in_stutter_runs:
+        print("run:  " + str(run))
+
+        half_run_max=take_run_maximum(run)[1]*0.5
+        #if any peak is lest than 1/2 the max height in a run, kill it
+        for p in run:
+            if(p[1]<half_run_max):
+                run.remove(p)
+
+        best_peaks_in_a_run.append(f(run))
+
+    print("stutter_run_maximun: " + str(best_peaks_in_a_run))
+    return best_peaks_in_a_run
+
+def take_run_maximum(run):
+    max_height_in_run = max([p[1] for p in run])
+    for p in run:
+        if p[1] == max_height_in_run:
+            return p
+
+def take_right_most(run):
+    return run[-1]
+
+def take_run_centroid(run):
+
+    weight_sum=sum([p[1] for p in run])
+    max_y=max([p[1] for p in run])
+    x_weighted_avg=0
+    for p in run:
+        x= p[0]  * p[1]
+        x_weighted_avg = x_weighted_avg+x
+    return [x_weighted_avg / weight_sum, max_y]
+
 def consolidate(peaks, how_close_is_too_close):
 
     if (len(peaks)) <= 1:
@@ -104,7 +189,13 @@ def consolidate(peaks, how_close_is_too_close):
         yi1=peaks[i+1][1]
         log.write_to_log("checking peaks " + str(peaks[i]) + "and" + str(peaks[i + 1]) + "for possible consolidation")
         if (xi1 - xi0) < how_close_is_too_close:
-            consolidated_peaks.append( [ (xi1 + xi0) / 2.0 , (yi1 + yi0) / 2.0] )
+            #consolidated_peaks.append( [ (xi1 + xi0) / 2.0 , (yi1 + yi0) / 2.0] )
+
+            if yi1 > yi0:
+                consolidated_peaks.append([xi1, yi1])
+            else:
+                consolidated_peaks.append([xi0, yi0])
+
             log.write_to_log("Consolidating " + str(peaks[i]) + "and" + str(peaks[i + 1]))
             i = i +2
         else:

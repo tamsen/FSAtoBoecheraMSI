@@ -72,9 +72,9 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
         # also, B6 FW1379
         if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
-            ("B6" in relevant_loci.keys()) or ("BF20" in relevant_loci.keys()) :
-            peak_calling_parameters = [13, 5, 2, threshold_multiplier]
-
+            ("B6" in relevant_loci.keys()) : #or ("BF20" in relevant_loci.keys()) :
+            #peak_calling_parameters = [13, 5, 2, threshold_multiplier]
+            peak_calling_parameters = [10, 3, 1, threshold_multiplier]
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
@@ -92,8 +92,11 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
             loci_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new, threshold_multiplier)
-            raw_calls = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new,
+            raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci, trace_x_new,
                                                          trace_y_new, loci_specific_threshold)
+
+            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, trace_x_new,
+                                                                   trace_y_new, loci_specific_threshold)
 
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
@@ -118,10 +121,13 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 loci_specific_threshold = ladder_analysis.get_threshold_for_trace(
                     trace_y_new, threshold_multiplier * threshold_reduction)
                 unfiltered_peaks_in_loci = peaks_inside_loci[loci]
-                raw_calls = peak_analysis.peaks_to_msi_calls(unfiltered_peaks_in_loci, trace_x_new2,
+                raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci, trace_x_new2,
                                                              trace_y_new2, loci_specific_threshold)
 
-            final_calls = mw_wisdom.make_adjustments(raw_calls, loci)
+                filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, trace_x_new2,
+                                                             trace_y_new2, loci_specific_threshold)
+
+            final_calls = mw_wisdom.make_adjustments(filtered_calls, loci)
 
             # make a zoomed-in plot JUST around the MSI call
             for final_call in final_calls:
@@ -152,18 +158,20 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 loci_specific_plot_data = [trace_x_new, trace_y_new,
                                            [call[0] for call in raw_calls],
                                            [call[1] for call in raw_calls],
-                                           [call[0] for call in final_calls],
-                                           [call[1] for call in final_calls],
+                                           [call[0] for call in filtered_calls],
+                                           [call[1] for call in filtered_calls],
                                            loci_specific_threshold,
                                            loci, whole_loci_domain, channel]
 
             # get the results ready to print to file
             raw_calls_for_loci = [x[0] for x in raw_calls]
+            filtered_calls_for_loci = [x[0] for x in filtered_calls]
             allele_calls_for_loci = [x[0] for x in final_calls]
             data_string = [fsa_file, loci] + [str(x) for x in allele_calls_for_loci]
             results_files.write_results(output_dir, data_string)
 
-            results_for_loci = loci_results(raw_calls_for_loci, allele_calls_for_loci, fsa_file,
+            results_for_loci = loci_results(raw_calls_for_loci,filtered_calls_for_loci,
+                                            allele_calls_for_loci, fsa_file,
                                             loci_specific_plot_data, ladder_plot_data,
                                             [mapping_plot_data_spline, mapping_plot_data_linear])
 
