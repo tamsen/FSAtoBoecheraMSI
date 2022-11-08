@@ -95,8 +95,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci, trace_x_new,
                                                          trace_y_new, loci_specific_threshold)
 
-            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, trace_x_new,
-                                                                   trace_y_new, loci_specific_threshold)
+            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
@@ -124,8 +123,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci, trace_x_new2,
                                                              trace_y_new2, loci_specific_threshold)
 
-                filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, trace_x_new2,
-                                                             trace_y_new2, loci_specific_threshold)
+                filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
             final_calls = mw_wisdom.make_adjustments(filtered_calls, loci)
 

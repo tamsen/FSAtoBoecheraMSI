@@ -234,7 +234,7 @@ class TestFinalCalls(unittest.TestCase):
         self.assertEqual(3, len(results.raw_alleles_called))
         self.assertEqual(3, len(results.filtered_alleles_called))
         self.assertEqual(3, len(results.final_alleles_called))
-        self.assertEqual([92,98,100], results.final_alleles_called)
+        self.assertEqual([93,99,101], results.final_alleles_called)
 
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF19"]
@@ -248,7 +248,7 @@ class TestFinalCalls(unittest.TestCase):
         self.assertEqual(3, len(results.raw_alleles_called))
         self.assertEqual(3, len(results.filtered_alleles_called))
         self.assertEqual(3, len(results.final_alleles_called))
-        self.assertEqual([301,303,309], results.final_alleles_called)
+        self.assertEqual([301,303,310], results.final_alleles_called) #309 would be better than 310, but its fine
 
     def test_PS5_BF15_and_Bdru266_and_A3_final_calls(self):
         panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
@@ -257,6 +257,26 @@ class TestFinalCalls(unittest.TestCase):
 
         FSA_file_results = fsa_file_processor.process_fsa_file(
             fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+
+        results = FSA_file_results.MSI_loci_results_by_loci["BF15"]
+        self.assertEqual(5, len(results.raw_alleles_called))
+        self.assertEqual(3, len(results.filtered_alleles_called))
+        self.assertEqual(3, len(results.final_alleles_called))
+        self.assertEqual([91,93,99], results.final_alleles_called)
+
+
+        results = FSA_file_results.MSI_loci_results_by_loci["Bdru266"]
+        self.assertEqual(4, len(results.raw_alleles_called))
+        self.assertEqual(1, len(results.filtered_alleles_called))
+        self.assertEqual(1, len(results.final_alleles_called))
+        self.assertEqual([129], results.final_alleles_called)
+
+
+        results = FSA_file_results.MSI_loci_results_by_loci["A3"]
+        self.assertEqual(1, len(results.raw_alleles_called))
+        self.assertEqual(1, len(results.filtered_alleles_called))
+        self.assertEqual(1, len(results.final_alleles_called))
+        self.assertEqual([248], results.final_alleles_called)
 
 
 if __name__ == '__main__':

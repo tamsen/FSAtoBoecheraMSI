@@ -52,4 +52,13 @@ def make_adjustments(peaks, loci):
     if loci in ['B6']:
         peaks = [[p[0] + 0.5, p[1]] for p in peaks]
 
+    #-------------PS5--------------
+
+    if loci in ['Bdru266']:
+        [peaks.remove(p) for p in peaks if 80 < p[0] < 100]
+
+    if loci in ['A3']:
+        peaks = [[p[0] - 1.0, p[1]] for p in peaks]
+
+
     return [[int(round(p[0], 0)), p[1]] for p in peaks]
