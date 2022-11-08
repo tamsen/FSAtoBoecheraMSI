@@ -16,9 +16,7 @@ def peaks_to_filtered_calls(peaks, loci):
         merge_peaks_closer_than_this = 3.5
         peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_centroid)
 
-    if loci == 'BF20':
-        # print("BF20")
-        # print(str(peaks))
+    if loci == 'BF20': #most pain-in-the-ass loci
         merge_peaks_closer_than_this = 1.5
         peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
@@ -60,6 +58,8 @@ def filter_by_range(peak_x, peak_y, expected_range):
     peaks_in_loci_range.sort(key=lambda x: x[0])
     return peaks_in_loci_range
 
+# Some times there is a teeny tiny peak to the left of a main peak.
+# This code removes it.
 def left_step_check(peaks, how_close_is_too_close, left_step_proportion):
 
     if len(peaks) == 0:
