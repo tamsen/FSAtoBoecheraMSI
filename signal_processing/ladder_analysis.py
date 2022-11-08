@@ -3,8 +3,10 @@ from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
+from signal_processing import shared
 from visualization import per_file_visuals
 import log
+
 
 GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
@@ -19,10 +21,10 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # min_distance_between_peaks=5#2
     # min_peak_width=5 #2
     # threshold_multiplier=.50
-    parameters_for_right_side_of_ladder = [30, 20, 50, 10, .5]
-    parameters_for_left_side_of_ladder = [30, 20, 2, 1, .5]
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 20, 50, 10, .5)
+    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
-        ladder_trace, *parameters_for_right_side_of_ladder, True)
+        ladder_trace, parameters_for_right_side_of_ladder, True)
 
     # now, keep the best 16 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
@@ -65,7 +67,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
 def fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder, sixteen_peaks):
 
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
-            ladder_trace, *parameters_for_left_side_of_ladder, False)
+            ladder_trace, parameters_for_left_side_of_ladder, False)
 
     original_bp35_peak = sixteen_peaks[0]
     original_bp50_peak = sixteen_peaks[1]
@@ -107,7 +109,6 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
     dist100to139= BP139[0]- typical_sus_peak_BP100[0]
     dist139to50=BP150[0] - BP139[0]
     if (dist100to139 > significantly_bigger*dist75to100) and (dist100to139 > significantly_bigger*dist139to50):
-    #if False:
         return sixteen_peaks
 
     sus_peaks = []
@@ -144,23 +145,22 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
 # kernel of 10, distance between peaks 2, min_peak_width 1;threshold_multiplier .35
 # best parameters for the trace data: (fatter, messier spikes)
 # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
-def find_top_N_Peaks(signal_trace, num_peaks_to_find,
-                                   kernel_size,
-                                   min_distance_between_peaks,
-                                   min_peak_width,
-                                   threshold_multiplier, largest_first):  # .35
+def find_top_N_Peaks(signal_trace, peak_calling_parameters,largest_first):
+
     # very basic smoothing
-    kernel = np.ones(kernel_size) / kernel_size
+    kernel = np.ones(peak_calling_parameters.kernel_size) / peak_calling_parameters.kernel_size
     smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
-    threshold = get_threshold_for_trace(smoothed_trace, threshold_multiplier)
+    threshold = get_threshold_for_trace(smoothed_trace, peak_calling_parameters.threshold_multiplier)
 
     # https://plotly.com/python/peak-finding/
-    indices = find_peaks(smoothed_trace, height=threshold, distance=min_distance_between_peaks, width=min_peak_width)[0]
+    indices = find_peaks(smoothed_trace, height=threshold,
+                         distance=peak_calling_parameters.min_distance_between_peaks,
+                         width=peak_calling_parameters.min_peak_width)[0]
     peak_heights_tup = [(x, smoothed_trace[x]) for x in indices]
 
     # sort, greatest peak height first. Keep the best N=num_peaks_to_find
     peak_heights_tup.sort(key=lambda x: x[1], reverse=True)
-    highest_peaks_tup = peak_heights_tup[0:num_peaks_to_find]
+    highest_peaks_tup = peak_heights_tup[0:peak_calling_parameters.num_peaks_needed]
 
     if (largest_first):
         return highest_peaks_tup, smoothed_trace, threshold

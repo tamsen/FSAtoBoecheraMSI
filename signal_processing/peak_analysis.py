@@ -1,6 +1,4 @@
-import log
 import numpy as np
-
 
 def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
     peaks = [[round(peak[0], 1), peak[1]] for peak in peaks]
@@ -63,15 +61,12 @@ def filter_by_range(peak_x, peak_y, expected_range):
     return peaks_in_loci_range
 
 def left_step_check(peaks, how_close_is_too_close, left_step_proportion):
+
     if len(peaks) == 0:
         return peaks
 
     xs = [p[0] for p in peaks]
-    ys = [p[1] for p in peaks]
-    print("xs: " + str(xs))
-    print("ys: " + str(ys))
     xs_diffs = np.diff(xs)
-    print("xs_diffs: " + str(xs_diffs))
     ps_to_remove = []
 
     for i in range(0, len(peaks) - 1):
@@ -94,11 +89,7 @@ def stutter_check_2(peaks, how_close_is_too_close, f):
         return peaks
 
     xs = [p[0] for p in peaks]
-    ys = [p[1] for p in peaks]
-    print("xs: " + str(xs))
-    print("ys: " + str(ys))
     xs_diffs = np.diff(xs)
-    print("xs_diffs: " + str(xs_diffs))
 
     stutter_runs = [[]]
     peaks_in_stutter_runs = [[peaks[0]]]
@@ -107,7 +98,6 @@ def stutter_check_2(peaks, how_close_is_too_close, f):
 
         d = xs_diffs[i]
         pi = peaks[i + 1]
-        print("d:" + str(d))
         if d <= how_close_is_too_close:
             peaks_in_stutter_runs[-1].append(pi)
             stutter_runs[-1].append(d)
@@ -117,10 +107,7 @@ def stutter_check_2(peaks, how_close_is_too_close, f):
             stutter_runs.append([d])
 
     best_peaks_in_a_run = []
-    print("stutter_runs: " + str(stutter_runs))
-    print("peaks_in_stutter_runs: ")
     for run in peaks_in_stutter_runs:
-        print("run:  " + str(run))
 
         half_run_max = (take_run_maximum(run)[0])[1] * 0.5
         # if any peak is lest than 1/2 the max height in a run, kill it
@@ -130,12 +117,10 @@ def stutter_check_2(peaks, how_close_is_too_close, f):
 
         best_peaks_in_a_run = best_peaks_in_a_run + f(run)
 
-    print("best peaks: " + str(best_peaks_in_a_run))
     return best_peaks_in_a_run
 
 
 def take_run_maximum(run):
-    print(str(run))
     max_height_in_run = max([p[1] for p in run])
     for p in run:
         if p[1] == max_height_in_run:

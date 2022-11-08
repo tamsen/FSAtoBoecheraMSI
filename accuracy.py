@@ -39,14 +39,6 @@ def allele_accuracy(called_alleles, expected_alleles):
         return round(100.0 - diff_in_num_alleles_called, 1)
 
     percent_differences = 0
-
-    print("bug in filtered allele accuracy calcs:")
-    # BUG
-    #cleaned_expected_alleles: [129]
-    #called_alleles: ([93.1, 129.1],)
-    print("cleaned_expected_alleles:" + str(cleaned_expected_alleles))
-    print("called_alleles:" + str(called_alleles))
-
     for a_exp in cleaned_expected_alleles:
         # get distance to closest called allele
         diffs = [abs(a_exp - a_obs) for a_obs in called_alleles]

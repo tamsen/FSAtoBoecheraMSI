@@ -70,8 +70,8 @@ class TestAlleleCalls(unittest.TestCase):
         bf19_results = FSA_file_results.MSI_loci_results_by_loci["BF19"].raw_alleles_called
         b6_results = FSA_file_results.MSI_loci_results_by_loci["B6"].raw_alleles_called
 
-        self.assertEqual(4, len(bf3_results))
-        self.assertEqual(4, len(bf19_results))
+        self.assertEqual(3, len(bf3_results))
+        self.assertEqual(3, len(bf19_results))
         self.assertEqual(3, len(b6_results))
 
     def test_PS5(self):
@@ -86,8 +86,8 @@ class TestAlleleCalls(unittest.TestCase):
         bdru266_results = FSA_file_results.MSI_loci_results_by_loci["Bdru266"].raw_alleles_called
         a3_results = FSA_file_results.MSI_loci_results_by_loci["A3"].raw_alleles_called
 
-        self.assertEqual(6, len(bf15_results))
-        self.assertEqual(2, len(bdru266_results))
+        self.assertEqual(5, len(bf15_results))
+        self.assertEqual(1, len(bdru266_results))
         self.assertEqual(1, len(a3_results))
 
 
@@ -104,9 +104,9 @@ class TestAlleleCalls(unittest.TestCase):
         bf19_results = FSA_file_results.MSI_loci_results_by_loci["BF19"].raw_alleles_called
         b6_results = FSA_file_results.MSI_loci_results_by_loci["B6"].raw_alleles_called
 
-        self.assertEqual(4, len(bf3_results))
-        self.assertEqual(3, len(bf19_results))
-        self.assertEqual(4, len(b6_results))
+        self.assertEqual(3, len(bf3_results))
+        self.assertEqual(2, len(bf19_results))
+        self.assertEqual(3, len(b6_results))
 
 if __name__ == '__main__':
     unittest.main()

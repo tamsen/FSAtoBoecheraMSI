@@ -1,6 +1,6 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, ladder_analysis, mw_wisdom
+from signal_processing import peak_analysis, trace_analysis, ladder_analysis, mw_wisdom, shared
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from visualization import per_file_visuals
@@ -66,15 +66,13 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 
         # most Loci are good with more smoothing
-        peak_calling_parameters = [20, 20, 10, threshold_multiplier]
-        #peak_calling_parameters = [13, 5, 2, threshold_multiplier]
+        peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
 
         # note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
         # also, B6 FW1379
         if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
-            ("B6" in relevant_loci.keys()) : #or ("BF20" in relevant_loci.keys()) :
-            #peak_calling_parameters = [13, 5, 2, threshold_multiplier]
-            peak_calling_parameters = [10, 3, 1, threshold_multiplier]
+                ("B6" in relevant_loci.keys()):
+            peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier)
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
@@ -107,7 +105,14 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             rescue_needed = (max_call_intensity < 3 * loci_specific_threshold)
             if rescue_needed:
                 threshold_reduction = 0.3
-                rescue_parameters = [*peak_calling_parameters[0:3], threshold_multiplier * threshold_reduction]
+                rescue_parameters = shared.peak_calling_parameters(
+                    peak_calling_parameters.num_peaks_needed,
+                    peak_calling_parameters.kernel_size,
+                    peak_calling_parameters.min_distance_between_peaks,
+                    peak_calling_parameters.min_peak_width,
+                    threshold_multiplier * threshold_reduction)
+                #    [*peak_calling_parameters[0:3], threshold_multiplier * threshold_reduction]
+
                 peaks_inside_loci, trace_x_new2, trace_y_new2, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                     all_collected_data, mapping_fxn,
@@ -168,7 +173,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             data_string = [fsa_file, loci] + [str(x) for x in allele_calls_for_loci]
             results_files.write_results(output_dir, data_string)
 
-            results_for_loci = loci_results(raw_calls_for_loci,filtered_calls_for_loci,
+            results_for_loci = loci_results(raw_calls_for_loci, filtered_calls_for_loci,
                                             allele_calls_for_loci, fsa_file,
                                             loci_specific_plot_data, ladder_plot_data,
                                             [mapping_plot_data_spline, mapping_plot_data_linear])
