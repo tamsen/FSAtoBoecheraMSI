@@ -12,6 +12,7 @@ class loci_results:
         self.ladder_plotting_data = ladder_data
         self.mapping_plotting_data = mapping_data
         self.truth_data = False
+        self.true_species = "to be determined"
         self.raw_accuracy = 0
         self.final_accuracy = 0
 

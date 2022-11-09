@@ -6,43 +6,67 @@ def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
 
 def peaks_to_filtered_calls(peaks, loci):
-    left_step_width = 5
-    left_step_proportion = 0.6
-    peaks = left_step_check(peaks, left_step_width, left_step_proportion)
+    step_width_left = 6
+    step_proportion_left = 0.4
+    step_width_right = 3
+    step_proportion_right = 0.4
+    peaks = step_check(peaks, step_width_left, step_proportion_left,
+                       step_width_right, step_proportion_right)
+
+
+    typical_stutter=3.5
 
     # ----------- PS1 extra filtering --------------
 
     if loci == 'ICE3':
-        merge_peaks_closer_than_this = 3.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
 
     if loci == 'BF20': #most pain-in-the-ass loci
-        merge_peaks_closer_than_this = 2.0 #1.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        merge_peaks_closer_than_this = 1.5 #g
+        peaks = stutter_fix(peaks,  merge_peaks_closer_than_this , take_run_maximum)
+
+
+
+    # ----------- PS2 extra filtering --------------
+
+    if loci in ['BF11','C8']: #b
+        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
 
     # ----------- PS3 extra filtering --------------
 
-    if loci == 'BF9':
-        merge_peaks_closer_than_this = 3.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+    if loci in ['BF9']: #b
+        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
 
-    if loci == 'E9':
-        merge_peaks_closer_than_this = 3.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+    if loci in ['E9']: #b
+        peaks = stutter_fix(peaks, typical_stutter, take_right_most)
+
+    if loci == 'BF18':
+        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+
+
+
 
     # ----------- PS4 extra filtering --------------
 
-    # none needed
+
+    if loci == 'BF3': #second-most pain-in-the-ass loci
+        merge_peaks_closer_than_this = 1
+        peaks = stutter_fix(peaks, merge_peaks_closer_than_this, take_run_maximum)
+
+    if loci == 'BF19':
+        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+
+
+    if loci == 'B6':
+        peaks = stutter_fix(peaks, 1.5, take_run_maximum)
 
     # ----------- PS5 extra filtering --------------
 
     if loci == 'BF15':
-        merge_peaks_closer_than_this = 2
-        peaks = stutter_check_2(peaks,  merge_peaks_closer_than_this,drop_right_most)
+        peaks = stutter_fix(peaks, 3.5, drop_lowest)
 
     if loci == 'Bdru266':
-        merge_peaks_closer_than_this = 3.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
 
     return [[round(peak[0], 1), peak[1]] for peak in peaks]
 
@@ -60,7 +84,8 @@ def filter_by_range(peak_x, peak_y, expected_range):
 
 # Some times there is a teeny tiny peak to the left of a main peak.
 # This code removes it.
-def left_step_check(peaks, how_close_is_too_close, left_step_proportion):
+def step_check(peaks, left_width, left_step_proportion,
+               right_width, right_step_proportion):
 
     if len(peaks) == 0:
         return peaks
@@ -74,17 +99,28 @@ def left_step_check(peaks, how_close_is_too_close, left_step_proportion):
         d = xs_diffs[i]
         p_last = peaks[i]
         p_now = peaks[i + 1]
-        if d <= how_close_is_too_close:
+        if d <= left_width:
             if p_now[1] * left_step_proportion > p_last[1]:
                 ps_to_remove.append(p_last)
 
+    for i in range(0, len(peaks) - 1):
+
+            d = xs_diffs[i]
+            p_last = peaks[i]
+            p_now = peaks[i + 1]
+            if d <= right_width:
+                if p_last[1] * right_step_proportion > p_now[1]:
+                    ps_to_remove.append(p_now)
+
     for p in ps_to_remove:
-        peaks.remove(p)
+
+        if p in peaks:
+            peaks.remove(p)
 
     return peaks
 
 
-def stutter_check_2(peaks, how_close_is_too_close, f):
+def stutter_fix(peaks, how_close_is_too_close, f):
     if len(peaks) == 0:
         return peaks
 
@@ -121,6 +157,10 @@ def stutter_check_2(peaks, how_close_is_too_close, f):
 
 
 def take_run_maximum(run):
+
+    if len(run) < 2:
+        return run
+
     max_height_in_run = max([p[1] for p in run])
     for p in run:
         if p[1] == max_height_in_run:

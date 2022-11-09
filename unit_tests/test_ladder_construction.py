@@ -7,8 +7,6 @@ from file_io import fsa_file_reader
 from signal_processing import trace_analysis, ladder_analysis
 import test_globals
 
-
-
 class TestLadder(TestCase):
 
 
@@ -28,8 +26,7 @@ class TestLadder(TestCase):
             "BD1200PS1c5_A01_",
             trace_data_dictionary)
 
-        expected_peak_xs=[1199,1347,1626,1893,2332,2442,2556,3024,3598,4236,4713,4837,5476,6071,6567,6669]
-
+        expected_peak_xs=[1202, 1347, 1626,1893,2331,2442,2555,3022,3595,4234,4711,4835,5474,6069,6566,6668]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -41,7 +38,7 @@ class TestLadder(TestCase):
             "FW428-PS1-A2_A02_",
             trace_data_dictionary)
 
-        expected_peak_xs=[1306,1457,1734,2000,2441,2551,2663,3128,3693,4332,4810,4936, 5581,6182,6689,6794]
+        expected_peak_xs=[1310,1455,1733,2000,2438,2549,2661,3126,3694,4334,4809,4936,5580,6182,6689,6794]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -53,7 +50,7 @@ class TestLadder(TestCase):
             "FW428-PS5-E2_E02_",
             trace_data_dictionary)
 
-        expected_peak_xs=[1320,1469,1745,2007,2447,2557,2667,3129,3691,4320, 4788,4913,5544,6132,6624,6725]
+        expected_peak_xs=[1325,1468,1745,2010,2445,2555,2666,3126,3687,4319,4786,4911,5542,6130,6623,6724]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -66,7 +63,7 @@ class TestLadder(TestCase):
                                                                                    "BD1200PS2c5_H01_",
                                                                                    trace_data_dictionary)
 
-        expected_peak_xs=[1213,1363,1639,1905,2340,2450,2562,3026,3594,4222,4691,4811,5434,6011,6490,6588]
+        expected_peak_xs=[1216,1362,1638,1904,2339,2449,2561,3023,3591,4219,4688,4808,5431,6009,6487,6586]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -81,7 +78,7 @@ class TestLadder(TestCase):
                                                                                   "BD1200PS5_E04_",
                                                                                   trace_data_dictionary)
 
-        expected_peak_xs=[1145,1295,1562, 1817,2247, 2354,2463,2913,3458,4073,4528,4644,5245,5806,6271,6367]
+        expected_peak_xs=[1148,1293,1561,1822,2244,2352,2461,2910,3463,4070,4526,4642,5245,5806,6271,6367]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -93,7 +90,7 @@ class TestLadder(TestCase):
                                                                                   "JB277PS1F2_D02_",
                                                                                   trace_data_dictionary)
 
-        expected_peak_xs=[1183,1333,1607,1872,2301,2411,2522,2976,3536,4154,4616,4734,5348,5917,6389,6487]
+        expected_peak_xs=[1186,1332,1605,1869,2298,2407,2518,2973,3533,4151,4614,4732,5346,5916,6389,6486]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -106,7 +103,7 @@ class TestLadder(TestCase):
                                                                                   "BD1200PS3c5_A02_",
                                                                                   trace_data_dictionary)
 
-        expected_peak_xs=[1177,1324,1599,1864,2299,2408,2521,2982,3550,4178,4653,4775,5405,5993,6484,6586]
+        expected_peak_xs=[1179,1323,1598,1864,2297,2407,2519,2980,3548,4179,4652,4773,5404,5993,6484,6585]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -117,7 +114,7 @@ class TestLadder(TestCase):
                                                                                   "BD1200CNTRL-PS3-C4_B03_",
                                                                                   trace_data_dictionary)
 
-        expected_peak_xs=[1269,1418,1689,1952,2383,2492,2602,3057,3615,4238,4702,4823,5446,6029,6515,6616]
+        expected_peak_xs=[1270,1416,1688,1952,2381,2490,2600,3055,3614,4235,4700,4821,5444,6027,6514,6615]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -127,6 +124,7 @@ class TestLadder(TestCase):
         sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "JB617-PS1-A7_G12.fsa_",
                                                                                   trace_data_dictionary)
-        expected_peak_xs = [1329,1477,1763,2026, 2465,2577,2688,3155,3722,4365,4840,4968,5611,6211,6713,6818]
+
+        expected_peak_xs = [1332,1475,1756,2024,2463,2574,2686,3152,3719,4362,4838,4966,5610,6210,6713,6817]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)

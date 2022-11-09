@@ -65,16 +65,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # best parameters for the trace data: (fatter, messier spikes)
         # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 
-        # most Loci are good with more smoothing
-        peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
-        #peak_calling_parameters = shared.peak_calling_parameters(30, 10,3, 1, threshold_multiplier)
-
-        # note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
-        # also, B6 FW1379
-        #if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
-        # Note, originally, just BF15,BF3 and BF6 used (30, 10, 3, 1,) while everything else
-        # used (30, 20, 20, 10). But I decided to keep everything on the same parameters
-        # even though most of the other loci did not need so much resoltion
+        # Originally used a lot of smoothing, but backed off to better match michael w
+        # peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
         peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier)
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
@@ -108,11 +100,11 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             if loci=="C8":
                 print("break here")
 
-            rescue_needed = (max_call_intensity < 4 * loci_specific_threshold)
+            rescue_needed = (max_call_intensity < 6 * loci_specific_threshold)
             if rescue_needed:
                 threshold_reduction = 0.3
                 rescue_parameters = shared.peak_calling_parameters(
-                    peak_calling_parameters.num_peaks_needed,
+                    100,
                     peak_calling_parameters.kernel_size,
                     peak_calling_parameters.min_distance_between_peaks,
                     peak_calling_parameters.min_peak_width,

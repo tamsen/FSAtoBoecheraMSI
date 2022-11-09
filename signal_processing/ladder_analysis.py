@@ -17,12 +17,13 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     ladder_trace = trace_data_dictionary['DATA105']
 
     # parameters_for_right_side_of_ladder
-    # kernel_size=10
-    # min_distance_between_peaks=5#2
-    # min_peak_width=5 #2
-    # threshold_multiplier=.50
-    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 20, 50, 10, .5)
-    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
+    # parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 20, 50, 10, .5)
+    # parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
+
+    #made kernel smaller so ladder matches peak-smoothing alg
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5)
+    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5)
+
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
         ladder_trace, parameters_for_right_side_of_ladder, True)
 
@@ -140,11 +141,6 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
 
     return sixteen_peaks
 
-
-# best parameters for the ladder: (skinnier, cleaner spikes)
-# kernel of 10, distance between peaks 2, min_peak_width 1;threshold_multiplier .35
-# best parameters for the trace data: (fatter, messier spikes)
-# kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 def find_top_N_Peaks(signal_trace, peak_calling_parameters,largest_first):
 
     # very basic smoothing
