@@ -18,7 +18,7 @@ class TestAlleleCalls(unittest.TestCase):
         ice3_results= FSA_file_results.MSI_loci_results_by_loci["ICE3"].raw_alleles_called
         bf20_results= FSA_file_results.MSI_loci_results_by_loci["BF20"].raw_alleles_called
         a1_results= FSA_file_results.MSI_loci_results_by_loci["A1"].raw_alleles_called
-        self.assertEqual(3,len(ice3_results))
+        self.assertEqual(9,len(ice3_results))
         self.assertEqual(4,len(bf20_results))
         self.assertEqual(1,len(a1_results))
 
@@ -52,7 +52,7 @@ class TestAlleleCalls(unittest.TestCase):
         bf18_results = FSA_file_results.MSI_loci_results_by_loci["BF18"].raw_alleles_called
         e9_results = FSA_file_results.MSI_loci_results_by_loci["E9"].raw_alleles_called
 
-        self.assertEqual(len(bf9_results), 5)
+        self.assertEqual(len(bf9_results), 7)
         self.assertEqual(len(bf18_results), 1)
         self.assertEqual(len(e9_results), 3)
 

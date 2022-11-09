@@ -6,7 +6,7 @@ def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
 
 def peaks_to_filtered_calls(peaks, loci):
-    left_step_width = 3
+    left_step_width = 5
     left_step_proportion = 0.6
     peaks = left_step_check(peaks, left_step_width, left_step_proportion)
 
@@ -14,23 +14,21 @@ def peaks_to_filtered_calls(peaks, loci):
 
     if loci == 'ICE3':
         merge_peaks_closer_than_this = 3.5
-        #peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_centroid)
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_right_most)
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
     if loci == 'BF20': #most pain-in-the-ass loci
-        merge_peaks_closer_than_this = 1.5
-        #peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_right_most)
+        merge_peaks_closer_than_this = 2.0 #1.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
     # ----------- PS3 extra filtering --------------
 
     if loci == 'BF9':
-        merge_peaks_closer_than_this = 4.5
+        merge_peaks_closer_than_this = 3.5
         peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
     if loci == 'E9':
-        merge_peaks_closer_than_this = 2.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_right_most)
+        merge_peaks_closer_than_this = 3.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
     # ----------- PS4 extra filtering --------------
 
@@ -40,11 +38,11 @@ def peaks_to_filtered_calls(peaks, loci):
 
     if loci == 'BF15':
         merge_peaks_closer_than_this = 2
-        peaks = stutter_check_2(peaks,  merge_peaks_closer_than_this, drop_right_most)
+        peaks = stutter_check_2(peaks,  merge_peaks_closer_than_this,drop_right_most)
 
     if loci == 'Bdru266':
-        merge_peaks_closer_than_this = 3
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, drop_lowest)
+        merge_peaks_closer_than_this = 3.5
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
     return [[round(peak[0], 1), peak[1]] for peak in peaks]
 

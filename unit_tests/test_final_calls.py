@@ -57,7 +57,7 @@ class TestFinalCalls(unittest.TestCase):
         print("final alleles called:" + str(ice3_final_alleles_called))
         # expected are 69,89,131
 
-        self.assertEqual(3, len(ice3_raw_alleles_called))
+        self.assertEqual(7, len(ice3_raw_alleles_called))
         self.assertEqual(3, len(ice3_filtered_alleles_called))
         self.assertEqual(3,  len(ice3_final_alleles_called))
         self.assertEqual([69.0, 89.0, 131.0], ice3_final_alleles_called)
@@ -81,7 +81,7 @@ class TestFinalCalls(unittest.TestCase):
         print("filtered alleles called:" + str(filtered_alleles_called))
         print("final alleles called:" + str(final_alleles_called))
 
-        self.assertEqual(4, len(raw_alleles_called)) #or 11, if you use smaller Kernel
+        self.assertEqual(7, len(raw_alleles_called)) #or 11, if you use smaller Kernel
         self.assertEqual(3, len(filtered_alleles_called))
         self.assertEqual(3, len(final_alleles_called))
         self.assertEqual([209.0,214.0,219.0], final_alleles_called) #close enough. would be better if 214 was 218
@@ -194,7 +194,7 @@ class TestFinalCalls(unittest.TestCase):
             fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF9"]
-        self.assertEqual(6, len(results.raw_alleles_called))
+        self.assertEqual(8, len(results.raw_alleles_called))
         self.assertEqual(3, len(results.filtered_alleles_called))
         self.assertEqual(3, len(results.final_alleles_called))
         self.assertEqual([82,87,94], results.final_alleles_called) #ideally 82,92, 94
@@ -214,7 +214,7 @@ class TestFinalCalls(unittest.TestCase):
             fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["E9"]
-        self.assertEqual(3, len(results.raw_alleles_called))
+        self.assertEqual(5, len(results.raw_alleles_called))
         self.assertEqual(2, len(results.filtered_alleles_called))
         self.assertEqual(2, len(results.final_alleles_called))
         self.assertEqual([197,210], results.final_alleles_called)

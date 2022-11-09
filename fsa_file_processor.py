@@ -71,9 +71,11 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
         # note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
         # also, B6 FW1379
-        if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
-                ("B6" in relevant_loci.keys()):
-            peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier)
+        #if ("BF3" in relevant_loci.keys()) or ("BF15" in relevant_loci.keys()) or \
+        # Note, originally, just BF15,BF3 and BF6 used (30, 10, 3, 1,) while everything else
+        # used (30, 20, 20, 10). But I decided to keep everything on the same parameters
+        # even though most of the other loci did not need so much resoltion
+        peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier)
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
@@ -103,7 +105,10 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             else:
                 max_call_intensity = 0
 
-            rescue_needed = (max_call_intensity < 3 * loci_specific_threshold)
+            if loci=="C8":
+                print("break here")
+
+            rescue_needed = (max_call_intensity < 4 * loci_specific_threshold)
             if rescue_needed:
                 threshold_reduction = 0.3
                 rescue_parameters = shared.peak_calling_parameters(
@@ -112,7 +117,6 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                     peak_calling_parameters.min_distance_between_peaks,
                     peak_calling_parameters.min_peak_width,
                     threshold_multiplier * threshold_reduction)
-                #    [*peak_calling_parameters[0:3], threshold_multiplier * threshold_reduction]
 
                 peaks_inside_loci, trace_x_new2, trace_y_new2, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,

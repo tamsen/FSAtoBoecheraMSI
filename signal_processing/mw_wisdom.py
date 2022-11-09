@@ -13,9 +13,9 @@ def make_adjustments(peaks, loci):
 
             p0=p[0]
             if p0 < 100:
-                p0=p[0]-3.0
+                p0=p[0]-1.7#3.0
             else:
-                p0=p[0]-2.0
+                p0=p[0]-1.7 #2.0
 
             adjusted_peaks.append([p0,p[1]])
 
