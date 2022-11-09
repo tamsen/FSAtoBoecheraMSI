@@ -14,11 +14,13 @@ def peaks_to_filtered_calls(peaks, loci):
 
     if loci == 'ICE3':
         merge_peaks_closer_than_this = 3.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_centroid)
+        #peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_centroid)
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_right_most)
 
     if loci == 'BF20': #most pain-in-the-ass loci
         merge_peaks_closer_than_this = 1.5
-        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        #peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        peaks = stutter_check_2(peaks, merge_peaks_closer_than_this, take_right_most)
 
     # ----------- PS3 extra filtering --------------
 

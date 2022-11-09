@@ -32,13 +32,14 @@ def make_adjustments(peaks, loci):
         peaks = [[p[0] + 0.5, p[1]] for p in peaks]
 
     if loci == 'BF11':
+        [peaks.remove(p) for p in peaks if 95 < p[0] < 96]
         peaks = [[p[0] - 0.5, p[1]] for p in peaks]
 
     #-------------PS3--------------
 
     if loci == 'BF9':
-        peaks = [[p[0] - 0.5, p[1]] for p in peaks]
         [peaks.remove(p) for p in peaks if 120 < p[0] < 122]
+        peaks = [[p[0] - 0.5, p[1]] for p in peaks]
 
     if loci == 'E9':
         peaks = [[p[0] + 0.5, p[1]] for p in peaks]
@@ -50,6 +51,7 @@ def make_adjustments(peaks, loci):
         peaks = [[p[0] - 1.0, p[1]] for p in peaks]
 
     if loci in ['B6']:
+        [peaks.remove(p) for p in peaks if 308 < p[0] < 310]
         peaks = [[p[0] + 0.5, p[1]] for p in peaks]
 
     #-------------PS5--------------

@@ -11,8 +11,8 @@
         <alleles>238</alleles>
     </loci>
     <loci name="BF11">
-        <alleles>80,86,95</alleles> 
-        <!-- tjd, is adding 95 bc seems real-->
+        <alleles>80,86</alleles> 
+        <!-- tjd, 95 also seems real, but MW never called it -->
     </loci>
     <loci name="ICE14">
         <alleles>214,217</alleles>
@@ -36,8 +36,8 @@
         <alleles>142,150</alleles>
     </loci>
     <loci name="B6">
-        <alleles>301,303,309</alleles>
-        <!-- tjd, is adding 309 bc seems real-->
+        <alleles>301,303</alleles>
+        <!-- tjd, 309  also seems real, but MW never called it -->
     </loci>
     <loci name="Bdru266">
         <alleles>129</alleles>

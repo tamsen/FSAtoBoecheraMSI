@@ -67,6 +67,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
         # most Loci are good with more smoothing
         peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
+        #peak_calling_parameters = shared.peak_calling_parameters(30, 10,3, 1, threshold_multiplier)
 
         # note BF15 and BF3 have some really close together peaks, so cant smooth as much as I'd like there.
         # also, B6 FW1379

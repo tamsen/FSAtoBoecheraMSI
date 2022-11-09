@@ -36,8 +36,6 @@ class TestFinalCalls(unittest.TestCase):
                                                 peak_analysis.take_run_centroid)
 
         self.assertEqual(results,
-        #                 [[2.8899999999999997, 7], [7.0, 42], [9.899999999999999, 7], [14.588111888111888, 101],
-        #                  [23.0, 1]])
                          [[3.1, 7], [7.0, 42], [10.1, 7], [14.5, 101],
                           [23.0, 1]])
 
@@ -82,7 +80,6 @@ class TestFinalCalls(unittest.TestCase):
         print("BF20 raw alleles called:" + str(raw_alleles_called))
         print("filtered alleles called:" + str(filtered_alleles_called))
         print("final alleles called:" + str(final_alleles_called))
-        # expected are 209,218,219
 
         self.assertEqual(4, len(raw_alleles_called)) #or 11, if you use smaller Kernel
         self.assertEqual(3, len(filtered_alleles_called))
@@ -135,9 +132,10 @@ class TestFinalCalls(unittest.TestCase):
         print("final alleles called:" + str(final_alleles_called))
 
         self.assertEqual(3, len(raw_alleles_called))
-        self.assertEqual(3, len(filtered_alleles_called))
-        self.assertEqual(3, len(filtered_alleles_called))
-        self.assertEqual([80,86,95], final_alleles_called)
+        self.assertEqual(2, len(filtered_alleles_called))
+        self.assertEqual(2, len(filtered_alleles_called))
+        #self.assertEqual([80,86,95], final_alleles_called)
+        self.assertEqual([80, 86], final_alleles_called) #deliberately will not call 95 b/c michael w did not
 
     def test_PS2_ICE14_final_calls(self):
         panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
@@ -197,7 +195,7 @@ class TestFinalCalls(unittest.TestCase):
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF9"]
         self.assertEqual(6, len(results.raw_alleles_called))
-        self.assertEqual(4, len(results.filtered_alleles_called))
+        self.assertEqual(3, len(results.filtered_alleles_called))
         self.assertEqual(3, len(results.final_alleles_called))
         self.assertEqual([82,87,94], results.final_alleles_called) #ideally 82,92, 94
 
@@ -246,9 +244,12 @@ class TestFinalCalls(unittest.TestCase):
 
         results = FSA_file_results.MSI_loci_results_by_loci["B6"]
         self.assertEqual(3, len(results.raw_alleles_called))
-        self.assertEqual(3, len(results.filtered_alleles_called))
-        self.assertEqual(3, len(results.final_alleles_called))
-        self.assertEqual([301,303,310], results.final_alleles_called) #309 would be better than 310, but its fine
+        self.assertEqual(2, len(results.filtered_alleles_called))
+        self.assertEqual(2, len(results.final_alleles_called))
+
+        # deliberately will not call 309/310 b/c michael w did not
+        # 309 would be better than 310, but its fine
+        self.assertEqual([301,303], results.final_alleles_called)
 
     def test_PS5_BF15_and_Bdru266_and_A3_final_calls(self):
         panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
