@@ -33,7 +33,6 @@ def make_adjustments(peaks, loci):
 
     if loci == 'ICE14': #g
         [peaks.remove(p) for p in peaks if 209.5 < p[0] < 210.5] #MW determined this to be false peak
-        peaks = [[p[0] + 0.5, p[1]] for p in peaks]
 
     if loci == 'BF11': #b
         [peaks.remove(p) for p in peaks if 95 < p[0] < 96]

@@ -158,7 +158,7 @@ class TestFinalCalls(unittest.TestCase):
         self.assertEqual(3, len(raw_alleles_called))
         self.assertEqual(2, len(filtered_alleles_called))
         self.assertEqual(2, len(filtered_alleles_called))
-        self.assertEqual([214,218], final_alleles_called)
+        self.assertEqual([214,217], final_alleles_called)
 
     def test_PS2_C8_final_calls(self):
         panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
@@ -263,7 +263,7 @@ class TestFinalCalls(unittest.TestCase):
         self.assertEqual(5, len(results.raw_alleles_called))
         self.assertEqual(3, len(results.filtered_alleles_called))
         self.assertEqual(3, len(results.final_alleles_called))
-        self.assertEqual([91,93,100], results.final_alleles_called)
+        self.assertEqual([91,93,99], results.final_alleles_called)
 
 
         results = FSA_file_results.MSI_loci_results_by_loci["Bdru266"]

@@ -146,7 +146,6 @@ def write_big_accuracy_file(outputDir, bySampleResults, panel_info):
     primer_sets = panel_info.keys()
     samples = list(bySampleResults.keys())
 
-    avg_accuracy_by_sample = {}
     accuracy_by_sample = dict(zip(samples, [[] for s in samples]))
     accuracy_by_loci = dict(zip(ordered_loci_list, [[] for l in ordered_loci_list]))
 

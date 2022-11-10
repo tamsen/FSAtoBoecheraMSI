@@ -30,12 +30,10 @@ class TestCalibration(unittest.TestCase):
             all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        BD1200_results = by_sample_results['BD1200']
-        BD1200_accuracy = avg_sample_accuracy['BD1200']
-
-        print("avg_sample_accuracy: " + str(avg_sample_accuracy))
-
-        self.assertEqual(BD1200_accuracy > 99.6, True)
+        self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.72, True)
+        self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.00, True)
+        self.assertEqual(avg_sample_accuracy['BP28'] >= 98.32, True) #brought down by BF9, PS3, calling extra peak.
+        self.assertEqual(avg_sample_accuracy['LA846'] >= 99.44, True)
 
 
 if __name__ == '__main__':
