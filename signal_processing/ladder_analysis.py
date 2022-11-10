@@ -37,7 +37,10 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
     # SO - if we see 4 peaks between 2000 and 2800, and we should see ony 3,
     # throw out the smallest
-    sixteen_peaks = remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup)
+    sixteen_peaks = remove_known_sus_ladder_peak_in_sus_range(sixteen_peaks, highest_peaks_tup, [2000,2800])
+    sixteen_peaks.sort(key=lambda x: x[0])
+
+    sixteen_peaks = remove_shorties_relative_to_siblings(sixteen_peaks, highest_peaks_tup)
     sixteen_peaks.sort(key=lambda x: x[0])
 
     # Another minor tweak, we need a smaller kernel to get the very first ladder point right,
@@ -85,13 +88,39 @@ def fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder, s
 
     return original_bp35_peak
 
+def remove_shorties_relative_to_siblings(sixteen_peaks,highest_peaks_tup):
 
-def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
+    expected_num_peaks=len(sixteen_peaks)
+    indexes_to_check=range(4,len(sixteen_peaks)-3)
+    peaks_to_go=[]
+    significantly_shorter= 0.6
+
+    for i in indexes_to_check:
+        previous_peak_height=sixteen_peaks[i-1][1]
+        ith_peak_height=sixteen_peaks[i][1]
+        next_peak_height=sixteen_peaks[i+1][1]
+
+        if (ith_peak_height < significantly_shorter*previous_peak_height) and \
+            (ith_peak_height < significantly_shorter * next_peak_height):
+
+            peaks_to_go.append(sixteen_peaks[i])
+
+    num_peaks_to_remove = len(peaks_to_go)
+    if num_peaks_to_remove > 0:
+
+        for i in range(0, num_peaks_to_remove):
+
+            sixteen_peaks.remove(peaks_to_go[i])
+            sixteen_peaks.append(highest_peaks_tup[i + expected_num_peaks])
+
+    return sixteen_peaks
+
+def remove_known_sus_ladder_peak_in_sus_range(sixteen_peaks, highest_peaks_tup, sus_range):
 
     expected_num_peaks=len(sixteen_peaks)
     typical_sus_peak_BP100=sixteen_peaks[3]
 
-    sus_range=[2000,2800]
+    #sus_range=[2000,2800]
     #is sus peak in sus range?
     sus_peak_in_sus_range= sus_range[0] < typical_sus_peak_BP100[0] < sus_range[1]
     if not sus_peak_in_sus_range:
@@ -116,7 +145,7 @@ def remove_known_sus_ladder_peak(sixteen_peaks, highest_peaks_tup):
     sus_peak_index = []
     for i in range(0,expected_num_peaks):
         peak = sixteen_peaks[i]
-        if 2000 <= peak[0] <= 2800 :
+        if sus_range[0] <= peak[0] <= sus_range[1] :
             sus_peaks.append(peak)
             sus_peak_index.append(i)
 

@@ -76,6 +76,28 @@ class TestCalibration(unittest.TestCase):
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
         self.assertEqual(avg_sample_accuracy['FW428'] >= 82.33, True)
+        self.assertEqual(avg_sample_accuracy['FW415'] >= 74.92, True)
+
+    def test_retrofracta_calibration(self):
+
+        path ="/home/tamsen/Data/Eton/Retrofracta_Calibration"
+        truth_file = os.path.join("../data/TruthData.xml")
+        panel_file = os.path.join("../data/Panel.xml")
+        truth_info = xml_file_readers.read_truth_data(truth_file)
+        panel_info = xml_file_readers.readPanelXml(panel_file)
+
+        output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
+                                                        "calibrationTest",
+                                                        "Retrofracta_FSA_to_microsat_script_results")
+        results_specific_to_this_subfolder = {}
+        all_results_by_file = {}
+
+        by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
+            all_results_by_file, output_folder_inside_data_folder,
+            panel_info, path, results_specific_to_this_subfolder, truth_info)
+
+        self.assertEqual(avg_sample_accuracy['JB276'] >= 75.05, True)
+        self.assertEqual(avg_sample_accuracy['JB277'] >= 82.19, True)
 
 if __name__ == '__main__':
     unittest.main()

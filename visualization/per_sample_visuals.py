@@ -15,15 +15,10 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     ax = plt.text(0.05, 0.95, loci, horizontalalignment='left',
                   verticalalignment='top', transform=ax.transAxes)
 
-    #if (msi_call_text):
-    #    ax = plt.gca()
-    #    ax = plt.text(0.95, 0.95, "raw: " + str(peak_xs), horizontalalignment='right',
-    #                  verticalalignment='top', transform=ax.transAxes, fontsize=8)
-
     if (ladder_peak_txt):
         ax = plt.gca()
         for i in range(0, len(peak_xs)):
-            ax = plt.text(peak_xs[i], peak_ys[i] + 500, str(GLOBAL_Liz500[i]), rotation=0)
+            ax = plt.text(peak_xs[i], peak_ys[i]*1.05, str(GLOBAL_Liz500[i]), rotation=0)
 
     ys_within_domain = []
     if (plot_domain):

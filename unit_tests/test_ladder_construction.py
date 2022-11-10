@@ -128,3 +128,17 @@ class TestLadder(TestCase):
         expected_peak_xs = [1332,1475,1756,2024,2463,2574,2686,3152,3719,4362,4838,4966,5610,6210,6713,6817]
         observed_peak_xs=[x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
+
+    def test_get_ladder_peaks_for_Lemmonii_with_false_peaks(self):
+        # difficult sample (one spurious low peak)
+        fsa_file = "../test_data/test_ladder/FW415_ladder_issue_PS1_A2_G01.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+                                                                                    "BD1200PS3c5_A02_",
+                                                                                    trace_data_dictionary)
+
+        expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
+
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+

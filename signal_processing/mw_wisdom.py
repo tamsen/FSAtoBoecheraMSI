@@ -8,22 +8,23 @@ def make_adjustments(peaks, loci):
 
     if loci == 'ICE3': #b
 
+        peaks = [[p[0] -1.7, p[1]] for p in peaks]
         # In original meeting, discussing GeneMarker results, we saw p > 100 had to be shifted -3
         # but this seems to require less shift. (meeting 2022 Aug 09 )
         # MW proposed capping the allele at 131, when trying to match the database.
         #Becasue this allele is constnatly marching up inknown populations
-        adjusted_peaks=[]
-        for p in peaks:
+        #adjusted_peaks=[]
+        #for p in peaks:
 
-            p0=p[0]
-            if p0 < 131:
-                p0 = p[0]-1.7
-            else:
-                p0 = 131
+        #    p0=p[0]
+        #    if p0 < 131:
+        #        p0 = p[0]-1.7
+        #    else:
+        #        p0 = 131
 
-            adjusted_peaks.append([p0,p[1]])
+        #    adjusted_peaks.append([p0,p[1]])
 
-        peaks = adjusted_peaks
+        #peaks = adjusted_peaks
 
     if loci == 'BF20': #g
         [peaks.remove(p) for p in peaks if 203 < p[0] < 204.5]  #MW determined this to be false peak
