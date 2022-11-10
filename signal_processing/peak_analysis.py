@@ -10,8 +10,8 @@ def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
 def peaks_to_filtered_calls(peaks, loci):
 
-    #remove any distant peaks tht are 1/10 of the main peak
-    iteratively_clean_short_peaks(peaks, 100, .1, 100, .1)
+    #remove any distant peaks tht are 2/10 of the main peak
+    iteratively_clean_short_peaks(peaks, 100, .2, 100, .2)
 
     step_width_left = 10
     step_proportion_left = 0.4

@@ -15,7 +15,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     if not (os.path.exists(run_folder)):
         os.makedirs(run_folder)
 
-    relevant_loci = xml_file_readers.figure_out_loci_from_run_name(panel_info, run_name)
+    relevant_loci = xml_file_readers.figure_out_loci_from_file_name(panel_info, fsa_file)
 
     if (relevant_loci == False):
         log.write_error_to_log("Uh-oh!  Can't figure out what panel to use for this FSA file!!")

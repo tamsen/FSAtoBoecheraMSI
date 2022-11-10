@@ -241,11 +241,6 @@ def readFSAFile(in_file):
 
     handle.close()
 
-    #with open('./tmp/FSA_file_reader_log.txt', 'w') as f:
-
-    #    for key in all_keys.keys():
-    #        f.write(key + "\t" + str(all_keys[key]) + "\n")
-
     print("Dyes in this file: " )
     dye_to_channel_mapping={}
     channel_numbers=[1,2,3,4]

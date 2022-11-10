@@ -57,7 +57,7 @@ class TestFinalCalls(unittest.TestCase):
         print("final alleles called:" + str(ice3_final_alleles_called))
         # expected are 69,89,131
 
-        self.assertEqual(8, len(ice3_raw_alleles_called))
+        self.assertEqual(7, len(ice3_raw_alleles_called))
         self.assertEqual(3, len(ice3_filtered_alleles_called))
         self.assertEqual(3,  len(ice3_final_alleles_called))
         self.assertEqual([69.0, 89.0, 131.0], ice3_final_alleles_called)
@@ -267,7 +267,7 @@ class TestFinalCalls(unittest.TestCase):
 
 
         results = FSA_file_results.MSI_loci_results_by_loci["Bdru266"]
-        self.assertEqual(4, len(results.raw_alleles_called))
+        self.assertEqual(2, len(results.raw_alleles_called))
         self.assertEqual(1, len(results.filtered_alleles_called))
         self.assertEqual(1, len(results.final_alleles_called))
         self.assertEqual([129], results.final_alleles_called)

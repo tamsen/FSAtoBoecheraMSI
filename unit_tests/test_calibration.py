@@ -54,8 +54,8 @@ class TestCalibration(unittest.TestCase):
             all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        self.assertEqual(avg_sample_accuracy['FW346'] >= 88.42, True)
-        self.assertEqual(avg_sample_accuracy['FW437'] >= 88.33, True)
+        self.assertEqual(avg_sample_accuracy['FW346'] >= 88.98, True)
+        self.assertEqual(avg_sample_accuracy['FW437'] >= 89.21, True)
 
     def test_lemmonii_calibration(self):
 
@@ -75,8 +75,7 @@ class TestCalibration(unittest.TestCase):
             all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        #this could be imporved. there is a small peak in PS5, BDru266, that could probably be cleaned up
-        self.assertEqual(avg_sample_accuracy['FW428'] >= 77.07, True)
+        self.assertEqual(avg_sample_accuracy['FW428'] >= 82.33, True)
 
 if __name__ == '__main__':
     unittest.main()

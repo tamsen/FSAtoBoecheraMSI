@@ -1,3 +1,4 @@
+import os
 import xml.etree.ElementTree as ET
 
 class TruthDataForSample:
@@ -42,11 +43,12 @@ def readPanelXml(input_file_path):
 
     return primer_sets_data_by_primer_set_name
 
-def figure_out_loci_from_run_name(panel, run_name):
+def figure_out_loci_from_file_name(panel, file_name):
 
-    #per_loci_truth = panel.truth_by_loci
+    base = os.path.basename(file_name).split(".")[0]
+
     for primer_set in panel:
-        if primer_set in run_name:
+        if primer_set in base :
             return panel[primer_set]
 
     return False

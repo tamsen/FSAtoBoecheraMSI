@@ -23,12 +23,7 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
 
     for file in results_by_file.keys():
 
-        base = os.path.basename(file).split(".")[0].split("_")[0]
-        for primer_set in primer_sets:
-            base = base.replace(primer_set, "")
-
-        base = base.split("--")[0]
-        sample_name = base
+        sample_name = get_sample_name_from_file_name(file, primer_sets)
 
         if not (sample_name in FSA_results_by_sample_by_loci):
             FSA_results_by_sample_by_loci[sample_name] = {}
@@ -66,6 +61,15 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                 FSA_results_by_sample_by_loci[sample_name][loci] = msi_results_for_loci
 
     return FSA_results_by_sample_by_loci
+
+
+def get_sample_name_from_file_name(file, primer_sets):
+    base = os.path.basename(file).split(".")[0].split("_")[0]
+    for primer_set in primer_sets:
+        base = base.replace(primer_set, "")
+    base = base.split("-")[0]
+    sample_name = base
+    return sample_name
 
 
 def write_summary_file(outputDir, bySampleResults, panel_info):
@@ -117,7 +121,6 @@ def write_summary_file(outputDir, bySampleResults, panel_info):
                                 data_list.append(str(allele_calls[i]))
 
                             else:
-                                # data_list.append(loci + ":" + "-")
                                 data_list.append("-")
 
             data_line = "\t".join(data_list)
