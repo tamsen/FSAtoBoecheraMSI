@@ -4,7 +4,6 @@ from datetime import datetime
 
 
 def allele_accuracy(called_alleles, expected_alleles):
-
     if len(expected_alleles) == 0:
         return -1
 
@@ -15,7 +14,7 @@ def allele_accuracy(called_alleles, expected_alleles):
 
     have_a_missing_allele_in_expectations = False
     null_or_missing_allele_codes = [0, -1]
-    cleaned_expected_alleles=[]
+    cleaned_expected_alleles = []
     for a in expected_alleles:
         if a not in null_or_missing_allele_codes:
             cleaned_expected_alleles.append(a)
@@ -48,13 +47,14 @@ def allele_accuracy(called_alleles, expected_alleles):
 
     return round(100.0 - percent_differences, 1)
 
-def write_accuracy_files(outputDir, bySampleResults, panel_info):
 
+def write_accuracy_files(outputDir, bySampleResults, panel_info):
     avg_loci_accuracy, avg_sample_accuracy = write_big_accuracy_file(outputDir, bySampleResults, panel_info)
     write_loci_accuracy_file(outputDir, avg_loci_accuracy)
     write_sample_accuracy_file(outputDir, avg_sample_accuracy)
 
     return avg_loci_accuracy, avg_sample_accuracy
+
 
 def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
     now = datetime.now()
@@ -71,9 +71,7 @@ def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
 
     header1 = "Loci\tAccuracy"
 
-
     with open(outFile, 'w') as f:
-
         f.write(header1 + "\n")
 
         for i in range(0, len(ordered_loci_list)):
@@ -83,7 +81,7 @@ def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
             f.write(data_line)
 
 
-def write_sample_accuracy_file(outputDir, avg_sample_accuracy ):
+def write_sample_accuracy_file(outputDir, avg_sample_accuracy):
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
     time = now.strftime("%H_%M_%S")
@@ -97,8 +95,7 @@ def write_sample_accuracy_file(outputDir, avg_sample_accuracy ):
     with open(outFile, 'w') as f:
         f.write(header1 + "\n")
 
-        for sample in sample_list :
-
+        for sample in sample_list:
             data_list = [sample, str(avg_sample_accuracy[sample])]
             data_line = "\t".join(data_list) + "\n"
             f.write(data_line)
@@ -119,9 +116,7 @@ def write_big_accuracy_file(outputDir, avg_accuracy_for_loci_list):
 
     header1 = "Loci\tAccuracy"
 
-
     with open(outFile, 'w') as f:
-
         f.write(header1 + "\n")
 
         for i in range(0, len(ordered_loci_list)):
@@ -129,6 +124,7 @@ def write_big_accuracy_file(outputDir, avg_accuracy_for_loci_list):
             data_list = [loci, avg_accuracy_for_loci_list[i]]
             data_line = "\t".join(data_list) + "\n"
             f.write(data_line)
+
 
 def write_big_accuracy_file(outputDir, bySampleResults, panel_info):
     now = datetime.now()
@@ -199,14 +195,11 @@ def write_big_accuracy_file(outputDir, bySampleResults, panel_info):
             f.writelines([data_line])
 
         f.write("\n")
-        f.write(header1 + "\n")
-        f.write(header2 + "\n")
+        f.write("Loci->\t" + "\t".join(ordered_loci_list) + "\n")
 
-        avg_accuracy_for_loci_list=[]
+        avg_accuracy_for_loci_list = []
         for loci in ordered_loci_list:
             if loci in accuracy_by_loci:
-                avg_accuracy_for_loci_list.append("-")
-                avg_accuracy_for_loci_list.append("-")
                 if len(accuracy_by_loci[loci]) > 0:
                     avg_accuracy_for_loci_list.append(str(statistics.mean(accuracy_by_loci[loci])))
                 else:

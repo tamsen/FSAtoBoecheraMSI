@@ -16,7 +16,7 @@ class TestPeakFiltering(unittest.TestCase):
 
         #[[91.6, 1342.1999999999998], [93.8, 20069.1], [97.9, 2004.3000000000002], [99.9, 18197.400000000005],
         # [101.9, 15506.700000000003]]
-        
+
         step_width_left = 10
         step_proportion_left = 0.4
         step_width_right = 3
