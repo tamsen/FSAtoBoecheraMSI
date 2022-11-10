@@ -41,7 +41,8 @@ def make_adjustments(peaks, loci):
     #-------------PS3--------------
 
     if loci == 'BF9': #b
-        [peaks.remove(p) for p in peaks if 120 < p[0] < 122]
+        [peaks.remove(p) for p in peaks if 120 < p[0] < 122] # false peaks, noise
+        [peaks.remove(p) for p in peaks if 140 < p[0] < 150] # false peaks, noise
         peaks = [[p[0] - 0.5, p[1]] for p in peaks]
 
     if loci == 'BF18': #g

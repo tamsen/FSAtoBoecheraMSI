@@ -4,8 +4,14 @@ from datetime import datetime
 
 
 def allele_accuracy(called_alleles, expected_alleles):
+
     if len(expected_alleles) == 0:
         return -1
+
+    #not fair to quibble about this.. there was no call in the original true data
+    if expected_alleles == [-1]:
+        if len(called_alleles) in [0, 1]:
+            return 100.0
 
     if len(called_alleles) == 0:
         return 0

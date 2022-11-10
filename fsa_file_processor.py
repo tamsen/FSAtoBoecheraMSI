@@ -97,12 +97,10 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             else:
                 max_call_intensity = 0
 
-            if loci=="C8":
-                print("break here")
-
-            rescue_needed = (max_call_intensity < 6 * loci_specific_threshold)
+            rescue_needed = (max_call_intensity < 4 * loci_specific_threshold)
             if rescue_needed:
-                threshold_reduction = 0.3
+                #threshold_reduction = 0.3
+                threshold_reduction = 0.1
                 rescue_parameters = shared.peak_calling_parameters(
                     100,
                     peak_calling_parameters.kernel_size,
