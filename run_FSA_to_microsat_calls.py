@@ -1,6 +1,7 @@
 import os.path
 import sys
 
+import fsa_directory_processor
 from file_io import text_file_readers, xml_file_readers, results_files
 import accuracy
 from visualization import per_sample_visuals
@@ -44,7 +45,6 @@ def main():
 
     paths_to_process = text_file_readers.readInputFile(FSA_File_list)
     panel_info = xml_file_readers.readPanelXml(Panel_File)
-
     all_results_by_file = {}
 
     for path in paths_to_process:
@@ -54,36 +54,11 @@ def main():
 
         if os.path.isdir(path):
 
-            for file in os.listdir(path):
-                if file.endswith(".fsa"):
-                    fsa_file = os.path.join(path, file)
-
-                    FSA_file_results = fsa_file_processor.process_fsa_file(fsa_file,
-                                                                           panel_info, output_folder_inside_data_folder)
-
-                    all_results_by_file[fsa_file] = FSA_file_results.MSI_loci_results_by_loci
-                    results_specific_to_this_subfolder[fsa_file] = FSA_file_results
-
-            bySampleResults = results_files.consolidate_by_file_results_to_by_sample_results(
-                results_specific_to_this_subfolder, panel_info, truth_info)
-
-            results_files.write_summary_file(output_folder_inside_data_folder,
-                                             bySampleResults, panel_info)
-
-            log.write_to_log("writing summary results for folder" + output_folder_inside_data_folder)
-            per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
-                                                              bySampleResults)
-
-            accuracy.write_accuracy_files(output_folder_inside_data_folder,
-                                     bySampleResults, panel_info)
+            fsa_directory_processor.process_directory(all_results_by_file, output_folder_inside_data_folder, panel_info, path,
+                              results_specific_to_this_subfolder, truth_info)
 
         else:
-            final_calls_by_loci = fsa_file_processor.process_fsa_file(path, panel_info, output_dir)
-            all_results_by_file[path] = final_calls_by_loci
-
-    # will write data to the "tmp" folder or what ever is given as the output folder
-    # results_files.write_summary_file(output_dir, results_by_file, panel_info)
-    # accuracy_assessment.assess_accuracy(output_dir, results_by_file, panel_info, truth_info)
+            print("Please use directories, not individual FSA files.")
 
     log.write_end_to_log()
 

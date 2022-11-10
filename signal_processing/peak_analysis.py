@@ -6,13 +6,18 @@ def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
 
 def peaks_to_filtered_calls(peaks, loci):
-    step_width_left = 6
+    step_width_left = 10
     step_proportion_left = 0.4
     step_width_right = 3
     step_proportion_right = 0.4
-    peaks = step_check(peaks, step_width_left, step_proportion_left,
-                       step_width_right, step_proportion_right)
 
+    while True:
+        cleaned_peaks = step_check(peaks, step_width_left, step_proportion_left,
+                       step_width_right, step_proportion_right)
+        if peaks == cleaned_peaks:
+            break
+
+    peaks = cleaned_peaks
 
     typical_stutter=3.5
 
@@ -82,7 +87,7 @@ def filter_by_range(peak_x, peak_y, expected_range):
     peaks_in_loci_range.sort(key=lambda x: x[0])
     return peaks_in_loci_range
 
-# Some times there is a teeny tiny peak to the left of a main peak.
+# Some times there is a teeny tiny peak to the left or rigth of a main peak.
 # This code removes it.
 def step_check(peaks, left_width, left_step_proportion,
                right_width, right_step_proportion):

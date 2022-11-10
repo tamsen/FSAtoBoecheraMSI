@@ -44,7 +44,8 @@ def readPanelXml(input_file_path):
 
 def figure_out_loci_from_run_name(panel, run_name):
 
-    for primer_set in panel.keys():
+    #per_loci_truth = panel.truth_by_loci
+    for primer_set in panel:
         if primer_set in run_name:
             return panel[primer_set]
 

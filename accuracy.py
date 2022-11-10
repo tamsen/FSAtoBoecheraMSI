@@ -54,6 +54,8 @@ def write_accuracy_files(outputDir, bySampleResults, panel_info):
     write_loci_accuracy_file(outputDir, avg_loci_accuracy)
     write_sample_accuracy_file(outputDir, avg_sample_accuracy)
 
+    return avg_loci_accuracy, avg_sample_accuracy
+
 def write_loci_accuracy_file(outputDir, avg_accuracy_for_loci_list):
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
