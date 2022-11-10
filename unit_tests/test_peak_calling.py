@@ -34,5 +34,13 @@ class TestPeakFiltering(unittest.TestCase):
         peaks = peak_analysis.iteratively_clean_short_peaks(peaks, 100, .2, 100, .2)
         self.assertEqual(len(peaks), 1)
 
+    def test_brutally_clean_short_peaks(self):
+
+        peaks = [[89.9, 1128.7], [95.6, 1314.4], [106.0, 1840.5], [108.0, 8654.2],
+                 [109.8, 24494.600000000002], [110.9, 11339.9]]
+        peaks = peak_analysis.brutally_clean_short_peaks(peaks, .2)
+        print(str(peaks))
+        self.assertEqual(len(peaks), 3)
+
 if __name__ == '__main__':
     unittest.main()

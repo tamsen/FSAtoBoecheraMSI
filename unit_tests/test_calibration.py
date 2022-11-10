@@ -76,7 +76,7 @@ class TestCalibration(unittest.TestCase):
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
         self.assertEqual(avg_sample_accuracy['FW428'] >= 82.33, True)
-        self.assertEqual(avg_sample_accuracy['FW415'] >= 74.92, True)
+        self.assertEqual(avg_sample_accuracy['FW415'] >= 76.24, True)
 
     def test_retrofracta_calibration(self):
 
@@ -97,7 +97,7 @@ class TestCalibration(unittest.TestCase):
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
         self.assertEqual(avg_sample_accuracy['JB276'] >= 75.05, True)
-        self.assertEqual(avg_sample_accuracy['JB277'] >= 82.19, True)
+        self.assertEqual(avg_sample_accuracy['JB277'] >= 87.45, True)
 
 if __name__ == '__main__':
     unittest.main()

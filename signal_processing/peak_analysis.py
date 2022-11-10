@@ -10,17 +10,14 @@ def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
 
 def peaks_to_filtered_calls(peaks, loci):
 
-    #remove any distant peaks tht are 2/10 of the main peak
+
+    #if loci=="BF3":
+    #    print("break here")
+
+    #brutally remove any distant peaks, and get gentler, closer to the action
+    brutally_clean_short_peaks(peaks, .1)
     iteratively_clean_short_peaks(peaks, 100, .2, 100, .2)
-
-    step_width_left = 10
-    step_proportion_left = 0.4
-    step_width_right = 3
-    step_proportion_right = 0.4
-
-    #remove any close peaks that are 4/10 of the main peak
-    iteratively_clean_short_peaks(peaks, step_width_left, step_proportion_left,
-                                   step_width_right, step_proportion_right)
+    iteratively_clean_short_peaks(peaks, 10, 0.4, 3,0.4)
 
 
     typical_stutter = 3.5
@@ -125,6 +122,18 @@ def step_check(peaks, left_width, left_step_proportion,
 
     return peaks
 
+def brutally_clean_short_peaks(peaks, step_proportion):
+
+    if len(peaks) < 2:
+        return peaks
+
+    max_peak = max([p[1] for p in peaks])
+    peaks_to_go=  [p for p in peaks if p[1] < step_proportion*max_peak]
+
+    for p in peaks_to_go:
+        peaks.remove(p)
+
+    return peaks
 
 def iteratively_clean_short_peaks(peaks, step_width_left, step_proportion_left,
                                   step_width_right, step_proportion_right):
