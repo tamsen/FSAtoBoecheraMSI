@@ -13,8 +13,7 @@ class TestCalibration(unittest.TestCase):
             os.makedirs(test_globals.GLOBAL_test_output_dir)
 
     def test_LxPxR_calibration(self):
-
-        path ="/home/tamsen/Data/Eton/LxPxR_Calibration"
+        path = "/home/tamsen/Data/Eton/LxPxR_Calibration"
         truth_file = os.path.join("../data/TruthData.xml")
         panel_file = os.path.join("../data/Panel.xml")
         truth_info = xml_file_readers.read_truth_data(truth_file)
@@ -32,13 +31,11 @@ class TestCalibration(unittest.TestCase):
 
         self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.72, True)
         self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.00, True)
-        self.assertEqual(avg_sample_accuracy['BP28'] >= 98.32, True) #brought down by BF9, PS3, calling extra peak.
+        self.assertEqual(avg_sample_accuracy['BP28'] >= 98.32, True)  # brought down by BF9, PS3, calling extra peak.
         self.assertEqual(avg_sample_accuracy['LA846'] >= 99.44, True)
 
-
     def test_paupercula_calibration(self):
-
-        path ="/home/tamsen/Data/Eton/Paupercula_Calibration"
+        path = "/home/tamsen/Data/Eton/Paupercula_Calibration"
         truth_file = os.path.join("../data/TruthData.xml")
         panel_file = os.path.join("../data/Panel.xml")
         truth_info = xml_file_readers.read_truth_data(truth_file)
@@ -58,8 +55,7 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(avg_sample_accuracy['FW437'] >= 89.21, True)
 
     def test_lemmonii_calibration(self):
-
-        path ="/home/tamsen/Data/Eton/Lemmonii_Calibration"
+        path = "/home/tamsen/Data/Eton/Lemmonii_Calibration"
         truth_file = os.path.join("../data/TruthData.xml")
         panel_file = os.path.join("../data/Panel.xml")
         truth_info = xml_file_readers.read_truth_data(truth_file)
@@ -79,8 +75,7 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(avg_sample_accuracy['FW415'] >= 76.24, True)
 
     def test_retrofracta_calibration(self):
-
-        path ="/home/tamsen/Data/Eton/Retrofracta_Calibration"
+        path = "/home/tamsen/Data/Eton/Retrofracta_Calibration"
         truth_file = os.path.join("../data/TruthData.xml")
         panel_file = os.path.join("../data/Panel.xml")
         truth_info = xml_file_readers.read_truth_data(truth_file)
@@ -98,6 +93,29 @@ class TestCalibration(unittest.TestCase):
 
         self.assertEqual(avg_sample_accuracy['JB276'] >= 75.05, True)
         self.assertEqual(avg_sample_accuracy['JB277'] >= 87.45, True)
+
+    def test_miscellaneous_calibration(self):
+        path = "/home/tamsen/Data/Eton/Miscellaneous_Calibration"
+        truth_file = os.path.join("../data/TruthData.xml")
+        panel_file = os.path.join("../data/Panel.xml")
+        truth_info = xml_file_readers.read_truth_data(truth_file)
+        panel_info = xml_file_readers.readPanelXml(panel_file)
+
+        output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
+                                                        "calibrationTest",
+                                                        "Miscellaneous_FSA_to_microsat_script_results")
+        results_specific_to_this_subfolder = {}
+        all_results_by_file = {}
+
+        by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
+            all_results_by_file, output_folder_inside_data_folder,
+            panel_info, path, results_specific_to_this_subfolder, truth_info)
+
+        self.assertEqual(avg_sample_accuracy['JB1488'] >= 78, True)  # f x f
+        self.assertEqual(avg_sample_accuracy['JB617'] >= 70, True)  # l x n x r
+        self.assertEqual(avg_sample_accuracy['FW1379'] >= 81, True)  # l x r
+        self.assertEqual(avg_sample_accuracy['BP27'] >= 82, True)  # l x r
+
 
 if __name__ == '__main__':
     unittest.main()

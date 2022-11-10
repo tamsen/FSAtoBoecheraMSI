@@ -1,5 +1,3 @@
-import log
-from signal_processing import peak_analysis
 
 #removes "spurious" peaks and aligns calls to MW original binning
 def make_adjustments(peaks, loci):
@@ -62,7 +60,6 @@ def make_adjustments(peaks, loci):
     #-------------PS5--------------
 
     if loci in ['Bdru266']:
-        #[peaks.remove(p) for p in peaks if 80 < p[0] < 100]
         [peaks.remove(p) for p in peaks if p[0] < 100]
 
     if loci in ['A3']:
