@@ -33,13 +33,15 @@ def process_directory(all_results_by_file, output_folder_inside_data_folder, pan
     results_files.write_summary_file(output_folder_inside_data_folder,
                                      by_sample_results, panel_info, False)
 
-    query_file.write_query_file(output_folder_inside_data_folder,
-                                     by_sample_results, True)
-
     per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
                                                       by_sample_results)
 
     avg_loci_accuracy, avg_sample_accuracy = accuracy.write_accuracy_files(output_folder_inside_data_folder,
                                                                            by_sample_results, panel_info)
+
+    batch_file = query_file.write_query_file(output_folder_inside_data_folder,
+                                             by_sample_results, True)
+    query_file.post_batch_file_and_get_response(output_folder_inside_data_folder, batch_file,
+                                                by_sample_results)
 
     return by_sample_results, avg_loci_accuracy, avg_sample_accuracy

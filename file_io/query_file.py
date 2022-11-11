@@ -1,11 +1,40 @@
 import os
 from datetime import datetime
 
-#to download query
-#http://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls
+# to download query
+# http://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls
+import requests
+
+
+def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
+
+    URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Daddy_finder_batch.py"
+    submit_file_query(batch_file, URL1)
+
+    # to download query
+    for sample in bySampleResults:
+
+        URL2 = "https://sites.biology.duke.edu/windhamlab/files/" + sample + "_SearchResults_ASscore.xls"
+        results2 = submit_plain_query(URL2)
+        destination = os.path.join(output_dir, sample + "_" + "BatchQuery_Ouput.tsv")
+
+        with open(destination, 'wb') as f:
+            f.write(results2)
+
+def submit_plain_query(URL):
+    response = requests.post(URL)
+    return response.content
+
+def submit_file_query(query_filename, URL):
+    with open(query_filename, 'rb') as f:
+        files = {'file': f}
+        print("Posting ", query_filename)
+        response = requests.post(URL, files=files)
+
+    return response.content
+
 
 def write_query_file(outputDir, bySampleResults, print_final_calls):
-
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
     time = now.strftime("%H_%M_%S")
@@ -40,9 +69,9 @@ def write_query_file(outputDir, bySampleResults, print_final_calls):
     how_query_likes_it["A3"] = ["A3", 6]
 
     if print_final_calls:
-        summary_file = os.path.join(outputDir, "BatchQuery_FinalCallsBySample" + time_stamp_string + ".tsv")
+        batch_file = os.path.join(outputDir, "BatchQuery_FinalCallsBySample" + time_stamp_string + ".txt")
     else:
-        summary_file = os.path.join(outputDir, "BatchQuery_RawCallsBySample" + time_stamp_string + ".tsv")
+        batch_file = os.path.join(outputDir, "BatchQuery_RawCallsBySample" + time_stamp_string + ".txt")
 
     header1_data = ["Query_ID"]
     for loci in ordered_loci_list:
@@ -55,7 +84,7 @@ def write_query_file(outputDir, bySampleResults, print_final_calls):
 
     header1 = "\t".join([str(p) for p in header1_data])
 
-    with open(summary_file, 'w') as f:
+    with open(batch_file, 'w') as f:
 
         f.write(header1 + "\n")
 
@@ -64,6 +93,8 @@ def write_query_file(outputDir, bySampleResults, print_final_calls):
             write_out_sample_data(bySampleResults,
                                   f, print_final_calls, ordered_loci_list, how_query_likes_it,
                                   sample)
+
+    return batch_file
 
 
 def write_out_sample_data(bySampleResults, f, final_calls,

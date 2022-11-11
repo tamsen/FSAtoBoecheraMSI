@@ -20,7 +20,7 @@ class TestQuery(unittest.TestCase):
 
         # to download query
         URL2 = "https://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls"
-        results2 = self.submit_query(file,URL2)
+        results2 = self.submit_plain_query(URL2)
         print(results2)
 
         file2 = "/home/tamsen/Data/Eton/Frag_Order_16664/FSA_to_microsat_script_results_11_11_2022_11_05_21/" + \
@@ -33,4 +33,8 @@ class TestQuery(unittest.TestCase):
         files = {'file': open(query_filename, 'rb')}
         print("Posting ", query_filename)
         response = requests.post(URL, files=files)
+        return response.content
+
+    def submit_plain_query(self,URL2):
+        response = requests.post(URL2)
         return response.content

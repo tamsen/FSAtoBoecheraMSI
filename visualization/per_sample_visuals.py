@@ -104,9 +104,21 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 
         if loci in sample_result.keys():
             [mapping_plot_data_spline, mapping_plot_data_linear] = sample_result[loci].mapping_plotting_data
-            [x_original, x_new, A, B] = mapping_plot_data_spline
-            ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
+
+            if mapping_plot_data_spline:
+                [x_original, x_new, A, B] = mapping_plot_data_spline
+
+                ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
+                                                   loci, False, "purple", False, False)
+
+            elif mapping_plot_data_linear:
+                [x_original, x_new, A, B] = mapping_plot_data_linear
+
+                ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
                                                loci, False, "purple", False, False)
+            else:
+                ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
+                                                   loci + "Failed", False, "purple", False, False)
 
         else:
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
@@ -161,31 +173,31 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
         else:
             truth = False
 
+
+        ax = plt.gca()
+        base_text_height=0.95
+        font_size=6
+        if len(raw_alleles_called) < 6:
+            ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+        else:
+            base_text_height = 0.85
+            ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called[0:4]),
+                                  horizontalalignment='right',
+                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+        ax = plt.gca()
+        ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
+                                  horizontalalignment='right',
+                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
+        ax = plt.gca()
+        ax = plt.text(0.95,base_text_height-0.1, "filtered: " + str(filtered_alleles_called), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
+        ax = plt.gca()
+        ax = plt.text(0.95, base_text_height-0.2, "final: " + str(final_alleles_called ), horizontalalignment='right',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
         if truth:
-            ax = plt.gca()
-            base_text_height=0.95
-            font_size=6
-            if len(raw_alleles_called) < 6:
-                ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-            else:
-                base_text_height = 0.85
-                ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called[0:4]),
-                                  horizontalalignment='right',
-                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-                ax = plt.gca()
-                ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
-                                  horizontalalignment='right',
-                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-
-            ax = plt.gca()
-            ax = plt.text(0.95,base_text_height-0.1, "filtered: " + str(filtered_alleles_called), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-
-            ax = plt.gca()
-            ax = plt.text(0.95, base_text_height-0.2, "final: " + str(final_alleles_called ), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-
             ax = plt.gca()
             ax = plt.text(0.95, base_text_height-0.3, "exp: " + str(truth), horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=font_size)

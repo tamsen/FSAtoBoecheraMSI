@@ -142,3 +142,26 @@ class TestLadder(TestCase):
         observed_peak_xs = [x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
+    def test_get_ladder_peaks_for_RPsamples_with_peaks_lost_in_threshold(self):
+
+        fsa_file = "../test_data/test_ladder/TD21RP22PS1_G08.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+                                                                                    "TD21RP22PS1_G08_",
+                                                                                    trace_data_dictionary)
+
+        expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
+
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        #self.assertEqual(expected_peak_xs, observed_peak_xs)
+
+        fsa_file = "../test_data/test_ladder/TD21RP22PS2_H08.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+                                                                                    "TD21RP22PS2_H08_",
+                                                                                    trace_data_dictionary)
+
+        expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
+
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        #self.assertEqual(expected_peak_xs, observed_peak_xs)

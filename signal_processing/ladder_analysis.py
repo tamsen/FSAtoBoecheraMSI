@@ -21,11 +21,22 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     # parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
 
     #made kernel smaller so ladder matches peak-smoothing alg
-    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5)
-    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5)
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5, False)
+    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5, False)
 
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
         ladder_trace, parameters_for_right_side_of_ladder, True)
+
+    highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
+
+    if (len(highest_peaks_tup) < 18): #something went wrong here. Re-call the peaks
+
+        new_theshold = highest_peaks_tup[0][1]*0.50
+        parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5, new_theshold)
+        highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
+            ladder_trace, parameters_for_right_side_of_ladder, True)
+        highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
+
 
     # now, keep the best 16 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
@@ -176,12 +187,14 @@ def find_top_N_Peaks(signal_trace, peak_calling_parameters,largest_first):
     kernel = np.ones(peak_calling_parameters.kernel_size) / peak_calling_parameters.kernel_size
     smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
 
-    if peak_calling_parameters.threshold_multiplier:
+    if peak_calling_parameters.forced_threshold:
+        threshold = peak_calling_parameters.forced_threshold
+    elif peak_calling_parameters.threshold_multiplier:
         threshold = get_threshold_for_trace(smoothed_trace, peak_calling_parameters.threshold_multiplier)
     else:
         threshold = 0
 
-        # https://plotly.com/python/peak-finding/
+    # https://plotly.com/python/peak-finding/
     indices = find_peaks(smoothed_trace, height=threshold,
                          distance=peak_calling_parameters.min_distance_between_peaks,
                          width=peak_calling_parameters.min_peak_width)[0]
@@ -217,17 +230,28 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
     A = [x[0] for x in sixteen_peaks]  # get the peak position, not intensity
     B = [x[2] for x in sixteen_peaks]  # the LIZ 500 we baked in
 
-    f1 = CubicSpline(A, B, bc_type='natural')
-
     # dont apply the spline where we dont have data!
     left_domain_limit = sixteen_peaks[0][0]
     right_domain_limit = sixteen_peaks[15][0]
 
-    # test it looks good
-    passed_monotonic_test, plotting_data_spline = per_file_visuals.plotMapping(run_folder, A, B, left_domain_limit,
-                                                                               right_domain_limit,
-                                                                               f1, "Spline")
+    plotting_data_spline = False
     plotting_data_linear = False
+
+    try:
+        f1 = CubicSpline(A, B, bc_type='natural')
+
+        # test it looks good
+        passed_monotonic_test, plotting_data_spline = per_file_visuals.plotMapping(run_folder, A, B,
+                                                                                   left_domain_limit,
+                                                                                   right_domain_limit,
+                                                                                   f1, "Spline")
+
+        log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
+
+    except ValueError:
+        log.write_to_log("Major spline fail: " + str(ValueError))
+        passed_monotonic_test = False
+
 
     log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
 
