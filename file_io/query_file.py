@@ -16,7 +16,7 @@ def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
 
         URL2 = "https://sites.biology.duke.edu/windhamlab/files/" + sample + "_SearchResults_ASscore.xls"
         results2 = submit_plain_query(URL2)
-        destination = os.path.join(output_dir, sample + "_" + "BatchQuery_Ouput.tsv")
+        destination = os.path.join(output_dir, sample + "_" + "BatchQuery_Ouput.txt")
 
         with open(destination, 'wb') as f:
             f.write(results2)

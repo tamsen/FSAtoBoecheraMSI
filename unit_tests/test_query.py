@@ -1,32 +1,37 @@
-import sys
-#import xlwt
-#import openpyxl as xl
+import os
 import requests
-#import html5lib
+import test_globals
 
 import unittest
+
+from file_io import query_file
 
 
 class TestQuery(unittest.TestCase):
 
+
+    def setUp(self):
+
+        if not (os.path.exists(test_globals.GLOBAL_test_output_dir)):
+            os.makedirs(test_globals.GLOBAL_test_output_dir)
+
+        out_folder=os.path.join(test_globals.GLOBAL_test_output_dir, "test_BMW_query")
+        if not (os.path.exists(out_folder)):
+            os.makedirs(out_folder)
+
     def test_query(self):
 
         URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Daddy_finder_batch.py"
-        file = "/home/tamsen/Data/Eton/Frag_Order_16664/FSA_to_microsat_script_results_11_11_2022_11_05_21/" + \
-                "BatchQuery_FinalCallsBySample11_11_2022_11_05_58.tsv"
-
-        results1 = self.submit_query(file,URL1)
-        print(results1)
+        in_file=os.path.join(test_globals.GLOBAL_test_input_dir, "test_BMW_query", "BatchQuery.txt")
+        results1 = query_file.submit_file_query(in_file,URL1)
 
         # to download query
-        URL2 = "https://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls"
-        results2 = self.submit_plain_query(URL2)
-        print(results2)
+        URL2 = "https://sites.biology.duke.edu/windhamlab/files/BD1200CNTRL_SearchResults_ASscore.xls"
+        results2 = query_file.submit_plain_query(URL2)
 
-        file2 = "/home/tamsen/Data/Eton/Frag_Order_16664/FSA_to_microsat_script_results_11_11_2022_11_05_21/" + \
-                "BatchQuery_Ouput.tsv"
+        out_file=os.path.join(test_globals.GLOBAL_test_output_dir, "test_BMW_query","BatchQuery_Ouput.txt")
 
-        with open(file2 , 'wb') as f:
+        with open(out_file, 'wb') as f:
             f.write(results2)
 
     def submit_query(self,query_filename, URL):
