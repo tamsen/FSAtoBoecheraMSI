@@ -1,5 +1,6 @@
 import accuracy
 
+
 class loci_results:
 
     def __init__(self, raw_alleles_called, filtered_calls_for_loci, final_alleles_called,
@@ -15,9 +16,20 @@ class loci_results:
         self.true_species = "to be determined"
         self.raw_accuracy = 0
         self.final_accuracy = 0
+        self.BMW_determination = False
 
     def set_truth_and_accuracy(self, truth_alleles, true_species):
         self.truth_data = truth_alleles
         self.true_species = true_species
         self.raw_accuracy = accuracy.allele_accuracy(self.raw_alleles_called, self.truth_data)
         self.final_accuracy = accuracy.allele_accuracy(self.final_alleles_called, self.truth_data)
+
+    def set_BMW_determination(self, BMW_determination_line):
+
+        if BMW_determination_line:
+            splat = BMW_determination_line.split("\t")
+            if len(splat) > 5:
+                splat = BMW_determination_line.split("\t")
+                score = splat[0]
+                species = splat[2]
+                self.BMW_determination = species + " (score: " + str(score) + ")"

@@ -8,8 +8,12 @@ import requests
 
 def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
 
-    URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Daddy_finder_batch.py"
-    submit_file_query(batch_file, URL1)
+    URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Search_database_batch.py"
+    batch_file_result = submit_file_query(batch_file, URL1)
+    destination = os.path.join(output_dir, "BatchQuery_Ouput.html")
+
+    with open(destination, 'wb') as f:
+        f.write(batch_file_result)
 
     # to download query
     for sample in bySampleResults:
@@ -20,6 +24,15 @@ def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
 
         with open(destination, 'wb') as f:
             f.write(results2)
+
+        with open(destination, 'r') as f:
+           lines = f.readlines()
+
+        species_determination_data = lines[3]
+        results_by_loci = bySampleResults[sample]
+
+        for loci in results_by_loci:
+            results_by_loci[loci].set_BMW_determination(species_determination_data)
 
 def submit_plain_query(URL):
     response = requests.post(URL)

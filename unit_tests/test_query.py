@@ -19,20 +19,44 @@ class TestQuery(unittest.TestCase):
         if not (os.path.exists(out_folder)):
             os.makedirs(out_folder)
 
-    def test_query(self):
 
-        URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Daddy_finder_batch.py"
-        in_file=os.path.join(test_globals.GLOBAL_test_input_dir, "test_BMW_query", "BatchQuery.txt")
-        results1 = query_file.submit_file_query(in_file,URL1)
+    def test_response(self):
 
-        # to download query
-        URL2 = "https://sites.biology.duke.edu/windhamlab/files/BD1200CNTRL_SearchResults_ASscore.xls"
+        URL2 = "http://sites.biology.duke.edu/windhamlab/files/TD21RP25_SearchResults_ASscore.xls"
         results2 = query_file.submit_plain_query(URL2)
 
-        out_file=os.path.join(test_globals.GLOBAL_test_output_dir, "test_BMW_query","BatchQuery_Ouput.txt")
+        out_file=os.path.join(test_globals.GLOBAL_test_output_dir, "test_BMW_query","TD21RP25_BatchQuery_Ouput.txt")
 
         with open(out_file, 'wb') as f:
             f.write(results2)
+
+        with open(out_file, 'r') as f:
+           lines = f.readlines()
+
+        print("third line:" + lines[2])
+
+    def test_query(self):
+
+        #https: // stackoverflow.com / questions / 11790535 / extracting - data -
+        #from
+        #-html - table
+        #cgi - bin / Search_database_byAllele.py
+        #Search_database_batch.py
+        #URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Daddy_finder_batch.py"
+        URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Search_database_batch.py"
+        in_file=os.path.join(test_globals.GLOBAL_test_input_dir, "test_BMW_query", "BatchQuery.txt")
+        results1 = query_file.submit_file_query(in_file,URL1)
+
+        #'http://sites.biology.duke.edu/windhamlab/files/TD21RP25_SearchResults_ASscore.xls'" >
+        # to download query
+        URL3 = "https://sites.biology.duke.edu/windhamlab/files/BD1200CNTRL_SearchResults_ASscore.xls"
+        URL2 = "http://sites.biology.duke.edu/windhamlab/files/TD21RP25_SearchResults_ASscore.xls"
+        results2 = query_file.submit_plain_query(URL2)
+
+        out_file=os.path.join(test_globals.GLOBAL_test_output_dir, "test_BMW_query","TD21RP25_BatchQuery_Ouput_TAKE3.txt")
+
+        with open(out_file, 'wb') as f:
+            f.write(results1)
 
     def submit_query(self,query_filename, URL):
         files = {'file': open(query_filename, 'rb')}

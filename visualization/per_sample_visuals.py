@@ -46,7 +46,6 @@ def write_per_sample_summary_plots(run_folder, by_sample_results):
                          "BF15", "Bdru266", "A3"]
 
     for sample_name, sample_result in by_sample_results.items():
-        # truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
 
         plot_traces_for_the_sample(run_folder, sample_name,
                                    sample_result, ordered_loci_list)
@@ -140,7 +139,8 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
     dye_to_color = {"FAM": "blue", "VIC": "green"}
     fig = plt.figure(figsize=(10, 10))
-    species = False
+    known_species = False
+    determined_species = False
 
     for i in range(1, 16):
 
@@ -164,7 +164,8 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
         if loci in sample_result:
             loci_result=sample_result[loci]
             truth = loci_result.truth_data
-            species = loci_result.true_species
+            known_species = loci_result.true_species
+            determined_species = loci_result.BMW_determination
             final_accuracy = loci_result.final_accuracy
             raw_accuracy = loci_result.raw_accuracy
             raw_alleles_called  = loci_result.raw_alleles_called
@@ -215,8 +216,11 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
 
 
     plot_title = sample_name + " all loci"
-    if species:
-        plot_title = plot_title + "\n" + species
+    if known_species:
+        plot_title = plot_title + "\n" + known_species
+    elif determined_species:
+        plot_title = plot_title + "\n" + determined_species
+
     fig.suptitle(plot_title)
 
     out_path= os.path.join(run_folder,"allele_calls")
