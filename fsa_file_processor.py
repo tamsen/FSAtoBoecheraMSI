@@ -48,11 +48,11 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         return {}
 
     else:
-        mapping_fxn, left_panel_domain_limit, right_panel_domain_limit, mapping_plot_data_spline, mapping_plot_data_linear, \
+        mapping_fxn, left_ladder_domain_limit, right_ladder_domain_limit, mapping_plot_data_spline, mapping_plot_data_linear, \
             = ladder_worked
 
-    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_panel_domain_limit,
-                                right_panel_domain_limit,
+    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_ladder_domain_limit,
+                                right_ladder_domain_limit,
                                 sixteen_peaks, threshold)
 
     # Channels we care about are ones with dyes in our panel.
@@ -72,8 +72,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                             all_collected_data, mapping_fxn,
-                                                                            left_panel_domain_limit,
-                                                                            right_panel_domain_limit, sixteen_peaks,
+                                                                            left_ladder_domain_limit,
+                                                                            right_ladder_domain_limit, sixteen_peaks,
                                                                             dye_to_channel_mapping[channel],
                                                                             peak_calling_parameters)
 
@@ -84,9 +84,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            loci_specific_threshold = ladder_analysis.get_threshold_for_trace(trace_y_new, threshold_multiplier)
-            raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci, trace_x_new,
-                                                         trace_y_new, loci_specific_threshold)
+            raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
 
             filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
@@ -94,34 +92,34 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             # and thus falling below threshold
             if (len(raw_calls)) > 0:
                 max_call_intensity = max(call[1] for call in raw_calls)
+                threshold_reduction = 0.3
             else:
                 max_call_intensity = 0
+                threshold_reduction = 0.01
 
-            rescue_needed = (max_call_intensity < 4 * loci_specific_threshold)
+            rescue_needed = (max_call_intensity < 4 * threshold_used)
             if rescue_needed:
-                #threshold_reduction = 0.3
-                threshold_reduction = 0.1
                 rescue_parameters = shared.peak_calling_parameters(
                     100,
                     peak_calling_parameters.kernel_size,
                     peak_calling_parameters.min_distance_between_peaks,
-                    peak_calling_parameters.min_peak_width,
+                    peak_calling_parameters.min_distance_between_peaks,
                     threshold_multiplier * threshold_reduction)
+                #    #False)
+                #
+                # threshold_multiplier * threshold_reduction)
 
                 peaks_inside_loci, trace_x_new2, trace_y_new2, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                     all_collected_data, mapping_fxn,
-                                                                                    left_panel_domain_limit,
-                                                                                    right_panel_domain_limit,
+                                                                                    left_ladder_domain_limit,
+                                                                                    right_ladder_domain_limit,
                                                                                     sixteen_peaks,
                                                                                     dye_to_channel_mapping[channel],
                                                                                     rescue_parameters)
 
-                loci_specific_threshold = ladder_analysis.get_threshold_for_trace(
-                    trace_y_new, threshold_multiplier * threshold_reduction)
                 unfiltered_peaks_in_loci = peaks_inside_loci[loci]
-                raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci, trace_x_new2,
-                                                             trace_y_new2, loci_specific_threshold)
+                raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
 
                 filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
@@ -148,7 +146,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                            [call[1] for call in raw_calls],
                                            [call[0] for call in filtered_calls],
                                            [call[1] for call in filtered_calls],
-                                           loci_specific_threshold,
+                                           threshold_used,
                                            loci, whole_loci_domain, channel]
             else:
                 where_loci_should_be = relevant_loci[loci]["length"]  # even though we didnt find them..
@@ -158,7 +156,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                            [call[1] for call in raw_calls],
                                            [call[0] for call in filtered_calls],
                                            [call[1] for call in filtered_calls],
-                                           loci_specific_threshold,
+                                           threshold_used,
                                            loci, whole_loci_domain, channel]
 
             # get the results ready to print to file

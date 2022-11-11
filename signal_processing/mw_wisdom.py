@@ -26,7 +26,11 @@ def make_adjustments(peaks, loci):
 
     if loci == 'BF20': #g
         [peaks.remove(p) for p in peaks if 203 < p[0] < 204.5]  #MW determined this to be false peak
-        peaks = [[p[0] + 0.3, p[1]] for p in peaks]
+        #tjd - this might be where I brought down all the accuracy
+        #peaks = [[p[0] + 0.3, p[1]] for p in peaks]
+
+    if loci == 'A1': #b
+        peaks = [[p[0] -0.5, p[1]] for p in peaks]
 
     #-------------PS2--------------
 
@@ -45,7 +49,7 @@ def make_adjustments(peaks, loci):
         peaks = [[p[0] - 0.5, p[1]] for p in peaks]
 
     if loci == 'BF18': #g
-        peaks = [[p[0] - 0.5, p[1]] for p in peaks]
+        peaks = [[p[0] - 1, p[1]] for p in peaks]
 
 
     #-------------PS4--------------

@@ -175,9 +175,13 @@ def find_top_N_Peaks(signal_trace, peak_calling_parameters,largest_first):
     # very basic smoothing
     kernel = np.ones(peak_calling_parameters.kernel_size) / peak_calling_parameters.kernel_size
     smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
-    threshold = get_threshold_for_trace(smoothed_trace, peak_calling_parameters.threshold_multiplier)
 
-    # https://plotly.com/python/peak-finding/
+    if peak_calling_parameters.threshold_multiplier:
+        threshold = get_threshold_for_trace(smoothed_trace, peak_calling_parameters.threshold_multiplier)
+    else:
+        threshold = 0
+
+        # https://plotly.com/python/peak-finding/
     indices = find_peaks(smoothed_trace, height=threshold,
                          distance=peak_calling_parameters.min_distance_between_peaks,
                          width=peak_calling_parameters.min_peak_width)[0]

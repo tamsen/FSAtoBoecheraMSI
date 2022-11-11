@@ -21,10 +21,13 @@ def process_directory(all_results_by_file, output_folder_inside_data_folder, pan
     by_sample_results = results_files.consolidate_by_file_results_to_by_sample_results(
         results_specific_to_this_subfolder, panel_info, truth_info)
 
-    results_files.write_summary_file(output_folder_inside_data_folder,
-                                     by_sample_results, panel_info)
-
     log.write_to_log("writing summary results for folder" + output_folder_inside_data_folder)
+
+    results_files.write_summary_file(output_folder_inside_data_folder,
+                                     by_sample_results, panel_info, True)
+
+    results_files.write_summary_file(output_folder_inside_data_folder,
+                                     by_sample_results, panel_info, False)
 
     per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
                                                       by_sample_results)

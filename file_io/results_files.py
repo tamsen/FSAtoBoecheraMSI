@@ -52,7 +52,7 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
                 if("PS3" in file) and ("E9" in loci_already_processed_for_this_sample):
                     log.write_to_log("Processing file " + file )
                     log.write_to_log("Loci already called: " + str(loci_already_processed_for_this_sample))
-                    prior_E9_data = FSA_results_by_sample_by_loci[sample_name]["E9"].raw_alleles_called
+                    prior_E9_data = FSA_results_by_sample_by_loci[sample_name]["E9"].final_alleles_called
                     log.write_to_log("Prior E9 calls: " + str(prior_E9_data))
                     log.write_to_log("Will not override prior E9 data. " )
                 else:
@@ -72,12 +72,16 @@ def get_sample_name_from_file_name(file, primer_sets):
     return sample_name
 
 
-def write_summary_file(outputDir, bySampleResults, panel_info):
+def write_summary_file(outputDir, bySampleResults, panel_info, final_calls):
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
     time = now.strftime("%H_%M_%S")
     time_stamp_string = "_".join([day, time])
-    summaryFile = os.path.join(outputDir, "ResultsBySample" + time_stamp_string + ".tsv")
+
+    if final_calls:
+        summaryFile = os.path.join(outputDir, "FinalCallsBySample" + time_stamp_string + ".tsv")
+    else:
+        summaryFile = os.path.join(outputDir, "RawCallsBySample" + time_stamp_string + ".tsv")
 
     primer_sets = panel_info.keys()
     expected_space_for_calls = 5
@@ -111,7 +115,11 @@ def write_summary_file(outputDir, bySampleResults, panel_info):
                     for loci in panel_info[primer_set].keys():
 
                         if loci in results_for_file:
-                            allele_calls = results_for_file[loci].raw_alleles_called
+
+                            if final_calls:
+                                allele_calls = results_for_file[loci].final_alleles_called
+                            else:
+                                allele_calls = results_for_file[loci].raw_alleles_called
                         else:
                             allele_calls = ["" for x in range(0, expected_space_for_calls)]
 

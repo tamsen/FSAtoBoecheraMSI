@@ -3,7 +3,7 @@ import statistics
 import numpy as np
 
 
-def peaks_to_raw_calls(peaks, trace_x_new, trace_y_new, threshold):
+def peaks_to_raw_calls(peaks):
     peaks = [[round(peak[0], 1), peak[1]] for peak in peaks]
     return peaks
 
