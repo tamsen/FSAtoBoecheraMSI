@@ -23,7 +23,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         data_string = [fsa_file, "panel problem", "Can't figure out what panel to use for this FSA file!!"]
         results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
-        return {}
+        return False
     else:
         log.write_to_log("relevant_loci: " + str(relevant_loci))
 
@@ -34,7 +34,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         data_string = [fsa_file, "panel problem", "Couldn't get the right number of ladder peaks!!"]
         results_files.write_results(output_dir, data_string)
 
-        return {}
+        return False
 
     else:
         sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
@@ -45,7 +45,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
         results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
-        return {}
+        return False
 
     else:
         mapping_fxn, left_ladder_domain_limit, right_ladder_domain_limit, mapping_plot_data_spline, mapping_plot_data_linear, \

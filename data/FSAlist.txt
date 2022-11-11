@@ -1,6 +1,5 @@
 #./data/TD21DG24PS1c10_C07.fsa
-#./data/PSEDG2202_C01.fsa
-#./data/PSEDG2401_D01.fsa
+/home/tamsen/Data/Eton/Frag_Order_16664
 #/home/tamsen/Data/Eton/Frag_Order_16544/BD1200PS2c30_G01.fsa
 #/home/tamsen/Data/Eton/Frag_Order_16436/PS1c2-BD1200fsa_A01.fsa
 #/home/tamsen/Data/Eton/Frag_Order_16513
@@ -10,7 +9,7 @@
 #/home/tamsen/Data/Eton/Frag_Order_16637
 #/home/tamsen/Data/Eton/Frag_Order_16544
 #/home/tamsen/Data/Eton/Frag_Order_16436
-/home/tamsen/Data/Eton/SmallTestData
+#/home/tamsen/Data/Eton/SmallTestData
 #/home/tamsen/Data/Eton/LadderTests
 #/home/tamsen/Data/Eton/CalibrationData
-/home/tamsen/Data/Eton/LxPxR_Calibration
+#/home/tamsen/Data/Eton/LxPxR_Calibration

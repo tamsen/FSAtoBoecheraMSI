@@ -30,6 +30,8 @@ def consolidate_by_file_results_to_by_sample_results(results_by_file, panel_info
 
         truth_for_this_sample = accuracy.find_truth_for_this_sample(sample_name, truth_info)
 
+        if not results_by_file[file]:
+            continue
 
         for loci in results_by_file[file].MSI_loci_results_by_loci.keys():
 

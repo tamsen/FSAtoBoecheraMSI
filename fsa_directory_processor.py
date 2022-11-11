@@ -15,8 +15,12 @@ def process_directory(all_results_by_file, output_folder_inside_data_folder, pan
             FSA_file_results = fsa_file_processor.process_fsa_file(fsa_file,
                                                                    panel_info, output_folder_inside_data_folder)
 
-            all_results_by_file[fsa_file] = FSA_file_results.MSI_loci_results_by_loci
-            results_specific_to_this_subfolder[fsa_file] = FSA_file_results
+            if FSA_file_results:
+                all_results_by_file[fsa_file] = FSA_file_results.MSI_loci_results_by_loci
+                results_specific_to_this_subfolder[fsa_file] = FSA_file_results
+            else:
+                all_results_by_file[fsa_file] = False
+                results_specific_to_this_subfolder[fsa_file] = False
 
     by_sample_results = results_files.consolidate_by_file_results_to_by_sample_results(
         results_specific_to_this_subfolder, panel_info, truth_info)

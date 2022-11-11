@@ -1,6 +1,8 @@
 import os
 from datetime import datetime
 
+#to download query
+#http://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls
 
 def write_query_file(outputDir, bySampleResults, print_final_calls):
 
