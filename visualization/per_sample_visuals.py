@@ -185,8 +185,8 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called[0:4]),
                                   horizontalalignment='right',
                                   verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-        ax = plt.gca()
-        ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
+            ax = plt.gca()
+            ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
                                   horizontalalignment='right',
                                   verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
