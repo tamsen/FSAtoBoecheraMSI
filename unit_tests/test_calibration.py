@@ -41,7 +41,8 @@ class TestCalibration(unittest.TestCase):
 
         self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.72, True)
         self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.00, True)
-        self.assertEqual(avg_sample_accuracy['BP28'] >= 98.32, True)  # brought down by BF9, PS3, calling extra peak.
+        #self.assertEqual(avg_sample_accuracy['BP28'] >= 98.32, True)  # brought down by BF9, PS3, calling extra peak.
+        self.assertEqual(avg_sample_accuracy['BP28'] >= 99.52, True) #fixed when we increase sutter-distance from 3.5 -> 4
         self.assertEqual(avg_sample_accuracy['LA846'] >= 99.44, True)
 
         #this was when kernel down to 6
@@ -72,7 +73,9 @@ class TestCalibration(unittest.TestCase):
         #self.assertEqual(avg_sample_accuracy['FW437'] >= 89.21, True)
 
         self.assertEqual(avg_sample_accuracy['FW346'] >= 83.76, True)
-        self.assertEqual(avg_sample_accuracy['FW437'] >= 89.23, True)
+        self.assertEqual(avg_sample_accuracy['FW437'] >= 89.21, True)
+        #could be brough tup by fixing extra peak in BF3, but it breaks lxpxr accuracy
+        #self.assertEqual(avg_sample_accuracy['FW437'] >= 91.84, True)
 
     def test_lemmonii_calibration(self):
         path = "/home/tamsen/Data/Eton/Lemmonii_Calibration"

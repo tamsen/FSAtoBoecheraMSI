@@ -19,7 +19,6 @@ def peaks_to_filtered_calls(peaks, loci):
     iteratively_clean_short_peaks(peaks, 100, .2, 100, .2)
     iteratively_clean_short_peaks(peaks, 10, 0.4, 3,0.4)
 
-
     typical_stutter = 3.5
     fine_stutter = 1.5
 
@@ -43,7 +42,7 @@ def peaks_to_filtered_calls(peaks, loci):
     # ----------- PS3 extra filtering --------------
 
     if loci in ['BF9']:  # b
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, typical_stutter + .5, take_run_maximum)
 
     if loci in ['E9']:  # b
         peaks = stutter_fix(peaks, typical_stutter, take_right_most)
@@ -86,7 +85,7 @@ def filter_by_range(peak_x, peak_y, expected_range):
     return peaks_in_loci_range
 
 
-# Some times there is a teeny tiny peak to the left or rigth of a main peak.
+# Some times there is a teeny tiny peak to the left or right of a main peak.
 # This code removes it.
 def step_check(peaks, left_width, left_step_proportion,
                right_width, right_step_proportion):
