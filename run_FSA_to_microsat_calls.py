@@ -1,5 +1,6 @@
 import os.path
 import sys
+from datetime import datetime
 
 import fsa_directory_processor
 from file_io import text_file_readers, xml_file_readers, results_files
@@ -49,7 +50,12 @@ def main():
 
     for path in paths_to_process:
 
-        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results")
+        now = datetime.now()
+        day = now.strftime("%d_%m_%Y")
+        time = now.strftime("%H_%M_%S")
+        time_stamp_string = "_".join([day, time])
+
+        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results_" + time_stamp_string )
         results_specific_to_this_subfolder = {}
 
         if os.path.isdir(path):

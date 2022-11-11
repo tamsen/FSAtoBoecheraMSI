@@ -1,5 +1,5 @@
 import os.path
-from file_io import text_file_readers, xml_file_readers, results_files
+from file_io import text_file_readers, xml_file_readers, results_files, query_file
 import accuracy
 from visualization import per_sample_visuals
 import fsa_file_processor
@@ -28,6 +28,9 @@ def process_directory(all_results_by_file, output_folder_inside_data_folder, pan
 
     results_files.write_summary_file(output_folder_inside_data_folder,
                                      by_sample_results, panel_info, False)
+
+    query_file.write_query_file(output_folder_inside_data_folder,
+                                     by_sample_results, True)
 
     per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
                                                       by_sample_results)
