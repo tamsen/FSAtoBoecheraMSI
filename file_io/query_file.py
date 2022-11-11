@@ -1,5 +1,9 @@
 import os
 from datetime import datetime
+import lxml
+import requests
+import pandas as pd
+
 
 # to download query
 # http://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls
@@ -15,24 +19,37 @@ def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
     with open(destination, 'wb') as f:
         f.write(batch_file_result)
 
+    results_by_sample = get_data_from_Search_database_batch_response(batch_file_result)
+    # URL2 = "https://sites.biology.duke.edu/windhamlab/files/" + sample + "_SearchResults_ASscore.xls"
+
     # to download query
     for sample in bySampleResults:
 
-        URL2 = "https://sites.biology.duke.edu/windhamlab/files/" + sample + "_SearchResults_ASscore.xls"
-        results2 = submit_plain_query(URL2)
-        destination = os.path.join(output_dir, sample + "_" + "BatchQuery_Ouput.txt")
-
-        with open(destination, 'wb') as f:
-            f.write(results2)
-
-        with open(destination, 'r') as f:
-           lines = f.readlines()
-
-        species_determination_data = lines[3]
         results_by_loci = bySampleResults[sample]
 
         for loci in results_by_loci:
+            species_determination_data = results_by_sample[sample]
             results_by_loci[loci].set_BMW_determination(species_determination_data)
+
+def get_data_from_Search_database_batch_response(response):
+
+        tables = pd.read_html(response)  # Returns list of all tables on page
+        results_by_sample_name={}
+        num_samples=len(tables)
+
+        for i in range(0,num_samples):
+
+            table=tables[i]
+            DNA_extractions=table['DNA extraction no.']
+            species = table['Species name']
+            similarity_score  = table['Species name']
+            query_sample_name = DNA_extractions[0].split(" ")[1].strip()  #ie, "query: TD21RP25	"
+            closest_sample_name= DNA_extractions[1]
+            closest_species = species[1]
+            similarity_score = similarity_score[1]
+            results_by_sample_name[query_sample_name] = [closest_sample_name,closest_species,similarity_score]
+
+        return results_by_sample_name
 
 def submit_plain_query(URL):
     response = requests.post(URL)

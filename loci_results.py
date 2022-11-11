@@ -24,12 +24,10 @@ class loci_results:
         self.raw_accuracy = accuracy.allele_accuracy(self.raw_alleles_called, self.truth_data)
         self.final_accuracy = accuracy.allele_accuracy(self.final_alleles_called, self.truth_data)
 
-    def set_BMW_determination(self, BMW_determination_line):
+    def set_BMW_determination(self, BMW_determination):
 
-        if BMW_determination_line:
-            splat = BMW_determination_line.split("\t")
-            if len(splat) > 5:
-                splat = BMW_determination_line.split("\t")
-                score = splat[0]
-                species = splat[2]
-                self.BMW_determination = species + " (score: " + str(score) + ")"
+        #Entry = [closest_sample_name, closest_species, similarity_score]
+
+        if BMW_determination:
+                self.BMW_determination = str(BMW_determination[1]) + \
+                " (score: " + str(BMW_determination[2])  + ")"
