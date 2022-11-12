@@ -216,10 +216,13 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
 
 
     plot_title = sample_name + " all loci"
-    if known_species:
-        plot_title = plot_title + "\n" + known_species
-    elif determined_species:
-        plot_title = plot_title + "\n" + determined_species
+
+    if determined_species:
+        plot_title = plot_title + "\n" + "determined: " + determined_species
+    elif known_species:
+        plot_title = plot_title + "\n" + "truth: " + known_species
+    else:
+        plot_title = plot_title + "\n" + "species to be determined"
 
     fig.suptitle(plot_title)
 

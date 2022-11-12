@@ -42,7 +42,7 @@ def get_data_from_Search_database_batch_response(response):
             table=tables[i]
             DNA_extractions=table['DNA extraction no.']
             species = table['Species name']
-            similarity_score  = table['Species name']
+            similarity_score  = table['Allele similarity score']
             query_sample_name = DNA_extractions[0].split(" ")[1].strip()  #ie, "query: TD21RP25	"
             closest_sample_name= DNA_extractions[1]
             closest_species = species[1]
