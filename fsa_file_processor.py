@@ -39,21 +39,15 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     else:
         sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
 
-    ladder_worked = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
+    mapping_function = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
-    if not (ladder_worked):
+    if not (mapping_function):
         data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
         results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return False
 
-    else:
-        mapping_fxn, left_ladder_domain_limit, right_ladder_domain_limit, mapping_plot_data_spline, mapping_plot_data_linear, \
-            = ladder_worked
-
-    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_fxn, left_ladder_domain_limit,
-                                right_ladder_domain_limit,
-                                sixteen_peaks, threshold)
+    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_function, sixteen_peaks, threshold)
 
     # Channels we care about are ones with dyes in our panel.
     channels = set([loci_info_dict["dye"] for loci_info_dict in relevant_loci.values()])
@@ -71,9 +65,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
-                                                                            all_collected_data, mapping_fxn,
-                                                                            left_ladder_domain_limit,
-                                                                            right_ladder_domain_limit, sixteen_peaks,
+                                                                            all_collected_data, mapping_function,
+                                                                            sixteen_peaks,
                                                                             dye_to_channel_mapping[channel],
                                                                             peak_calling_parameters)
 
@@ -111,9 +104,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
                 peaks_inside_loci, trace_x_new2, trace_y_new2, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
-                                                                                    all_collected_data, mapping_fxn,
-                                                                                    left_ladder_domain_limit,
-                                                                                    right_ladder_domain_limit,
+                                                                                    all_collected_data,
+                                                                                    mapping_function,
                                                                                     sixteen_peaks,
                                                                                     dye_to_channel_mapping[channel],
                                                                                     rescue_parameters)
@@ -169,7 +161,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             results_for_loci = loci_results(raw_calls_for_loci, filtered_calls_for_loci,
                                             allele_calls_for_loci, fsa_file,
                                             loci_specific_plot_data, ladder_plot_data,
-                                            [mapping_plot_data_spline, mapping_plot_data_linear])
+                                            [mapping_function.mapping_plot_data_spline,
+                                             mapping_function.mapping_plot_data_linear])
 
             final_calls_by_loci[loci] = results_for_loci
 

@@ -3,7 +3,6 @@ from signal_processing.ladder_analysis import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 
 
-
 def plot_trace_and_special_points(fig, plot_index, xs, ys,
                                   peak_xs, peak_ys, loci, plot_domain, dye_color,
                                   msi_call_text, ladder_peak_txt):
@@ -18,7 +17,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     if (ladder_peak_txt):
         ax = plt.gca()
         for i in range(0, len(peak_xs)):
-            ax = plt.text(peak_xs[i], peak_ys[i]*1.05, str(GLOBAL_Liz500[i]), rotation=0)
+            ax = plt.text(peak_xs[i], peak_ys[i] * 1.05, str(GLOBAL_Liz500[i]), rotation=0)
 
     ys_within_domain = []
     if (plot_domain):
@@ -46,7 +45,6 @@ def write_per_sample_summary_plots(run_folder, by_sample_results):
                          "BF15", "Bdru266", "A3"]
 
     for sample_name, sample_result in by_sample_results.items():
-
         plot_traces_for_the_sample(run_folder, sample_name,
                                    sample_result, ordered_loci_list)
 
@@ -114,7 +112,7 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
                 [x_original, x_new, A, B] = mapping_plot_data_linear
 
                 ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
-                                               loci, False, "purple", False, False)
+                                                   loci, False, "purple", False, False)
             else:
                 ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
                                                    loci + "Failed", False, "purple", False, False)
@@ -149,7 +147,7 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
         if loci not in sample_result.keys():
             dye = "FAM"
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1], [1], [1], [1],
-                                               loci, [0, 1], dye_to_color[dye], True, False)
+                                               loci + " FAIL", [0, 1], dye_to_color[dye], True, False)
         else:
             [new_x, new_y, raw_peak_xs, raw_peak_ys, filtered_peak_xs, filtered_peak_ys,
              threshold, plot_prefix, domain, dye] = \
@@ -162,58 +160,59 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
             ax = plt.plot(new_x, [threshold for x in new_x], c="gray")
 
         if loci in sample_result:
-            loci_result=sample_result[loci]
+            loci_result = sample_result[loci]
             truth = loci_result.truth_data
             known_species = loci_result.true_species
             determined_species = loci_result.BMW_determination
             final_accuracy = loci_result.final_accuracy
             raw_accuracy = loci_result.raw_accuracy
-            raw_alleles_called  = loci_result.raw_alleles_called
-            filtered_alleles_called  = loci_result.filtered_alleles_called
+            raw_alleles_called = loci_result.raw_alleles_called
+            filtered_alleles_called = loci_result.filtered_alleles_called
             final_alleles_called = loci_result.final_alleles_called
-        else:
-            truth = False
 
-
-        ax = plt.gca()
-        base_text_height=0.95
-        font_size=6
-        if len(raw_alleles_called) < 6:
-            ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-        else:
-            base_text_height = 0.85
-            ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called[0:4]),
-                                  horizontalalignment='right',
-                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
             ax = plt.gca()
-            ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
-                                  horizontalalignment='right',
-                                  verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+            base_text_height = 0.95
+            font_size = 6
 
-        ax = plt.gca()
-        ax = plt.text(0.95,base_text_height-0.1, "filtered: " + str(filtered_alleles_called), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+            if len(raw_alleles_called) < 6:
+                ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called), horizontalalignment='right',
+                              verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+            else:
+                base_text_height = 0.85
+                ax = plt.text(0.95, 0.95, "raw: " + str(raw_alleles_called[0:4]),
+                              horizontalalignment='right',
+                              verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
-        ax = plt.gca()
-        ax = plt.text(0.95, base_text_height-0.2, "final: " + str(final_alleles_called ), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-        if truth:
+                ax = plt.gca()
+                ax = plt.text(0.95, 0.85, "+ " + str(raw_alleles_called[4:-1]),
+                              horizontalalignment='right',
+                              verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
             ax = plt.gca()
-            ax = plt.text(0.95, base_text_height-0.3, "exp: " + str(truth), horizontalalignment='right',
-                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
-            ax = plt.gca()
-            ax = plt.text(0.95, base_text_height-0.4, "raw acc.: " + str(raw_accuracy), horizontalalignment='right',
+            ax = plt.text(0.95, base_text_height - 0.1, "filtered: " + str(filtered_alleles_called),
+                          horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
             ax = plt.gca()
-            ax = plt.text(0.95,base_text_height-0.5, "final acc.: " + str(final_accuracy), horizontalalignment='right',
+            ax = plt.text(0.95, base_text_height - 0.2, "final: " + str(final_alleles_called),
+                          horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+            if truth:
+                ax = plt.gca()
+                ax = plt.text(0.95, base_text_height - 0.3, "exp: " + str(truth), horizontalalignment='right',
+                              verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+                ax = plt.gca()
+                ax = plt.text(0.95, base_text_height - 0.4, "raw acc.: " + str(raw_accuracy),
+                              horizontalalignment='right',
+                              verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
+                ax = plt.gca()
+                ax = plt.text(0.95, base_text_height - 0.5, "final acc.: " + str(final_accuracy),
+                              horizontalalignment='right',
+                              verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
         if i in [1, 4, 7, 10, 13, 16]:
             plt.ylabel("PS" + str(int((i + 2.0) / 3.0)), fontsize=16)
-
 
     plot_title = sample_name + " all loci"
 
@@ -226,7 +225,7 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
 
     fig.suptitle(plot_title)
 
-    out_path= os.path.join(run_folder,"allele_calls")
+    out_path = os.path.join(run_folder, "allele_calls")
     if not (os.path.exists(out_path)):
         os.makedirs(out_path)
     plt.savefig(out_path + "/" + sample_name + "_all_loci" + "_plot" + ".png")

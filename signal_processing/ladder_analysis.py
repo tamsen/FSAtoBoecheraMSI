@@ -10,6 +10,17 @@ import log
 
 GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
+class Mapping_Info:
+
+    def __init__(self, mapping_fxn, left_domain_limit, right_domain_limit,
+                 mapping_plot_data_spline, mapping_plot_data_linear, results_are_questionable):
+
+        self.mapping_fxn = mapping_fxn
+        self.left_ladder_domain_limit = left_domain_limit
+        self.right_ladder_domain_limit = right_domain_limit
+        self.mapping_plot_data_spline = mapping_plot_data_spline
+        self.mapping_plot_data_linear = mapping_plot_data_linear
+        self.results_are_questionable = results_are_questionable
 
 def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     log.write_to_log("Reading through ladder trace for " + runName)
@@ -268,4 +279,7 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
         if not passed_monotonic_test:
             return False
 
-    return f1, left_domain_limit, right_domain_limit, plotting_data_spline, plotting_data_linear
+    ladder_info = Mapping_Info(f1, left_domain_limit, right_domain_limit, plotting_data_spline, plotting_data_linear,
+                               False)
+
+    return ladder_info

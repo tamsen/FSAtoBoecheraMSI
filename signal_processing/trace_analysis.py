@@ -23,13 +23,12 @@ def remap_a_trace(tracedata_x_coords, tracedata_y_coords,
     return x_raw, x_new, y_raw  # y_raw and y_new are the same
 
 
-def remap_ladder(run_folder, trace_data_dictionary, fxn,
-                 left_domain_limit, right_domain_limit,
-                 sixteen_peaks, threshold):
+def remap_ladder(run_folder, trace_data_dictionary, mapping_info, sixteen_peaks, threshold):
     original_ladder = trace_data_dictionary['DATA105']
     num_data_points = len(original_ladder)
     old_x_coords = [x for x in range(0, num_data_points)]
-    x_raw, x_new, y_new = remap_a_trace(old_x_coords, original_ladder, fxn, left_domain_limit, right_domain_limit)
+    x_raw, x_new, y_new = remap_a_trace(old_x_coords, original_ladder, mapping_info.mapping_fxn,
+                                        mapping_info.left_ladder_domain_limit, mapping_info.right_ladder_domain_limit)
 
     peak_xs = GLOBAL_Liz500
     peak_ys = [peak[1] for peak in sixteen_peaks]
@@ -42,9 +41,8 @@ def remap_ladder(run_folder, trace_data_dictionary, fxn,
 
 
 def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
-                     trace_data_dictionary, fxn,
-                     left_domain_limit, right_domain_limit,
-                     sixteen_peaks, channel_number, peak_calling_parameters):
+                                        trace_data_dictionary, mapping_info,
+                                        sixteen_peaks, channel_number, peak_calling_parameters):
 
     channel_name = 'DATA' + str(channel_number)
     wavelength = trace_data_dictionary['DyeW' + str(channel_number)]
@@ -67,11 +65,13 @@ def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
 
     num_data_points = len(smoothed_trace)
     old_x_coords = [x for x in range(0, num_data_points)]
-    trace_x_raw, trace_x_new, trace_y_new = remap_a_trace(old_x_coords, smoothed_trace, fxn, left_domain_limit,
-                                                          right_domain_limit)
+    trace_x_raw, trace_x_new, trace_y_new = remap_a_trace(old_x_coords, smoothed_trace, mapping_info.mapping_fxn,
+                                                          mapping_info.left_ladder_domain_limit,
+                                                          mapping_info.right_ladder_domain_limit)
 
     # if peaks are at the extreme end of the ladder, throw them out
-    peak_x_raw, peak_x_new, peak_y_new = remap_a_trace(peak_xs, peak_ys, fxn, sixteen_peaks[1][0] + 10,
+    peak_x_raw, peak_x_new, peak_y_new = remap_a_trace(peak_xs, peak_ys,
+                                                       mapping_info.mapping_fxn, sixteen_peaks[1][0] + 10,
                                                        sixteen_peaks[14][0] - 10)
 
     plot_domain = [trace_x_new[0], trace_x_new[len(trace_x_new) - 1]]
