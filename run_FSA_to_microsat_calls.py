@@ -1,4 +1,5 @@
 import os.path
+import version
 import sys
 from datetime import datetime
 
@@ -16,7 +17,8 @@ import log
 # Convention, https://peps.python.org/pep-0008/#function-and-variable-names
 # Function names should be lowercase, with words separated by underscores as necessary to improve readability.
 
-def greet():
+def greet(version_info):
+    print(version_info.version_num)
     print('Tool to convert ABI FSA trace files to allele calls')
     print('Example input: ' + "./data/FSAlist.txt ./data/Panel.xml ./data/TruthData.xml")
 
@@ -27,21 +29,24 @@ def usage():
 
 
 def main():
-    greet()
 
-    FSA_File_list = sys.argv[1]
-    Panel_File = sys.argv[2]
+    version_info = version.version_info()
+    greet(version_info)
+
+    output_dir = sys.argv[1]
+    FSA_File_list = sys.argv[2]
+    Panel_File = sys.argv[3]
     truth_info = {}
 
-    if (len(sys.argv) > 3):
-        truth_file = sys.argv[3]
+    if (len(sys.argv) > 4):
+        truth_file = sys.argv[4]
         truth_info = xml_file_readers.read_truth_data(truth_file)
 
-    output_dir = "./tmp/"
-    if not (os.path.exists(output_dir)):
-        os.makedirs(output_dir)
+    #output_dir = "./tmp/"
+    #if not (os.path.exists(output_dir)):
+    #    os.makedirs(output_dir)
 
-    log.write_start_to_log(output_dir)
+    log.write_start_to_log(output_dir, version_info)
     log.write_to_log('Command Arguments Given: %s' % sys.argv)
 
     paths_to_process = text_file_readers.readInputFile(FSA_File_list)

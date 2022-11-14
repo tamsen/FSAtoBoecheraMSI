@@ -1,15 +1,20 @@
 import os
 from datetime import datetime
+import version
 
 log_file_path = ""
 
-def write_start_to_log( outputDir ):
+def write_start_to_log( outputDir, version_info ):
 
     global log_file_path
     log_file_path = os.path.join(outputDir, "FSAtoMicrosatCallsLog.txt")
     write_to_log("\n")
     write_to_log("*******************************************")
     write_to_log("******* FSAtoMicrosatCalls initiated ******")
+
+    version_line = version_info.to_string()
+    write_to_log(version_line)
+    write_to_log("*******************************************")
 
 def write_end_to_log( ):
 
