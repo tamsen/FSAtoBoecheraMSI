@@ -111,13 +111,13 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
                 [x_original, x_new, A, B] = mapping_plot_data_spline
 
                 ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
-                                                   loci, False, "purple", False, False)
+                                                   loci + " spline map", False, "purple", False, False)
 
             elif mapping_plot_data_linear:
                 [x_original, x_new, A, B] = mapping_plot_data_linear
 
                 ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
-                                                   loci, False, "purple", False, False)
+                                                   loci  + " linear map", False, "purple", False, False)
             else:
                 ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
                                                    loci + "Failed", False, "purple", False, False)
@@ -168,6 +168,10 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
             ax = plt.scatter(filtered_peak_xs, filtered_peak_ys, s=80, facecolors='none', edgecolors='r')
             ax = plt.plot(new_x, [threshold for x in new_x], c="gray")
 
+            ax = plt.gca()
+            ax = plt.text(0.05, 0.85, warning, horizontalalignment='left',
+                          verticalalignment='top', transform=ax.transAxes)
+
         if loci in sample_result:
             loci_result = sample_result[loci]
             truth = loci_result.truth_data
@@ -178,6 +182,8 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
             raw_alleles_called = loci_result.raw_alleles_called
             filtered_alleles_called = loci_result.filtered_alleles_called
             final_alleles_called = loci_result.final_alleles_called
+            ladder_status = loci_result.ladder_status
+            warning = "Ladder status: " + str(ladder_status).split(".")[-1]
 
             ax = plt.gca()
             base_text_height = 0.95
@@ -206,6 +212,12 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
             ax = plt.text(0.95, base_text_height - 0.2, "final: " + str(final_alleles_called),
                           horizontalalignment='right',
                           verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
+            ax = plt.gca()
+            ax = plt.text(0.05, .85, warning,
+                          horizontalalignment='left',
+                          verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
+
             if truth:
                 ax = plt.gca()
                 ax = plt.text(0.95, base_text_height - 0.3, "exp: " + str(truth), horizontalalignment='right',

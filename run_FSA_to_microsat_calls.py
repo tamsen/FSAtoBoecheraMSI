@@ -56,8 +56,8 @@ def main():
         time = now.strftime("%H_%M_%S")
         time_stamp_string = "_".join([day, time])
 
-        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results_" +
-                                                        version_info.version_num +
+        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results__" +
+                                                        version_info.version_num + "__" +
                                                         time_stamp_string )
         results_specific_to_this_subfolder = {}
 
