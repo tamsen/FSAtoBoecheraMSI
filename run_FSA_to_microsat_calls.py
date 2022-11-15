@@ -42,10 +42,6 @@ def main():
         truth_file = sys.argv[4]
         truth_info = xml_file_readers.read_truth_data(truth_file)
 
-    #output_dir = "./tmp/"
-    #if not (os.path.exists(output_dir)):
-    #    os.makedirs(output_dir)
-
     log.write_start_to_log(output_dir, version_info)
     log.write_to_log('Command Arguments Given: %s' % sys.argv)
 
@@ -60,12 +56,14 @@ def main():
         time = now.strftime("%H_%M_%S")
         time_stamp_string = "_".join([day, time])
 
-        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results_" + time_stamp_string )
+        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results_" +
+                                                        version_info.version_num +
+                                                        time_stamp_string )
         results_specific_to_this_subfolder = {}
 
         if os.path.isdir(path):
 
-            fsa_directory_processor.process_directory(all_results_by_file, output_folder_inside_data_folder, panel_info, path,
+            fsa_directory_processor.process_directory(version_info, all_results_by_file, output_folder_inside_data_folder, panel_info, path,
                               results_specific_to_this_subfolder, truth_info)
 
         else:

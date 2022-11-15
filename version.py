@@ -1,12 +1,10 @@
 import git
-from git import repo
 
 GLOBAL_git_URL = "https://github.com/tamsen/FSAtoBoecheraMSI"
 GLOBAL_version_num = "v1.0.0.0"
 GLOBAL_public_comments = [
     ["Differentiating between final calls and very confident calls, " +
-     "so we only keep calls made with a very clear ladder. ", "Nov 14, 2022"]
-]
+     "so we only keep calls made with a very clear ladder. ", "Nov 14, 2022"]]
 
 
 class version_info:
@@ -24,6 +22,7 @@ class version_info:
             self.when = False
 
         self.repo_url = GLOBAL_git_URL
+        self.app_name = GLOBAL_git_URL.split("/")[-1]
         self.version_num = GLOBAL_version_num
         self.public_comments = GLOBAL_public_comments
 

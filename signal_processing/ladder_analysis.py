@@ -1,3 +1,5 @@
+from enum import Enum
+
 import numpy as np
 from scipy.stats import mode
 from scipy.signal import find_peaks
@@ -13,14 +15,16 @@ GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 4
 class Mapping_Info:
 
     def __init__(self, mapping_fxn, left_domain_limit, right_domain_limit,
-                 mapping_plot_data_spline, mapping_plot_data_linear, results_are_questionable):
+                 mapping_plot_data_spline, mapping_plot_data_linear, ladder_state: Enum):
 
         self.mapping_fxn = mapping_fxn
         self.left_ladder_domain_limit = left_domain_limit
         self.right_ladder_domain_limit = right_domain_limit
         self.mapping_plot_data_spline = mapping_plot_data_spline
         self.mapping_plot_data_linear = mapping_plot_data_linear
-        self.results_are_questionable = results_are_questionable
+        self.ladder_state = ladder_state
+
+    LadderState = Enum('LadderStatus', ['Good', 'Bad', 'Suspect'])
 
 def getLadderPeaks(runFolder, runName, trace_data_dictionary):
     log.write_to_log("Reading through ladder trace for " + runName)
@@ -247,6 +251,7 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
 
     plotting_data_spline = False
     plotting_data_linear = False
+    LadderState = Mapping_Info.LadderState.Bad
 
     try:
         f1 = CubicSpline(A, B, bc_type='natural')
@@ -256,13 +261,13 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
                                                                                    left_domain_limit,
                                                                                    right_domain_limit,
                                                                                    f1, "Spline")
-
+        if passed_monotonic_test:
+            LadderState = Mapping_Info.LadderState.Good
         log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
 
     except ValueError:
         log.write_to_log("Major spline fail: " + str(ValueError))
         passed_monotonic_test = False
-
 
     log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
 
@@ -275,11 +280,13 @@ def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
                                                                                    *linear_mapping_plot_data,
                                                                                    f1, "Linear")
         log.write_to_log("Ladder mapping is monotonic? " + str(passed_monotonic_test))
+        LadderState = Mapping_Info.LadderState.Suspect
 
         if not passed_monotonic_test:
+            LadderState = Mapping_Info.LadderState.Bad
             return False
 
     ladder_info = Mapping_Info(f1, left_domain_limit, right_domain_limit, plotting_data_spline, plotting_data_linear,
-                               False)
+                               LadderState)
 
     return ladder_info

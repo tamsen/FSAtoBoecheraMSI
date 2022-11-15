@@ -36,7 +36,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     return ax
 
 
-def write_per_sample_summary_plots(run_folder, by_sample_results):
+def write_per_sample_summary_plots(version_info, run_folder, by_sample_results):
     # specific order to arrange the plots
     ordered_loci_list = ["dummy_index", "ICE3", "BF20", "A1",
                          "BF11", "ICE14", "C8",
@@ -45,7 +45,7 @@ def write_per_sample_summary_plots(run_folder, by_sample_results):
                          "BF15", "Bdru266", "A3"]
 
     for sample_name, sample_result in by_sample_results.items():
-        plot_traces_for_the_sample(run_folder, sample_name,
+        plot_traces_for_the_sample(version_info,run_folder, sample_name,
                                    sample_result, ordered_loci_list)
 
         plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list)
@@ -61,6 +61,8 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
         warning = ""
         if loci in sample_result.keys():
             [runName, plot_name, threshold, smoothed_trace, sixteen_peaks] = sample_result[loci].ladder_plotting_data
+            ladder_status = sample_result[loci].ladder_status
+            warning = "Laddder status: " + str(ladder_status).split(".")[-1]
         else:
             # some dummy todata
             threshold = 0
@@ -101,6 +103,9 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 
         if loci in sample_result.keys():
             [mapping_plot_data_spline, mapping_plot_data_linear] = sample_result[loci].mapping_plotting_data
+            ladder_status = sample_result[loci].ladder_status
+            warning = "Laddder status: " + str(ladder_status).split(".")[-1]
+
 
             if mapping_plot_data_spline:
                 [x_original, x_new, A, B] = mapping_plot_data_spline
@@ -116,6 +121,10 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
             else:
                 ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
                                                    loci + "Failed", False, "purple", False, False)
+
+            ax = plt.gca()
+            ax = plt.text(0.05, 0.85, warning, horizontalalignment='left',
+                          verticalalignment='top', transform=ax.transAxes)
 
         else:
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
@@ -134,7 +143,7 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
     plt.close()
 
 
-def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
+def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_result, ordered_loci_list):
     dye_to_color = {"FAM": "blue", "VIC": "green"}
     fig = plt.figure(figsize=(10, 10))
     known_species = False
@@ -218,12 +227,20 @@ def plot_traces_for_the_sample(run_folder, sample_name, sample_result, ordered_l
 
     if determined_species:
         plot_title = plot_title + "\n" + "determined: " + determined_species
-    elif known_species:
+    if known_species:
         plot_title = plot_title + "\n" + "truth: " + known_species
-    else:
+    if not (determined_species or known_species):
         plot_title = plot_title + "\n" + "species to be determined"
 
     fig.suptitle(plot_title)
+
+    if version_info:
+        version_string= version_info.app_name + " " + version_info.version_num
+        ax = plt.gca()
+        fig.text(-2.6, -0.5, version_string,
+            verticalalignment='bottom', horizontalalignment='left',
+            transform=ax.transAxes,
+            color='black', fontsize=9)
 
     out_path = os.path.join(run_folder, "allele_calls")
     if not (os.path.exists(out_path)):

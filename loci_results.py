@@ -1,10 +1,11 @@
 import accuracy
+from signal_processing.ladder_analysis import Mapping_Info
 
 
 class loci_results:
 
     def __init__(self, raw_alleles_called, filtered_calls_for_loci, final_alleles_called,
-                 original_file_name, trace_data, ladder_data, mapping_data):
+                 original_file_name, trace_data, ladder_data, mapping_data, ladder_status):
         self.raw_alleles_called = raw_alleles_called
         self.filtered_alleles_called = filtered_calls_for_loci
         self.final_alleles_called = final_alleles_called
@@ -12,6 +13,7 @@ class loci_results:
         self.plotting_data_evidence = trace_data
         self.ladder_plotting_data = ladder_data
         self.mapping_plotting_data = mapping_data
+        self.ladder_status = ladder_status
         self.truth_data = False
         self.true_species = False
         self.raw_accuracy = 0
@@ -24,6 +26,13 @@ class loci_results:
         self.raw_accuracy = accuracy.allele_accuracy(self.raw_alleles_called, self.truth_data)
         self.final_accuracy = accuracy.allele_accuracy(self.final_alleles_called, self.truth_data)
 
+    def get_high_standard_allele_calls(self):
+
+        if self.ladder_status == Mapping_Info.LadderState.Good:
+            return self.final_alleles_called
+        else:
+            return []
+
     def set_BMW_determination(self, BMW_determination):
 
         #Entry = [closest_sample_name, closest_species, similarity_score]
@@ -31,3 +40,10 @@ class loci_results:
         if BMW_determination:
                 self.BMW_determination = str(BMW_determination[1]) + \
                 " (score: " + str(BMW_determination[2])  + ")"
+
+def get_final_allele_calls(loci_results: loci_results):
+    return loci_results.final_alleles_called
+
+def get_raw_allele_calls(loci_results: loci_results):
+    return loci_results.raw_alleles_called
+

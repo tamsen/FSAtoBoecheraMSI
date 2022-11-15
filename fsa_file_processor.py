@@ -41,7 +41,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     mapping_function = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
-    if not (mapping_function):
+    if not mapping_function:
         data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
         results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -133,17 +133,18 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             if (len(final_calls) > 0):
                 whole_loci_domain = [final_calls[0][0] - 20, domain[1]]
 
-                loci_specific_plot_data = [trace_x_new, trace_y_new,
-                                           [call[0] for call in raw_calls],
-                                           [call[1] for call in raw_calls],
-                                           [call[0] for call in filtered_calls],
-                                           [call[1] for call in filtered_calls],
-                                           threshold_used,
-                                           loci, whole_loci_domain, channel]
+                #loci_specific_plot_data = [trace_x_new, trace_y_new,
+                #                           [call[0] for call in raw_calls],
+                #                           [call[1] for call in raw_calls],
+                #                           [call[0] for call in filtered_calls],
+                #                           [call[1] for call in filtered_calls],
+                #                           threshold_used,
+                #                           loci, whole_loci_domain, channel]
             else:
                 where_loci_should_be = relevant_loci[loci]["length"]  # even though we didnt find them..
                 whole_loci_domain = [where_loci_should_be[0], where_loci_should_be[-1]]
-                loci_specific_plot_data = [trace_x_new, trace_y_new,
+
+            loci_specific_plot_data = [trace_x_new, trace_y_new,
                                            [call[0] for call in raw_calls],
                                            [call[1] for call in raw_calls],
                                            [call[0] for call in filtered_calls],
@@ -162,7 +163,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                             allele_calls_for_loci, fsa_file,
                                             loci_specific_plot_data, ladder_plot_data,
                                             [mapping_function.mapping_plot_data_spline,
-                                             mapping_function.mapping_plot_data_linear])
+                                             mapping_function.mapping_plot_data_linear],
+                                            mapping_function.ladder_state)
 
             final_calls_by_loci[loci] = results_for_loci
 

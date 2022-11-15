@@ -6,7 +6,7 @@ import fsa_file_processor
 import log
 
 
-def process_directory(all_results_by_file, output_folder_inside_data_folder, panel_info, path,
+def process_directory(version_info, all_results_by_file, output_folder_inside_data_folder, panel_info, path,
                       results_specific_to_this_subfolder, truth_info):
     for file in os.listdir(path):
         if file.endswith(".fsa"):
@@ -33,18 +33,19 @@ def process_directory(all_results_by_file, output_folder_inside_data_folder, pan
     results_files.write_summary_file(output_folder_inside_data_folder,
                                      by_sample_results, panel_info, False)
 
-    #per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
-    #                                                  by_sample_results)
-
     avg_loci_accuracy, avg_sample_accuracy = accuracy.write_accuracy_files(output_folder_inside_data_folder,
                                                                            by_sample_results, panel_info)
 
-    batch_file = query_file.write_query_file(output_folder_inside_data_folder,
+    final_calls_batch_file = query_file.write_query_file(output_folder_inside_data_folder,
                                              by_sample_results, True)
-    query_file.post_batch_file_and_get_response(output_folder_inside_data_folder, batch_file,
+
+    high_standard_batch_file = query_file.write_query_file(output_folder_inside_data_folder,
+                                             by_sample_results, False)
+
+    query_file.post_batch_file_and_get_response(output_folder_inside_data_folder, final_calls_batch_file,
                                                 by_sample_results)
 
-    per_sample_visuals.write_per_sample_summary_plots(output_folder_inside_data_folder,
+    per_sample_visuals.write_per_sample_summary_plots(version_info, output_folder_inside_data_folder,
                                                       by_sample_results)
 
     return by_sample_results, avg_loci_accuracy, avg_sample_accuracy

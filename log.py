@@ -7,10 +7,10 @@ log_file_path = ""
 def write_start_to_log( outputDir, version_info ):
 
     global log_file_path
-    log_file_path = os.path.join(outputDir, "FSAtoMicrosatCallsLog.txt")
+    log_file_path = os.path.join(outputDir, "FSAtoBoecheraMSILog.txt")
     write_to_log("\n")
     write_to_log("*******************************************")
-    write_to_log("******* FSAtoMicrosatCalls initiated ******")
+    write_to_log("******* FSAtoBoecheraMSI initiated ******")
 
     version_line = version_info.to_string()
     write_to_log(version_line)
@@ -18,7 +18,7 @@ def write_start_to_log( outputDir, version_info ):
 
 def write_end_to_log( ):
 
-    write_to_log("******* FSAtoMicrosatCalls completed ******")
+    write_to_log("******* FSAtoBoecheraMSI completed ******")
     write_to_log("*******************************************")
     write_to_log("\n")
 

@@ -64,7 +64,7 @@ def submit_file_query(query_filename, URL):
     return response.content
 
 
-def write_query_file(outputDir, bySampleResults, print_final_calls):
+def write_query_file(outputDir, bySampleResults, print_final_calls): #print final calls or high-std calls
     now = datetime.now()
     day = now.strftime("%d_%m_%Y")
     time = now.strftime("%H_%M_%S")
@@ -99,9 +99,9 @@ def write_query_file(outputDir, bySampleResults, print_final_calls):
     how_query_likes_it["A3"] = ["A3", 6]
 
     if print_final_calls:
-        batch_file = os.path.join(outputDir, "BatchQuery_FinalCallsBySample" + time_stamp_string + ".txt")
+        batch_file = os.path.join(outputDir, "BatchQuery_FinalCallsBySample" + time_stamp_string + ".tsv")
     else:
-        batch_file = os.path.join(outputDir, "BatchQuery_RawCallsBySample" + time_stamp_string + ".txt")
+        batch_file = os.path.join(outputDir, "BatchQuery_HighStandardCallsBySample" + time_stamp_string + ".tsv")
 
     header1_data = ["Query_ID"]
     for loci in ordered_loci_list:
@@ -152,7 +152,7 @@ def write_out_loci_data(data_list, instructions, final_calls, loci, results_for_
         if final_calls:
             allele_calls = results_for_file[loci].final_alleles_called
         else:
-            allele_calls = results_for_file[loci].raw_alleles_called
+            allele_calls = results_for_file[loci].get_high_standard_allele_calls()
     else:
         allele_calls = ["" for x in range(0, expected_space_for_calls)]
     for i in range(0, expected_space_for_calls):
