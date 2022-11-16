@@ -193,10 +193,8 @@ class TestLadder(TestCase):
         sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                     "TD21GD0204PS1-A5_A05.fsa",
                                                                                     trace_data_dictionary)
-        TD21GD0204PS1-A5_A05.fsa
-        expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
 
+        expected_peak_xs =[1130,1162,1623,1889,2322,2432,2544,3005,3571,4197,4666,4787,5413,5994,6478,6578]
         observed_peak_xs = [x[0] for x in sixteen_peaks]
-        #TODO - update the test if/when happy with the results.
-        #self.assertEqual(expected_peak_xs, observed_peak_xs)
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
 
