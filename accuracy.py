@@ -198,7 +198,11 @@ def write_big_accuracy_file(outputDir, bySampleResults, panel_info):
                         data_list.append(str(expected_alleles))
                         data_list.append(str(accuracy_score))
 
-            sample_accuracy = statistics.mean(accuracies_for_this_sample)
+            if len(accuracies_for_this_sample) > 0:
+                sample_accuracy = statistics.mean(accuracies_for_this_sample)
+            else:
+                sample_accuracy = 0
+
             data_list.append(str(sample_accuracy))
             accuracy_by_sample[sample_name] = sample_accuracy
 

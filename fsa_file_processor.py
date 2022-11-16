@@ -3,6 +3,7 @@ from file_io import xml_file_readers, results_files, fsa_file_reader
 from signal_processing import peak_analysis, trace_analysis, ladder_analysis, mw_wisdom, shared
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
+from signal_processing.ladder_analysis import Mapping_Info
 from visualization import per_file_visuals
 import log
 
@@ -27,25 +28,24 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     else:
         log.write_to_log("relevant_loci: " + str(relevant_loci))
 
-    gotLadderPeaks = ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data)
+    mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
+                                                              output_dir, run_folder, run_name, -1)
+    retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
 
-    if not (gotLadderPeaks):
-        log.write_to_log("**** Processing " + fsa_file + " failed ********")
-        data_string = [fsa_file, "panel problem", "Couldn't get the right number of ladder peaks!!"]
-        results_files.write_results(output_dir, data_string)
+    if retry_needed:
+        mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
+                                                             output_dir, run_folder, run_name, 50)
 
-        return False
-
-    else:
-        sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
-
-    mapping_function = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
-
-    if not mapping_function:
-        data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
-        results_files.write_results(output_dir, data_string)
+        retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
+        if retry_needed:
+            mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
+                                                             output_dir, run_folder, run_name, 25)
+    if not mapping_attempt_worked:  # still!
+        log.write_to_log("getting ladder peaks failed")
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return False
+
+    ladder_plot_data, mapping_function, sixteen_peaks, threshold = mapping_attempt_worked
 
     trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_function, sixteen_peaks, threshold)
 
@@ -132,25 +132,17 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
             if (len(final_calls) > 0):
                 whole_loci_domain = [final_calls[0][0] - 20, domain[1]]
-
-                #loci_specific_plot_data = [trace_x_new, trace_y_new,
-                #                           [call[0] for call in raw_calls],
-                #                           [call[1] for call in raw_calls],
-                #                           [call[0] for call in filtered_calls],
-                #                           [call[1] for call in filtered_calls],
-                #                           threshold_used,
-                #                           loci, whole_loci_domain, channel]
             else:
                 where_loci_should_be = relevant_loci[loci]["length"]  # even though we didnt find them..
                 whole_loci_domain = [where_loci_should_be[0], where_loci_should_be[-1]]
 
             loci_specific_plot_data = [trace_x_new, trace_y_new,
-                                           [call[0] for call in raw_calls],
-                                           [call[1] for call in raw_calls],
-                                           [call[0] for call in filtered_calls],
-                                           [call[1] for call in filtered_calls],
-                                           threshold_used,
-                                           loci, whole_loci_domain, channel]
+                                       [call[0] for call in raw_calls],
+                                       [call[1] for call in raw_calls],
+                                       [call[0] for call in filtered_calls],
+                                       [call[1] for call in filtered_calls],
+                                       threshold_used,
+                                       loci, whole_loci_domain, channel]
 
             # get the results ready to print to file
             raw_calls_for_loci = [x[0] for x in raw_calls]
@@ -174,3 +166,47 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
     FSA_file_results = FSA_File_Results(final_calls_by_loci)
 
     return FSA_file_results
+
+
+def check_if_retry_is_worth_it(mapping_attempt_worked):
+    retry_needed = False
+    if not mapping_attempt_worked:
+        retry_needed = True
+    else:
+        ladder_plot_data, mapping_function, sixteen_peaks, threshold = mapping_attempt_worked
+        if mapping_function.ladder_state == Mapping_Info.LadderState.Suspect:
+            retry_needed = True
+    return retry_needed
+
+
+def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, run_folder, run_name,
+                                     background_subtraction_window):
+
+    gotLadderPeaks = ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
+                                                    background_subtraction_window)
+
+    if not gotLadderPeaks:
+        log.write_to_log("getting ladder peaks failed")
+        log.write_to_log("**** Processing " + fsa_file + " failed ********")
+        data_string = [fsa_file, "panel problem", "Couldn't get the right number of ladder peaks!!"]
+        results_files.write_results(output_dir, data_string)
+        return False
+
+    else:
+        sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
+    mapping_function = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
+
+    if not mapping_function:
+        data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
+        results_files.write_results(output_dir, data_string)
+        log.write_to_log("**** Processing " + fsa_file + " failed ********")
+        return False
+
+    if mapping_function.ladder_state == Mapping_Info.LadderState.Suspect:
+        data_string = [fsa_file, "panel problem", "Ladder too suspicious!!"]
+        results_files.write_results(output_dir, data_string)
+        log.write_to_log("**** Processing " + fsa_file + " failed ********")
+        #return False
+
+
+    return ladder_plot_data, mapping_function, sixteen_peaks, threshold

@@ -1,3 +1,4 @@
+import statistics
 from enum import Enum
 
 import numpy as np
@@ -26,10 +27,15 @@ class Mapping_Info:
 
     LadderState = Enum('LadderStatus', ['Good', 'Bad', 'Suspect'])
 
-def getLadderPeaks(runFolder, runName, trace_data_dictionary):
+
+
+def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=-1):
     log.write_to_log("Reading through ladder trace for " + runName)
     # 'DATA105' is the ladder channel
     ladder_trace = trace_data_dictionary['DATA105']
+
+    if window_half_width > 0:
+        ladder_trace = do_background_removal(ladder_trace, window_half_width)
 
     # parameters_for_right_side_of_ladder
     # parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 20, 50, 10, .5)
@@ -92,6 +98,29 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary):
         return False
 
     return sixteen_peaks, threshold, ladder_plot_data
+
+
+def get_background(ladder_trace,window_half_width):
+    background = []
+    for i in range(0, len(ladder_trace)):
+
+        domain_start = max([0,i - window_half_width])
+        domain_end = min([len(ladder_trace)-1, i + window_half_width + 1])
+        window = list(ladder_trace[domain_start:domain_end])
+        window.sort(key=lambda x: x)
+        mean_of_lowest = max(0, statistics.mean(window[0:20]))
+        #mean_of_10_lowest = statistics.mean(window)
+        background.append(mean_of_lowest)
+    return background
+
+def do_background_removal(ladder_trace, window_half_width):
+
+    background = get_background(ladder_trace,window_half_width)
+    trace_minus_background=[]
+    for i in range(0, len(ladder_trace)):
+        trace_minus_background.append(max(0,ladder_trace[i] - background[i]))
+
+    return trace_minus_background
 
 
 def fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder, sixteen_peaks):
@@ -191,8 +220,11 @@ def remove_known_sus_ladder_peak_in_sus_range(sixteen_peaks, highest_peaks_tup, 
 
             peak_to_go=peaks_to_go[i]
             if peak_to_go[1] < .95 * height_of_shortest_nieghbor:
-                sixteen_peaks.remove(peaks_to_go[i])
-                sixteen_peaks.append(highest_peaks_tup[i + expected_num_peaks])
+
+                replacement_index=i + expected_num_peaks
+                if replacement_index < len(highest_peaks_tup):
+                    sixteen_peaks.remove(peaks_to_go[i])
+                    sixteen_peaks.append(highest_peaks_tup[replacement_index])
 
     return sixteen_peaks
 

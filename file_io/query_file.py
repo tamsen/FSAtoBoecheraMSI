@@ -1,13 +1,18 @@
 import os
 from datetime import datetime
-import lxml
-import requests
-import pandas as pd
+import html5lib
+#import BeautifulSoup4
+#import lxml
+#import requests
+#import pandas as pd
 
 
 # to download query
 # http://sites.biology.duke.edu/windhamlab/files/TD21RP21_SearchResults_ASscore.xls
+import pandas
 import requests
+
+import log
 
 
 def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
@@ -19,7 +24,7 @@ def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
     with open(destination, 'wb') as f:
         f.write(batch_file_result)
 
-    results_by_sample = get_data_from_Search_database_batch_response(batch_file_result)
+    bmw_results_by_sample = get_data_from_Search_database_batch_response(batch_file_result)
     # URL2 = "https://sites.biology.duke.edu/windhamlab/files/" + sample + "_SearchResults_ASscore.xls"
 
     # to download query
@@ -28,12 +33,23 @@ def post_batch_file_and_get_response(output_dir, batch_file, bySampleResults):
         results_by_loci = bySampleResults[sample]
 
         for loci in results_by_loci:
-            species_determination_data = results_by_sample[sample]
-            results_by_loci[loci].set_BMW_determination(species_determination_data)
+
+            if sample in bmw_results_by_sample:
+                species_determination_data = bmw_results_by_sample[sample]
+                results_by_loci[loci].set_BMW_determination(species_determination_data)
 
 def get_data_from_Search_database_batch_response(response):
 
-        tables = pd.read_html(response)  # Returns list of all tables on page
+    #return  False
+
+    if response:
+
+        tables = []
+        try:
+            tables = pandas.read_html(response)# Returns list of all tables on page
+        except ValueError:
+            log.write_to_log("Unable to parse BMW html response")
+
         results_by_sample_name={}
         num_samples=len(tables)
 
@@ -44,12 +60,21 @@ def get_data_from_Search_database_batch_response(response):
             species = table['Species name']
             similarity_score  = table['Allele similarity score']
             query_sample_name = DNA_extractions[0].split(" ")[1].strip()  #ie, "query: TD21RP25	"
-            closest_sample_name= DNA_extractions[1]
-            closest_species = species[1]
-            similarity_score = similarity_score[1]
-            results_by_sample_name[query_sample_name] = [closest_sample_name,closest_species,similarity_score]
+
+            if len(DNA_extractions) > 2:
+                #print("DNA_extractions\n" + str(DNA_extractions))
+                #print("species\n" + str(species))
+                #print("similarity_score\n" + str(similarity_score))
+                closest_sample_name= DNA_extractions[1]
+                closest_species = species[1]
+                similarity_score = similarity_score[1]
+                results_by_sample_name[query_sample_name] = [closest_sample_name,closest_species,similarity_score]
+            else:
+                results_by_sample_name[query_sample_name] = ["NA","NA","0"]
 
         return results_by_sample_name
+    else:
+        return False
 
 def submit_plain_query(URL):
     response = requests.post(URL)
@@ -133,7 +158,10 @@ def write_out_sample_data(bySampleResults, f, final_calls,
     results_for_file = bySampleResults[sample]
 
     if (len(results_for_file.keys()) < 1):
-        data_list.append("Analysis fail. No alleles detected")
+
+        # do nothing
+        return
+
     else:
 
         for loci in ordered_loci_list:

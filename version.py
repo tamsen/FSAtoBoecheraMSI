@@ -1,10 +1,11 @@
 import git
 
 GLOBAL_git_URL = "https://github.com/tamsen/FSAtoBoecheraMSI"
-GLOBAL_version_num = "v1.0.0.0"
-GLOBAL_public_comments = [
+GLOBAL_public_version_info = [
     ["Differentiating between final calls and very confident calls, " +
-     "so we only keep calls made with a very clear ladder. ", "Nov 14, 2022"]]
+     "so we only keep calls made with a very clear ladder. ", "Nov 14, 2022", "v1.0.0.0"],
+    ["Adding background subtraction to peak finding for the ladder. " , "Nov 15, 2022", "v1.0.0.3"]
+    ]
 
 
 class version_info:
@@ -23,8 +24,10 @@ class version_info:
 
         self.repo_url = GLOBAL_git_URL
         self.app_name = GLOBAL_git_URL.split("/")[-1]
-        self.version_num = GLOBAL_version_num
-        self.public_comments = GLOBAL_public_comments
+
+        most_recent_update = GLOBAL_public_version_info[-1]
+        self.version_num = most_recent_update[-1]
+        self.public_comments = most_recent_update
 
     def most_recent_comment(self):
         return self.public_comments[-1][0]
@@ -35,7 +38,7 @@ class version_info:
                 "Version number:\t" + str(self.version_num),
                 "Version notes:\t" + self.most_recent_comment()]
 
-        if (self.repo):
+        if self.repo:
             data.append("Git changeset:\t" + self.sha + "\t" + self.when)
 
         return "\n".join(data)

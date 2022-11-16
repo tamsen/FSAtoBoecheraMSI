@@ -56,7 +56,14 @@ def main():
         time = now.strftime("%H_%M_%S")
         time_stamp_string = "_".join([day, time])
 
-        output_folder_inside_data_folder = os.path.join(path, "FSA_to_microsat_script_results__" +
+        eton_order_num_dir=path.split("/")[-1]
+        eton_order_num_dir_splat=eton_order_num_dir.split("_")
+        if len(eton_order_num_dir_splat) > 1:
+            eton_order_num = eton_order_num_dir_splat[-1] + "_"
+        else:
+            eton_order_num = ""
+
+        output_folder_inside_data_folder = os.path.join(path, eton_order_num + "FSA_to_microsat_script_results__" +
                                                         version_info.version_num + "__" +
                                                         time_stamp_string )
         results_specific_to_this_subfolder = {}

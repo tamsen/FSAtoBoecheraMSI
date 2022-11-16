@@ -168,10 +168,6 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
             ax = plt.scatter(filtered_peak_xs, filtered_peak_ys, s=80, facecolors='none', edgecolors='r')
             ax = plt.plot(new_x, [threshold for x in new_x], c="gray")
 
-            ax = plt.gca()
-            ax = plt.text(0.05, 0.85, warning, horizontalalignment='left',
-                          verticalalignment='top', transform=ax.transAxes)
-
         if loci in sample_result:
             loci_result = sample_result[loci]
             truth = loci_result.truth_data
@@ -183,7 +179,7 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
             filtered_alleles_called = loci_result.filtered_alleles_called
             final_alleles_called = loci_result.final_alleles_called
             ladder_status = loci_result.ladder_status
-            warning = "Ladder status: " + str(ladder_status).split(".")[-1]
+            warning = "Ladder status: \n" + str(ladder_status).split(".")[-1]
 
             ax = plt.gca()
             base_text_height = 0.95
@@ -214,7 +210,7 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
                           verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
             ax = plt.gca()
-            ax = plt.text(0.05, .85, warning,
+            ax = plt.text(0.05, .75, warning,
                           horizontalalignment='left',
                           verticalalignment='top', transform=ax.transAxes, fontsize=font_size)
 
