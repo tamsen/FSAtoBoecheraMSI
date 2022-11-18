@@ -1,6 +1,6 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, ladder_analysis, mw_wisdom, shared
+from signal_processing import peak_analysis, trace_analysis, mw_wisdom, shared,elastic_ladder_analysis
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from signal_processing.ladder_analysis import Mapping_Info
@@ -182,7 +182,7 @@ def check_if_retry_is_worth_it(mapping_attempt_worked):
 def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, run_folder, run_name,
                                      background_subtraction_window):
 
-    gotLadderPeaks = ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
+    gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
                                                     background_subtraction_window)
 
     if not gotLadderPeaks:
@@ -194,7 +194,7 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
 
     else:
         sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
-    mapping_function = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
+    mapping_function = elastic_ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
     if not mapping_function:
         data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]

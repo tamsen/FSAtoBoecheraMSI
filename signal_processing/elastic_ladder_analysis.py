@@ -5,7 +5,7 @@ from scipy.stats import mode
 from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
-from signal_processing import shared
+from signal_processing import shared, elastic_ladder
 from visualization import per_file_visuals
 import log
 
@@ -46,7 +46,12 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
         ladder_trace, parameters_for_right_side_of_ladder, True)
 
+
+
+    #right-most first
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
+    highest_peaks_with_index_from_right = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
+                                range(0, len(highest_peaks_tup))]
 
     if (len(highest_peaks_tup) < 18): #something went wrong here. Re-call the peaks
 
@@ -55,38 +60,53 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
         highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
             ladder_trace, parameters_for_right_side_of_ladder, True)
         highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
-
+        highest_peaks_with_index_from_right = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
+                                range(0, len(highest_peaks_tup))]
 
     # now, keep the best 16 starting from the right-most index.
-    highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
-    sixteen_peaks = highest_peaks_tup[0:16]
+    highest_peaks_with_index_from_right.sort(key=lambda x: x[0], reverse=True)
+    ladder_peaks = highest_peaks_with_index_from_right[0:16]
+    peak500= [ladder_peaks[0][0],ladder_peaks[0][1],ladder_peaks[0][2]]
+
+
+    print("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
+    num_peaks_needed=14
+    log.write_to_log("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
+    alt_peaks=elastic_ladder.build_elastic_ladder_from_right(highest_peaks_with_index_from_right,peak500,
+                                                             num_peaks_needed)
+    ladder_peaks.sort(key=lambda x: x[0])
+    print("alternative peaks:" + str(alt_peaks))
+    ladder_peaks = alt_peaks
 
     # want your ladder peaks leftmost on the left! not sorted by size
-    sixteen_peaks.sort(key=lambda x: x[0])
+    ladder_peaks.sort(key=lambda x: x[0])
+
 
     # Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
     # SO - if we see 4 peaks between 2000 and 2800, and we should see ony 3,
     # throw out the smallest
-    sixteen_peaks = remove_known_sus_ladder_peak_in_sus_range(sixteen_peaks, highest_peaks_tup, [2000,2800])
-    sixteen_peaks.sort(key=lambda x: x[0])
+    ladder_peaks = remove_known_sus_ladder_peak_in_sus_range(ladder_peaks,
+                                                             highest_peaks_with_index_from_right, [2000, 2800])
+    ladder_peaks.sort(key=lambda x: x[0])
 
-    sixteen_peaks = remove_shorties_relative_to_siblings(sixteen_peaks, highest_peaks_tup)
-    sixteen_peaks.sort(key=lambda x: x[0])
+    ladder_peaks = remove_shorties_relative_to_siblings(ladder_peaks,
+                                                        highest_peaks_with_index_from_right)
+    ladder_peaks.sort(key=lambda x: x[0])
 
     # Another minor tweak, we need a smaller kernel to get the very first ladder point right,
     # Because it slams into over-saturation at the beginning of the gel
     best_guess_for_35_peak = fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder,
-                                                      sixteen_peaks)
-    sixteen_peaks[0]=best_guess_for_35_peak
-
+                                                      [[-1,-1, -1]] + ladder_peaks)
+    #ladder_peaks[0]=best_guess_for_35_peak
+    ladder_peaks = [best_guess_for_35_peak] + alt_peaks
     # bake LIZ500 into the peak tuple, for use later on.
-    numLadderPeaks = len(sixteen_peaks)
+    numLadderPeaks = len(ladder_peaks)
     log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
 
-    sixteen_peaks = [(sixteen_peaks[i][0], sixteen_peaks[i][1], GLOBAL_Liz500[i])
-                     for i in range(0, numLadderPeaks)]
+    ladder_peaks = [(ladder_peaks[i][0], ladder_peaks[i][1], GLOBAL_Liz500[i])
+                    for i in range(0, numLadderPeaks)]
 
-    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, sixteen_peaks]
+    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, ladder_peaks]
     per_file_visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
@@ -95,7 +115,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
         log.write_to_log("Aborting run. ")
         return False
 
-    return sixteen_peaks, threshold, ladder_plot_data
+    return ladder_peaks, threshold, ladder_plot_data
 
 
 def get_background(ladder_trace,window_half_width):
