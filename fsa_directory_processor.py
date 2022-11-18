@@ -1,5 +1,5 @@
 import os.path
-from file_io import text_file_readers, xml_file_readers, results_files, query_file
+from file_io import text_file_readers, xml_file_readers, results_files, query_file, ladder_results
 import accuracy
 from visualization import per_sample_visuals
 import fsa_file_processor
@@ -21,6 +21,8 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
             else:
                 all_results_by_file[fsa_file] = False
                 results_specific_to_this_subfolder[fsa_file] = False
+
+    ladder_results.write_ladder_peaks(output_folder_inside_data_folder,results_specific_to_this_subfolder)
 
     by_sample_results = results_files.consolidate_by_file_results_to_by_sample_results(
         results_specific_to_this_subfolder, panel_info, truth_info)

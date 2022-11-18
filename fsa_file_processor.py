@@ -163,7 +163,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("final calls for loci " + loci + ": " + str(allele_calls_for_loci))
 
     log.write_to_log("**** Processing " + fsa_file + " completed  ********")
-    FSA_file_results = FSA_File_Results(final_calls_by_loci)
+    FSA_file_results = FSA_File_Results(final_calls_by_loci,sixteen_peaks)
 
     return FSA_file_results
 
