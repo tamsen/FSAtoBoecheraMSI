@@ -10,7 +10,7 @@
 #/home/tamsen/Data/Eton/Frag_Order_16664
 #/home/tamsen/Data/Eton/Frag_Order_16665
 #/home/tamsen/Data/Eton/Frag_Order_16674
-/home/tamsen/Data/Eton/Frag_Order_16677
+#/home/tamsen/Data/Eton/Frag_Order_16677
 #/home/tamsen/Data/Eton/Frag_Order_16680
 #/home/tamsen/Data/Eton/Frag_Order_16697
 #/home/tamsen/Data/Eton/Frag_Order_16700
@@ -29,3 +29,4 @@
 #/home/tamsen/Data/Eton/LadderTests
 #/home/tamsen/Data/Eton/CalibrationData
 #/home/tamsen/Data/Eton/LxPxR_Calibration
+/home/tamsen/Data/Eton/bad_ladder_gallery

@@ -49,9 +49,9 @@ def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
     print("last_peak_to_the_right_x:" + str(last_peak_to_the_right_x))
     print("last_peak_to_the_right_y:" + str(last_peak_to_the_right_y))
 
-    expected_x = last_peak_to_the_right_x - tolerances[0][nth_ladder_peak_needed - 1][0]
-    tolerances_range_x_for_i = tolerances[0][nth_ladder_peak_needed - 1][1:3]
-    tolerances_range_y_for_i = tolerances[1][nth_ladder_peak_needed - 1][0:2]
+    expected_x = last_peak_to_the_right_x - tolerances[0][nth_ladder_peak_needed][0]
+    tolerances_range_x_for_i = tolerances[0][nth_ladder_peak_needed][1:3]
+    tolerances_range_y_for_i = tolerances[1][nth_ladder_peak_needed][0:2]
 
     print("tolerances_range_x_for_i:" + str(tolerances_range_x_for_i))
     print("tolerances_range_y_for_i:" + str(tolerances_range_y_for_i))
