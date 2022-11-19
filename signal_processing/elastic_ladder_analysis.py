@@ -76,26 +76,10 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     # want your ladder peaks leftmost on the left! not sorted by size
     ladder_peaks.sort(key=lambda x: x[0])
 
-
-
-
-    # Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
-    # SO - if we see 4 peaks between 2000 and 2800, and we should see ony 3,
-    # throw out the smallest
-    #ladder_peaks = remove_known_sus_ladder_peak_in_sus_range(ladder_peaks,
-    #                                                         highest_peaks_with_index_from_right, [2000, 2800])
-    #ladder_peaks.sort(key=lambda x: x[0])
-
-    #ladder_peaks = remove_shorties_relative_to_siblings(ladder_peaks,
-    #                                                    highest_peaks_with_index_from_right)
-    #ladder_peaks.sort(key=lambda x: x[0])
-
-    # Another minor tweak, we need a smaller kernel to get the very first ladder point right,
-    # Because it slams into over-saturation at the beginning of the gel
     best_guess_for_35_peak = fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder,
                                                       [[-1,-1, -1]] + ladder_peaks)
-    #ladder_peaks[0]=best_guess_for_35_peak
     ladder_peaks = [best_guess_for_35_peak] + ladder_peaks
+
     # bake LIZ500 into the peak tuple, for use later on.
     numLadderPeaks = len(ladder_peaks)
     log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
