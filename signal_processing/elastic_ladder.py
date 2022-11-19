@@ -22,36 +22,6 @@ def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confide
     print("final ladder peaks:" + str(ladder_peaks))
     return ladder_peaks
 
-def build_elastic_ladder(highest_peaks_tup):
-    # get the right indexes
-    highest_peaks_tup.sort(key=lambda x: x[0])
-    highest_peaks_with_index = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
-                                range(0, len(highest_peaks_tup))]
-    tolerances = get_tolerances()
-    # grab the right-most, big peak:
-    # now, keep the best 16 starting from the right-most index.
-    highest_peaks_with_index.sort(key=lambda x: x[0], reverse=True)
-    sixteenth_peak = get_peak_500_(highest_peaks_with_index)
-    sixteenth_peak_index = sixteenth_peak[2]
-
-    highest_peaks_with_index.sort(key=lambda x: x[0])
-    index_of_last_ladder_peak = sixteenth_peak_index
-    ladder_peaks = [sixteenth_peak]
-    num_peaks = 16
-    # print("highest_peaks_tup:" + str(highest_peaks_tup))
-
-    for i in range(1, num_peaks):  # 0-15
-        print("i:" + str(i))
-        ith_peak_to_find = num_peaks - i
-        print("ith peak to find:" + str(ith_peak_to_find))
-        print("ladder peaks so far:" + str(ladder_peaks))
-        next_peak = get_peak_i(highest_peaks_with_index, ith_peak_to_find, index_of_last_ladder_peak, tolerances)
-        index_of_last_ladder_peak = next_peak[2]
-        ladder_peaks = [next_peak] + ladder_peaks
-
-    print("final ladder peaks:" + str(ladder_peaks))
-    return ladder_peaks
-
 
 def get_tolerances():
     # labels=[50-35,75-50,100-75,139-100,150-139,160-150,200-160,250-200,300-250,340-300,350-340,400-350,
@@ -72,28 +42,6 @@ def get_tolerances():
     return [expected_x_diffs, expected_Y_diffs]
 
 
-#def get_peak_500(highest_peaks_with_index):
-
-def get_peak_500_(highest_peaks_with_index):
-    # grab the right-most, big peak:
-    # now, keep the best 20 starting from the right-most index.
-    highest_peaks_with_index.sort(key=lambda x: x[0], reverse=True)
-    right_peaks = highest_peaks_with_index[0:18]
-    print("right peaks" + str(right_peaks))
-
-    # We expect "500" to be between x=6400 and x=6800
-    candidate_500s = [p for p in right_peaks if 6400 < p[0] < 6800]
-    print("peaks in right spot" + str(candidate_500s))
-    heights = [p[1] for p in candidate_500s]
-    mean_height = statistics.mean(heights)
-    tall_ones_only = [p for p in candidate_500s if p[1] >= mean_height]
-    tall_ones_only.sort(key=lambda x: x[0])
-    print("candidate_500s" + str(tall_ones_only))
-    choice = tall_ones_only[-1]
-    print("candidate_500 choice" + str(choice))
-
-    return choice
-
 def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
                index_of_last_ladder_peak_in_trace_space, tolerances):
     last_peak_to_the_right_x = peaks_from_left_to_right[index_of_last_ladder_peak_in_trace_space][0]
@@ -108,12 +56,11 @@ def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
     print("tolerances_range_x_for_i:" + str(tolerances_range_x_for_i))
     print("tolerances_range_y_for_i:" + str(tolerances_range_y_for_i))
 
-    #i_start = max([index_of_last_ladder_peak_in_trace_space - 6, 0])
-    #i_end = max(index_of_last_ladder_peak_in_trace_space +1, 7)
-    i_start = max([index_of_last_ladder_peak_in_trace_space + 1, 0])
-    i_end = min(index_of_last_ladder_peak_in_trace_space + 2, len(peaks_from_left_to_right)-1)
+    num_extra_peaks_to_choose_from = 4
+    index_to_start_looking = index_of_last_ladder_peak_in_trace_space + 1 # one past where we started
+    i_start = max([index_to_start_looking, 0]) #zero to not run off the end
+    i_end = min(index_to_start_looking + num_extra_peaks_to_choose_from, len(peaks_from_left_to_right))
     print("candidate_peak_indexes:" + str([i_start, i_end]))
-    print("Boo!! two!!")
     candidate_next_peaks = peaks_from_left_to_right[i_start:i_end]
     print("candidate_next_peaks:" + str(candidate_next_peaks))
 
@@ -130,16 +77,19 @@ def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
                                 ((expected_x_range[0] < p[0] < expected_x_range[1]) and
                                  (expected_y_range[0] < p[1] < expected_y_range[1]))]
 
-    print("peaks in right place:" + str(peaks_in_the_right_place))
+    print("peaks in right place within exact parameters:" + str(peaks_in_the_right_place))
 
     # if we found nothing, loosen up the height requirement
     if len(peaks_in_the_right_place) < 1:
         peaks_in_the_right_place = [p for p in candidate_next_peaks if
                                     (expected_x_range[0] < p[0] < expected_x_range[1])]
 
+        print("peaks in right place with funny height:" + str(peaks_in_the_right_place))
+
     # if we found nothing, throw the kitchen sink at it
     if len(peaks_in_the_right_place) < 1:
         peaks_in_the_right_place = candidate_next_peaks
+        print("peaks not even close to where expected:" + str(peaks_in_the_right_place))
 
     # All else fails, fake it till you make it?
     if len(peaks_in_the_right_place) == 0:

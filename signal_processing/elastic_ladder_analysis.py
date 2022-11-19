@@ -43,43 +43,40 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5, False)
     parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5, False)
 
-    highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
+    highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(
         ladder_trace, parameters_for_right_side_of_ladder, True)
-
 
 
     #right-most first
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
-    highest_peaks_with_index_from_right = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
-                                range(0, len(highest_peaks_tup))]
 
-    if (len(highest_peaks_tup) < 18): #something went wrong here. Re-call the peaks
+    if (len(highest_peaks_tup) < 18): #something went wrong here. Re-call the peaks, lower the threshold
 
-        new_theshold = highest_peaks_tup[0][1]*0.50
-        parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5, new_theshold)
-        highest_peaks_tup, smoothed_trace, threshold = find_top_N_Peaks(
-            ladder_trace, parameters_for_right_side_of_ladder, True)
-        highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
-        highest_peaks_with_index_from_right = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
-                                range(0, len(highest_peaks_tup))]
+        theshold_to_force = highest_peaks_tup[0][1]*0.50
+        highest_peaks_tup, smoothed_trace, threshold_used = recall_ladder_peaks(ladder_trace,theshold_to_force)
 
     # now, keep the best 16 starting from the right-most index.
-    highest_peaks_with_index_from_right.sort(key=lambda x: x[0], reverse=True)
-    ladder_peaks = highest_peaks_with_index_from_right[0:16]
-    peak500= [ladder_peaks[0][0],ladder_peaks[0][1],ladder_peaks[0][2]]
+    highest_peaks_with_index_from_right, peak500 = find_500peak(highest_peaks_tup)
 
+    # sanity_check threshold. a good threshold is about 1/3 of the 500 peak, and
+    acceptable_threshold = peak500[1] * 0.333
+    if threshold_used > acceptable_threshold: #lower it further
+        theshold_to_force = acceptable_threshold
+        highest_peaks_tup, smoothed_trace, threshold_used = recall_ladder_peaks(ladder_trace,theshold_to_force)
+        highest_peaks_with_index_from_right, peak500 = find_500peak(highest_peaks_tup)
 
     print("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
     num_peaks_needed=14
     log.write_to_log("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
-    alt_peaks=elastic_ladder.build_elastic_ladder_from_right(highest_peaks_with_index_from_right,peak500,
+    ladder_peaks=elastic_ladder.build_elastic_ladder_from_right(highest_peaks_with_index_from_right,peak500,
                                                              num_peaks_needed)
-    ladder_peaks.sort(key=lambda x: x[0])
-    print("alternative peaks:" + str(alt_peaks))
-    ladder_peaks = alt_peaks
+
+
 
     # want your ladder peaks leftmost on the left! not sorted by size
     ladder_peaks.sort(key=lambda x: x[0])
+
+
 
 
     # Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
@@ -98,7 +95,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     best_guess_for_35_peak = fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder,
                                                       [[-1,-1, -1]] + ladder_peaks)
     #ladder_peaks[0]=best_guess_for_35_peak
-    ladder_peaks = [best_guess_for_35_peak] + alt_peaks
+    ladder_peaks = [best_guess_for_35_peak] + ladder_peaks
     # bake LIZ500 into the peak tuple, for use later on.
     numLadderPeaks = len(ladder_peaks)
     log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
@@ -106,7 +103,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     ladder_peaks = [(ladder_peaks[i][0], ladder_peaks[i][1], GLOBAL_Liz500[i])
                     for i in range(0, numLadderPeaks)]
 
-    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, ladder_peaks]
+    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold_used, smoothed_trace, ladder_peaks]
     per_file_visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
@@ -115,7 +112,26 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
         log.write_to_log("Aborting run. ")
         return False
 
-    return ladder_peaks, threshold, ladder_plot_data
+    return ladder_peaks, threshold_used, ladder_plot_data
+
+
+def recall_ladder_peaks(ladder_trace, theshold_to_force):
+
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5, theshold_to_force)
+    highest_peaks_tup, smoothed_trace, threshold_applied = find_top_N_Peaks(
+        ladder_trace, parameters_for_right_side_of_ladder, True)
+    highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
+    return highest_peaks_tup, smoothed_trace, threshold_applied
+
+
+def find_500peak(highest_peaks_tup):
+    highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
+    highest_peaks_with_index_from_right = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
+                                           range(0, len(highest_peaks_tup))]
+    highest_peaks_with_index_from_right.sort(key=lambda x: x[0], reverse=True)
+    high_peaks = highest_peaks_with_index_from_right[0:16]
+    peak500 = [high_peaks[0][0], high_peaks[0][1], high_peaks[0][2]]
+    return highest_peaks_with_index_from_right, peak500
 
 
 def get_background(ladder_trace,window_half_width):
@@ -271,7 +287,7 @@ def find_top_N_Peaks(signal_trace, peak_calling_parameters,largest_first):
 
     if (largest_first):
         return highest_peaks_tup, smoothed_trace, threshold
-    else:
+    else: #leftmost first
         highest_peaks_tup.sort(key=lambda x: x[0])
         return highest_peaks_tup, smoothed_trace, threshold
 
