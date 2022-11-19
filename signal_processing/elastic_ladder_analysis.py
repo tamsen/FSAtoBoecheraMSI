@@ -82,13 +82,13 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     # Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
     # SO - if we see 4 peaks between 2000 and 2800, and we should see ony 3,
     # throw out the smallest
-    ladder_peaks = remove_known_sus_ladder_peak_in_sus_range(ladder_peaks,
-                                                             highest_peaks_with_index_from_right, [2000, 2800])
-    ladder_peaks.sort(key=lambda x: x[0])
+    #ladder_peaks = remove_known_sus_ladder_peak_in_sus_range(ladder_peaks,
+    #                                                         highest_peaks_with_index_from_right, [2000, 2800])
+    #ladder_peaks.sort(key=lambda x: x[0])
 
-    ladder_peaks = remove_shorties_relative_to_siblings(ladder_peaks,
-                                                        highest_peaks_with_index_from_right)
-    ladder_peaks.sort(key=lambda x: x[0])
+    #ladder_peaks = remove_shorties_relative_to_siblings(ladder_peaks,
+    #                                                    highest_peaks_with_index_from_right)
+    #ladder_peaks.sort(key=lambda x: x[0])
 
     # Another minor tweak, we need a smaller kernel to get the very first ladder point right,
     # Because it slams into over-saturation at the beginning of the gel
