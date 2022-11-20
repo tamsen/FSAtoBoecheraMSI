@@ -68,7 +68,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
         highest_peaks_tup, smoothed_trace, threshold_used = recall_ladder_peaks(ladder_trace, recall_parameters)
         highest_peaks_with_index_from_right, peak500 = find_500peak(highest_peaks_tup)
 
-    print("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
+    #print("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
     num_peaks_needed = 14
     log.write_to_log("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
     ladder_peaks = elastic_ladder.build_elastic_ladder_from_right(highest_peaks_with_index_from_right, peak500,
@@ -167,89 +167,6 @@ def fix_over_saturated_start(ladder_trace, original_highest_peaks_tup,
         back_up_plan_peak35 = elastic_ladder.get_peak_i(original_highest_peaks_tup,
                                                         0, ladder_peaks[0][2], elastic_ladder.get_tolerances())
         return back_up_plan_peak35
-
-
-def remove_shorties_relative_to_siblings(sixteen_peaks, highest_peaks_tup):
-    expected_num_peaks = len(sixteen_peaks)
-    indexes_to_check = range(4, len(sixteen_peaks) - 3)
-    peaks_to_go = []
-    significantly_shorter = 0.6
-
-    for i in indexes_to_check:
-        previous_peak_height = sixteen_peaks[i - 1][1]
-        ith_peak_height = sixteen_peaks[i][1]
-        next_peak_height = sixteen_peaks[i + 1][1]
-
-        if (ith_peak_height < significantly_shorter * previous_peak_height) and \
-                (ith_peak_height < significantly_shorter * next_peak_height):
-            peaks_to_go.append(sixteen_peaks[i])
-
-    num_peaks_to_remove = len(peaks_to_go)
-    if num_peaks_to_remove > 0:
-
-        for i in range(0, num_peaks_to_remove):
-            sixteen_peaks.remove(peaks_to_go[i])
-            sixteen_peaks.append(highest_peaks_tup[i + expected_num_peaks])
-
-    return sixteen_peaks
-
-
-def remove_known_sus_ladder_peak_in_sus_range(sixteen_peaks, highest_peaks_tup, sus_range):
-    expected_num_peaks = len(sixteen_peaks)
-    typical_sus_peak_BP100 = sixteen_peaks[3]
-
-    # sus_range=[2000,2800]
-    # is sus peak in sus range?
-    sus_peak_in_sus_range = sus_range[0] < typical_sus_peak_BP100[0] < sus_range[1]
-    if not sus_peak_in_sus_range:
-        return sixteen_peaks
-
-    # is sus peak too close to its neightbors?
-    # the distance between bp100 and bp139 is supposed to be significantly
-    # bigger than
-    # the distance between bp75 and bp100, and between bp139 and bp150.
-    significantly_bigger = 1.6
-    BP75 = sixteen_peaks[2]
-    BP139 = sixteen_peaks[4]
-    BP150 = sixteen_peaks[5]
-    dist75to100 = typical_sus_peak_BP100[0] - BP75[0]
-    dist100to139 = BP139[0] - typical_sus_peak_BP100[0]
-    dist139to50 = BP150[0] - BP139[0]
-    if (dist100to139 > significantly_bigger * dist75to100) and (dist100to139 > significantly_bigger * dist139to50):
-        return sixteen_peaks
-
-    sus_peaks = []
-    sus_peak_index = []
-    for i in range(0, expected_num_peaks):
-        peak = sixteen_peaks[i]
-        if sus_range[0] <= peak[0] <= sus_range[1]:
-            sus_peaks.append(peak)
-            sus_peak_index.append(i)
-
-    sus_start = min(sus_peak_index)
-    sus_end = max(sus_peak_index)
-    peak_before_sus = sixteen_peaks[sus_start - 1]
-    peak_after_sus = sixteen_peaks[sus_end + 1]
-    height_of_shortest_nieghbor = min(peak_before_sus[1], peak_after_sus[1])
-
-    sus_peaks.sort(key=lambda x: x[1])
-    num_peaks_to_remove = len(sus_peaks) - 3
-    peaks_to_go = sus_peaks[0:num_peaks_to_remove]
-
-    if num_peaks_to_remove > 0:
-
-        for i in range(0, num_peaks_to_remove):
-
-            peak_to_go = peaks_to_go[i]
-            if peak_to_go[1] < .95 * height_of_shortest_nieghbor:
-
-                replacement_index = i + expected_num_peaks
-                if replacement_index < len(highest_peaks_tup):
-                    sixteen_peaks.remove(peaks_to_go[i])
-                    sixteen_peaks.append(highest_peaks_tup[replacement_index])
-
-    return sixteen_peaks
-
 
 def find_top_N_Peaks(signal_trace, peak_calling_parameters, largest_first):
     # very basic smoothing

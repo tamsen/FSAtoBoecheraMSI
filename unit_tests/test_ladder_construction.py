@@ -197,3 +197,27 @@ class TestLadder(TestCase):
         observed_peak_xs = [x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
+
+    def test_specifcally_that_worked_after_elastic_ladder_alg(self):
+
+        fsa_file = "../test_data/test_ladder/TD22EL23-PS2-B7_B07.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+                                                                                    "TD22EL23-PS2-B7_B07_",
+                                                                                    trace_data_dictionary)
+
+        expected_peak_xs = [1187,1333,1599,1860,2281,2388,2497,2943,3489,4098,4554,4669,5274,5839,6310,6407]
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+
+        fsa_file = "../test_data/test_ladder/TD22BV12-PS5-E8_E08.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
+            test_globals.GLOBAL_test_output_dir,
+            "TD22BV12-PS5-E8_E08.fsa_",
+            trace_data_dictionary)
+
+        expected_peak_xs = [1173,1318,1583,1840,2260,2366,2474,2917,3464,4062,4513,4627,5225,5782,6245,6341]
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+

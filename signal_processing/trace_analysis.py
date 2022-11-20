@@ -1,7 +1,7 @@
-from signal_processing import peak_analysis, ladder_analysis
+from signal_processing import peak_analysis, ladder_analysis_obsolete
 from visualization import per_file_visuals
 import log
-from signal_processing.ladder_analysis import GLOBAL_Liz500
+from signal_processing.ladder_analysis_obsolete import GLOBAL_Liz500
 
 def remap_a_trace(tracedata_x_coords, tracedata_y_coords,
                   fxn, left_domain_limit, right_domain_limit):
@@ -49,7 +49,7 @@ def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
     channel_dye_name = trace_data_dictionary['DyeN' + str(channel_number)]
     raw_trace_data = (trace_data_dictionary[channel_name])
 
-    highest_peaks_tup, smoothed_trace, threshold = ladder_analysis.find_top_N_Peaks(
+    highest_peaks_tup, smoothed_trace, threshold = ladder_analysis_obsolete.find_top_N_Peaks(
         raw_trace_data, peak_calling_parameters, True)
 
     highest_peaks_tup.sort(key=lambda x: x[0])  # sort, by x's, not y's

@@ -3,7 +3,7 @@ from file_io import xml_file_readers, results_files, fsa_file_reader
 from signal_processing import peak_analysis, trace_analysis, mw_wisdom, shared,elastic_ladder_analysis
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
-from signal_processing.ladder_analysis import Mapping_Info
+from signal_processing.ladder_analysis_obsolete import Mapping_Info
 from visualization import per_file_visuals
 import log
 
