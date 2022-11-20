@@ -182,8 +182,11 @@ def check_if_retry_is_worth_it(mapping_attempt_worked):
 def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, run_folder, run_name,
                                      background_subtraction_window):
 
-    gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
+    try:
+        gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
                                                     background_subtraction_window)
+    except:
+        gotLadderPeaks=False
 
     if not gotLadderPeaks:
         log.write_to_log("getting ladder peaks failed")
