@@ -31,7 +31,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     # 'DATA105' is the ladder channel
 
     ladder_trace = trace_data_dictionary['DATA105']
-    ladder_trace = cap_height(ladder_trace)
+    ladder_trace = cap_height_and_domain(ladder_trace)
 
     if window_half_width > 0:
         ladder_trace = do_background_removal(ladder_trace, window_half_width)
@@ -68,7 +68,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
         highest_peaks_tup, smoothed_trace, threshold_used = recall_ladder_peaks(ladder_trace, recall_parameters)
         highest_peaks_with_index_from_right, peak500 = find_500peak(highest_peaks_tup)
 
-    #print("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
+    # print("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
     num_peaks_needed = 14
     log.write_to_log("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
     ladder_peaks = elastic_ladder.build_elastic_ladder_from_right(highest_peaks_with_index_from_right, peak500,
@@ -113,7 +113,8 @@ def recall_ladder_peaks(ladder_trace, recall_parameters):
 def find_500peak(highest_peaks_tup):
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
     highest_peaks_with_index_from_right = [[highest_peaks_tup[i][0], highest_peaks_tup[i][1], i] for i in
-                                           range(0, len(highest_peaks_tup))]
+                                           range(0, len(highest_peaks_tup)) if highest_peaks_tup[i][0]]
+
     highest_peaks_with_index_from_right.sort(key=lambda x: x[0], reverse=True)
     high_peaks = highest_peaks_with_index_from_right[0:16]
     peak500 = [high_peaks[0][0], high_peaks[0][1], high_peaks[0][2]]
@@ -133,10 +134,11 @@ def get_background(ladder_trace, window_half_width):
     return background
 
 
-def cap_height(ladder_trace):
+def cap_height_and_domain(ladder_trace):
+    max_x = 8000
     start_here = int((len(ladder_trace)) * 0.50)
-    max_height_on_right = max(ladder_trace[start_here:-1])
-    trace_with_capped_height = [min([ladder_trace[i], max_height_on_right]) for i in range(0, len(ladder_trace))]
+    max_height_allowed = max(ladder_trace[start_here:-1]) * 1.5
+    trace_with_capped_height = [min([ladder_trace[i], max_height_allowed]) for i in range(0, max_x)]
     return trace_with_capped_height
 
 
@@ -167,6 +169,7 @@ def fix_over_saturated_start(ladder_trace, original_highest_peaks_tup,
         back_up_plan_peak35 = elastic_ladder.get_peak_i(original_highest_peaks_tup,
                                                         0, ladder_peaks[0][2], elastic_ladder.get_tolerances())
         return back_up_plan_peak35
+
 
 def find_top_N_Peaks(signal_trace, peak_calling_parameters, largest_first):
     # very basic smoothing

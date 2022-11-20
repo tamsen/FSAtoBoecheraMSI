@@ -26,7 +26,7 @@
 #/home/tamsen/Data/Eton/Frag_Order_16706
 #/home/tamsen/Data/Eton/Frag_Order_16707
 /home/tamsen/Data/Eton/Frag_Order_16729
-/home/tamsen/Data/Eton/Frag_Order_16730
+#/home/tamsen/Data/Eton/Frag_Order_16730
 
 #/home/tamsen/Data/Eton/SmallTestData
 #/home/tamsen/Data/Eton/LadderTests
