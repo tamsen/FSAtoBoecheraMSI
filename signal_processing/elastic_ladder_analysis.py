@@ -6,11 +6,9 @@ from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
 from signal_processing import shared, elastic_ladder
+from signal_processing.elastic_ladder import GLOBAL_Liz500
 from visualization import per_file_visuals
 import log
-
-GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
-
 
 class Mapping_Info:
 

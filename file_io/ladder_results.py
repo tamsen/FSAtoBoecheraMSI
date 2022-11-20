@@ -1,6 +1,6 @@
 import os
 
-from signal_processing.ladder_analysis_obsolete import GLOBAL_Liz500
+from signal_processing.elastic_ladder_analysis import GLOBAL_Liz500
 
 
 def write_ladder_peaks(outputDir, fsa_results_by_file_name):
