@@ -38,8 +38,8 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
     avg_loci_accuracy, avg_sample_accuracy = accuracy.write_accuracy_files(output_folder_inside_data_folder,
                                                                            by_sample_results, panel_info)
 
-    #final_calls_batch_file = query_file.write_query_file(output_folder_inside_data_folder,
-    #                                         by_sample_results, True)
+    final_calls_batch_file = query_file.write_query_file(output_folder_inside_data_folder,
+                                             by_sample_results, True)
 
     high_standard_batch_file = query_file.write_query_file(output_folder_inside_data_folder,
                                              by_sample_results, False)

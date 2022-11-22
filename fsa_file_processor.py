@@ -185,7 +185,10 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
     try:
         gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
                                                     background_subtraction_window)
-    except:
+
+    except Exception as e:
+        log.write_to_log("Major issue getting the ladder peaks.")
+        log.write_to_log(str(e))
         gotLadderPeaks=False
 
     if not gotLadderPeaks:

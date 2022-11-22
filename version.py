@@ -6,7 +6,8 @@ GLOBAL_public_version_info = [
      "so we only keep calls made with a very clear ladder. ", "Nov 14, 2022", "v1.0.0.0"],
     ["Adding background subtraction to peak finding for the ladder. " , "Nov 15, 2022", "v1.0.0.3"],
     ["Adding more smarts to ladder, so we have some expectation of where ladder should be, based on calibration data. ",
-     "Nov 17, 2022", "v1.0.0.4"] ]
+     "Nov 17, 2022", "v1.0.0.4"]]
+
 
 
 class version_info:

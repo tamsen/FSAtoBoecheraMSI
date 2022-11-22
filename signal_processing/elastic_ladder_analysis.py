@@ -41,10 +41,13 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     # made kernel smaller so ladder matches peak-smoothing alg
     parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
     parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5, False)
+    #print("ladder trace")
+    #print(",".join(ladder_trace))
+    highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(ladder_trace,
+                                                                         parameters_for_right_side_of_ladder, True)
 
-    highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(
-        ladder_trace, parameters_for_right_side_of_ladder, True)
-
+    #print("smoothed trace")
+    #print(",".join(smoothed_trace))
     # right-most first
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
 
@@ -201,8 +204,8 @@ def find_top_N_Peaks(signal_trace, peak_calling_parameters, largest_first):
 def get_threshold_for_trace(smoothed_trace, threshold_multiplier):
     # TODO, might be useful modification
     # calculate the threshold on range 2000:8000, skipping crazy peak
-    # ladder_variance = np.var(smoothed_trace[2000:8000])
-    # ladder_mode = mode(smoothed_trace[2000:8000])[0][0]
+    #ladder_variance = np.var(smoothed_trace[2000:6000])
+    #ladder_mode = mode(smoothed_trace[2000:6000])[0][0]
     ladder_variance = np.var(smoothed_trace)
     ladder_mode = mode(smoothed_trace)[0][0]
     ladder_sigma = np.sqrt(ladder_variance)
