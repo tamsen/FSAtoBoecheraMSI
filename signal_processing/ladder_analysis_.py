@@ -1,6 +1,5 @@
 import statistics
 from enum import Enum
-
 import numpy as np
 from scipy.stats import mode
 from scipy.signal import find_peaks
@@ -9,7 +8,6 @@ from scipy.interpolate import interp1d
 from signal_processing import shared
 from visualization import per_file_visuals
 import log
-
 
 GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
@@ -235,7 +233,7 @@ def find_top_N_Peaks(signal_trace, peak_calling_parameters,largest_first):
     smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
 
     if peak_calling_parameters.forced_threshold:
-        threshold = peak_calling_parameters.forced_threshold
+       threshold = peak_calling_parameters.forced_threshold
     elif peak_calling_parameters.threshold_multiplier:
         threshold = get_threshold_for_trace(smoothed_trace, peak_calling_parameters.threshold_multiplier)
     else:

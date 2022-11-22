@@ -1,5 +1,5 @@
 import accuracy
-from signal_processing.ladder_analysis import Mapping_Info
+from signal_processing.elastic_ladder_analysis import Mapping_Info
 
 
 class loci_results:

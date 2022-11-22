@@ -1,5 +1,5 @@
 import os
-from signal_processing.ladder_analysis import GLOBAL_Liz500
+from signal_processing.elastic_ladder import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 
 

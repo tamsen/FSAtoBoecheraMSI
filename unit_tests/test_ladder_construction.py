@@ -1,18 +1,15 @@
 from unittest import TestCase
-import signal_processing.ladder_analysis
-import file_io.fsa_file_reader
-import os
+#import signal_processing.elastic_ladder_analysis
 
+import os
 from file_io import fsa_file_reader
-from signal_processing import trace_analysis, ladder_analysis
+from signal_processing import trace_analysis, elastic_ladder_analysis
 import test_globals
 
 class TestLadder(TestCase):
 
 
     def setUp(self):
-        #global test_output_dir
-        #test_output_dir="../test_case_output/"
         if not (os.path.exists(test_globals.GLOBAL_test_output_dir)):
             os.makedirs(test_globals.GLOBAL_test_output_dir)
 
@@ -20,14 +17,14 @@ class TestLadder(TestCase):
 
         trace=[99,99,99,99,99,99,99]
         window_half_width=3
-        background=ladder_analysis.get_background(trace, window_half_width)
+        background=elastic_ladder_analysis.get_background(trace, window_half_width)
         print(background)
         self.assertEqual(len(background), len(trace))
 
 
         trace=[99,99,2000,99,99,99,99, 0, 0, 99,99,99,99, 0, 0]
         window_half_width=3
-        background=ladder_analysis.get_background(trace, window_half_width)
+        background=elastic_ladder_analysis.get_background(trace, window_half_width)
         print(background)
         self.assertEqual(len(background), len(trace))
 
@@ -36,7 +33,7 @@ class TestLadder(TestCase):
         #easy samples. clear peaks.
         fsa_file="../test_data/test_ladder/BD1200PS1c5_A01.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
             test_globals.GLOBAL_test_output_dir,
             "BD1200PS1c5_A01_",
             trace_data_dictionary)
@@ -48,7 +45,7 @@ class TestLadder(TestCase):
         #easy samples. clear peaks.
         fsa_file="../test_data/test_ladder/FW428-PS1-A2_A02.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
             test_globals.GLOBAL_test_output_dir,
             "FW428-PS1-A2_A02_",
             trace_data_dictionary)
@@ -60,7 +57,7 @@ class TestLadder(TestCase):
         #easy samples. clear peaks.
         fsa_file="../test_data/test_ladder/FW428-PS5-E2_E02.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
             test_globals.GLOBAL_test_output_dir,
             "FW428-PS5-E2_E02_",
             trace_data_dictionary)
@@ -73,7 +70,7 @@ class TestLadder(TestCase):
 
         fsa_file="../test_data/test_ladder/BD1200PS2c5_H01.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
             test_globals.GLOBAL_test_output_dir,
                                                                                    "BD1200PS2c5_H01_",
                                                                                    trace_data_dictionary)
@@ -89,7 +86,7 @@ class TestLadder(TestCase):
         #difficult sample (multiple spurious low peak)
         fsa_file="../test_data/test_ladder/BD1200PS5_E04.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "BD1200PS5_E04_",
                                                                                   trace_data_dictionary)
 
@@ -101,7 +98,7 @@ class TestLadder(TestCase):
         #difficult sample (multiple spurious high peaks)
         fsa_file="../test_data/test_ladder/JB277PS1F2_D02.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "JB277PS1F2_D02_",
                                                                                   trace_data_dictionary)
 
@@ -114,7 +111,7 @@ class TestLadder(TestCase):
         #difficult sample (one spurious low peak)
         fsa_file="../test_data/test_ladder/BD1200PS3c5_A02.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "BD1200PS3c5_A02_",
                                                                                   trace_data_dictionary)
 
@@ -125,7 +122,7 @@ class TestLadder(TestCase):
         #difficult sample (one spurious high peak)
         fsa_file="../test_data/test_ladder/BD1200CNTRL-PS3-C4_B03.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "BD1200CNTRL-PS3-C4_B03_",
                                                                                   trace_data_dictionary)
 
@@ -136,7 +133,7 @@ class TestLadder(TestCase):
         #difficult sample (one spurious high peak)
         fsa_file="../test_data/test_ladder/JB617-PS1-A7_G12.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data =ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                   "JB617-PS1-A7_G12.fsa_",
                                                                                   trace_data_dictionary)
 
@@ -148,7 +145,7 @@ class TestLadder(TestCase):
         # difficult sample (one spurious low peak)
         fsa_file = "../test_data/test_ladder/FW415_ladder_issue_PS1_A2_G01.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                     "BD1200PS3c5_A02_",
                                                                                     trace_data_dictionary)
 
@@ -161,26 +158,24 @@ class TestLadder(TestCase):
 
         fsa_file = "../test_data/test_ladder/TD21RP22PS1_G08.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                     "TD21RP22PS1_G08_",
                                                                                     trace_data_dictionary)
 
-        expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
-
-        observed_peak_xs = [x[0] for x in sixteen_peaks]
-
+        #expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
+        #observed_peak_xs = [x[0] for x in sixteen_peaks]
         #commenting this test out. We still dont do a great job with such messed-up ladders
         #self.assertEqual(expected_peak_xs, observed_peak_xs)
 
         fsa_file = "../test_data/test_ladder/TD21RP22PS2_H08.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                     "TD21RP22PS2_H08_",
-                                                                                    trace_data_dictionary)
+                                                                                  trace_data_dictionary)
 
-        expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
+        #expected_peak_xs =[1225,1370,1645,1909,2341,2451,2561,3019,3580,4203,4667,4787,5405,5977,6453,6551]
 
-        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        #observed_peak_xs = [x[0] for x in sixteen_peaks]
         # commenting this test out. We still dont do a great job with such messed-up ladders
         # self.assertEqual(expected_peak_xs, observed_peak_xs)
 
@@ -190,11 +185,39 @@ class TestLadder(TestCase):
 
         fsa_file = "../test_data/test_ladder/TD21GD0204PS1-A5_A05.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
                                                                                     "TD21GD0204PS1-A5_A05.fsa",
                                                                                     trace_data_dictionary)
 
-        expected_peak_xs =[1130,1162,1623,1889,2322,2432,2544,3005,3571,4197,4666,4787,5413,5994,6478,6578]
+        expected_peak_xs = [1201, 1348, 1623, 1889, 2322, 2432, 2544, 3005, 3571, 4197, 4666, 4787, 5413, 5994, 6478,
+                            6578] # v1.0.0.3 looks better...
+
+        # v1.0.0.0 looks worse...
+        #expected_peak_xs =[1130,1162,1623,1889,2322,2432,2544,3005,3571,4197,4666,4787,5413,5994,6478,6578]
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+
+
+    def test_specifcally_that_worked_after_elastic_ladder_alg(self):
+
+        fsa_file = "../test_data/test_ladder/TD22EL23-PS2-B7_B07.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+                                                                                    "TD22EL23-PS2-B7_B07_",
+                                                                                    trace_data_dictionary)
+
+        expected_peak_xs = [1187,1333,1599,1860,2281,2388,2497,2943,3489,4098,4554,4669,5274,5839,6310,6407]
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+
+        fsa_file = "../test_data/test_ladder/TD22BV12-PS5-E8_E08.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
+            test_globals.GLOBAL_test_output_dir,
+            "TD22BV12-PS5-E8_E08.fsa_",
+            trace_data_dictionary)
+
+        expected_peak_xs = [1173,1318,1583,1840,2260,2366,2474,2917,3464,4062,4513,4627,5225,5782,6245,6341]
         observed_peak_xs = [x[0] for x in sixteen_peaks]
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 

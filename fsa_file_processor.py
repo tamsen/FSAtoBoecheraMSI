@@ -1,9 +1,9 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, ladder_analysis, mw_wisdom, shared
+from signal_processing import peak_analysis, trace_analysis, mw_wisdom, shared,elastic_ladder_analysis
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
-from signal_processing.ladder_analysis import Mapping_Info
+from signal_processing.elastic_ladder_analysis import Mapping_Info
 from visualization import per_file_visuals
 import log
 
@@ -163,7 +163,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("final calls for loci " + loci + ": " + str(allele_calls_for_loci))
 
     log.write_to_log("**** Processing " + fsa_file + " completed  ********")
-    FSA_file_results = FSA_File_Results(final_calls_by_loci)
+    FSA_file_results = FSA_File_Results(final_calls_by_loci,sixteen_peaks)
 
     return FSA_file_results
 
@@ -182,8 +182,14 @@ def check_if_retry_is_worth_it(mapping_attempt_worked):
 def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, run_folder, run_name,
                                      background_subtraction_window):
 
-    gotLadderPeaks = ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
+    try:
+        gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
                                                     background_subtraction_window)
+
+    except Exception as e:
+        log.write_to_log("Major issue getting the ladder peaks.")
+        log.write_to_log(str(e))
+        gotLadderPeaks=False
 
     if not gotLadderPeaks:
         log.write_to_log("getting ladder peaks failed")
@@ -194,7 +200,7 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
 
     else:
         sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
-    mapping_function = ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
+    mapping_function = elastic_ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
 
     if not mapping_function:
         data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
