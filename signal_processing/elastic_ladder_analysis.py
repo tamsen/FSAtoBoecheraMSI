@@ -177,6 +177,9 @@ def find_top_N_Peaks(signal_trace, peak_calling_parameters, largest_first):
     kernel = np.ones(peak_calling_parameters.kernel_size) / peak_calling_parameters.kernel_size
     smoothed_trace = np.convolve(signal_trace, kernel, mode='same')
 
+    #print("signal_trace")
+    #print(str(list(signal_trace)))
+
     if peak_calling_parameters.forced_threshold:
         threshold = peak_calling_parameters.forced_threshold
     elif peak_calling_parameters.threshold_multiplier:
