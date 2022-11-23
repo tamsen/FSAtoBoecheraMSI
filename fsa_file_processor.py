@@ -59,6 +59,13 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # best parameters for the trace data: (fatter, messier spikes)
         # kernel of 20, distance between peaks 20, min_peak_width 10;threshold_multiplier .5
 
+        #self.num_peaks_needed = num_peaks_needed
+        #self.kernel_size = kernel_size
+        #self.min_distance_between_peaks = min_distance_between_peaks
+        #self.min_peak_width = min_peak_width
+        #self.threshold_multiplier = threshold_multiplier
+        #self.forced_threshold = False
+
         # Originally used a lot of smoothing, but backed off to better match michael w
         # peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
         peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier, False)
@@ -79,7 +86,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
             raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
 
-            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
+            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci,
+                                                                   trace_x_new, trace_y_new, threshold_used)
 
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
@@ -98,11 +106,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                     peak_calling_parameters.min_distance_between_peaks,
                     peak_calling_parameters.min_distance_between_peaks,
                     threshold_multiplier * threshold_reduction, False)
-                #    #False)
-                #
-                # threshold_multiplier * threshold_reduction)
 
-                peaks_inside_loci, trace_x_new2, trace_y_new2, \
+                peaks_inside_loci, trace_x_new, trace_y_new, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                     all_collected_data,
                                                                                     mapping_function,
@@ -113,7 +118,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 unfiltered_peaks_in_loci = peaks_inside_loci[loci]
                 raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
 
-                filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
+                filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci,
+                                                                       trace_x_new, trace_y_new, threshold_used)
 
             final_calls = mw_wisdom.make_adjustments(filtered_calls, loci)
 

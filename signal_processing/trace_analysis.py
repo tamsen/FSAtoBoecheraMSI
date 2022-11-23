@@ -57,6 +57,17 @@ def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
     peak_xs = [peak[0] for peak in highest_peaks_tup]
     peak_ys = [peak[1] for peak in highest_peaks_tup]
 
+    dip_between_peaks = []
+    for i in range(0,len(peak_xs)-1):
+        this_x = peak_xs[i]
+        next_x = peak_xs[i+1]
+        y_section = smoothed_trace[this_x:next_x]
+        if (min(y_section)*.9) <= threshold:
+            dip_between_peaks.append(True)
+        else:
+            dip_between_peaks.append(False)
+    dip_between_peaks.append(True)
+
     # plot raw trace, smoothed trace, and discovered peaks
     per_file_visuals.plotUnmappedTraceByColor(
         run_folder,
@@ -109,7 +120,7 @@ def remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
         per_file_visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, peak_x_new, peak_y_new, threshold, wavelength,
                                              channel_dye_name, channel_number, loci_name + "_Remapped", plot_domain)
 
-        peaks = peak_analysis.filter_by_range(peak_x_new, peak_y_new, loci["length"])
+        peaks = peak_analysis.filter_by_range(peak_x_new, peak_y_new, dip_between_peaks, loci["length"])
 
         Peaks_inside_loci[loci_name] = peaks
 

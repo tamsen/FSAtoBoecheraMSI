@@ -4,11 +4,11 @@ import numpy as np
 
 
 def peaks_to_raw_calls(peaks):
-    peaks = [[round(peak[0], 1), peak[1]] for peak in peaks]
+    peaks = [[round(peak[0], 1), peak[1], peak[2]] for peak in peaks]
     return peaks
 
 
-def peaks_to_filtered_calls(peaks, loci):
+def peaks_to_filtered_calls(peaks, loci, trace_x_new, trace_y_new, threshold):
 
 
     #if loci=="BF3":
@@ -25,61 +25,108 @@ def peaks_to_filtered_calls(peaks, loci):
     # ----------- PS1 extra filtering --------------
 
     if loci == 'ICE3':
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, take_run_maximum)
 
     if loci == 'BF20':  # most pain-in-the-ass loci
         merge_peaks_closer_than_this = fine_stutter  # g
-        peaks = stutter_fix(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, merge_peaks_closer_than_this, take_run_maximum)
 
     # ----------- PS2 extra filtering --------------
 
     if loci in ['BF11', 'C8']:
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, take_run_maximum)
 
     if loci in ['ICE14']:  # be careful here b/c we later remove peak at 210
-        peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, fine_stutter, take_run_maximum)
 
     # ----------- PS3 extra filtering --------------
 
     if loci in ['BF9']:  # b
-        peaks = stutter_fix(peaks, typical_stutter + .5, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold,
+                            typical_stutter, bf9_special)
+        num_peaks=len(peaks)
+        if num_peaks > 3:
+            peaks=peaks[num_peaks-4:num_peaks]
 
     if loci in ['E9']:  # b
-        peaks = stutter_fix(peaks, typical_stutter, take_right_most)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, take_right_most)
 
     if loci == 'BF18':
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, take_run_maximum)
 
     # ----------- PS4 extra filtering --------------
 
     if loci == 'BF3':  # second-most pain-in-the-ass loci
         merge_peaks_closer_than_this = 1
-        peaks = stutter_fix(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold,
+                            merge_peaks_closer_than_this, take_run_maximum)
 
     if loci == 'BF19':
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, take_run_maximum)
 
     if loci == 'B6':
-        peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, fine_stutter, take_run_maximum)
 
     # ----------- PS5 extra filtering --------------
 
     if loci == 'BF15':
-        peaks = stutter_fix(peaks, typical_stutter, drop_right_most)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, drop_right_most)
 
     if loci == 'Bdru266':
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, trace_x_new, trace_y_new, threshold, typical_stutter, take_run_maximum)
 
     return [[round(peak[0], 1), peak[1]] for peak in peaks]
 
 
-def filter_by_range(peak_x, peak_y, expected_range):
+def get_min_in_trace_section(x1,x2,trace_x_new, trace_y_new):
+
+    ys=[]
+    for i in range(0,len(trace_x_new)):
+        x=trace_x_new[i]
+        y=trace_y_new[i]
+        if x1 < x < x2:
+            ys.append(y)
+    return min(ys)
+
+def bf9_special(run,trace_x_new, trace_y_new, threshold):
+
+    if len(run) < 2:
+        return run
+
+    peaks_to_remove = []
+    for i in range (0,len(run)-1):
+
+         this_peak=run[i]
+         next_peak=run[i+1]
+         this_peak_x=this_peak[0]
+         next_peak_x=next_peak[0]
+
+         min_y_between_peaks = get_min_in_trace_section(this_peak_x,next_peak_x,trace_x_new, trace_y_new)
+         dip_between_peaks= min_y_between_peaks < threshold
+
+         if not dip_between_peaks:
+
+             if this_peak[1] <= next_peak[1]:
+                 peaks_to_remove.append(this_peak)
+             else:
+                 peaks_to_remove.append(next_peak)
+
+    for peak in peaks_to_remove:
+        if peak in run:
+            run.remove(peak)
+
+    #keep the right-most two
+    num_left=len(run)
+    return run[num_left-2:num_left]
+
+def filter_by_range(peak_x, peak_y, dip_between_peaks, expected_range):
     peaks_in_loci_range = []
     for i in range(0, len(peak_x)):
         x = peak_x[i]
         y = peak_y[i]
+        dip = dip_between_peaks[i]
         if ((x >= expected_range[0]) and (x <= expected_range[1])):
-            peaks_in_loci_range.append([x, y])
+            peaks_in_loci_range.append([x, y, dip])
 
     peaks_in_loci_range.sort(key=lambda x: x[0])
     return peaks_in_loci_range
@@ -155,7 +202,7 @@ def iteratively_clean_short_peaks(peaks, step_width_left, step_proportion_left,
     return peaks
 
 
-def stutter_fix(peaks, how_close_is_too_close, f):
+def stutter_fix(peaks,trace_x_new, trace_y_new, threshold, how_close_is_too_close, f):
     if len(peaks) == 0:
         return peaks
 
@@ -180,18 +227,19 @@ def stutter_fix(peaks, how_close_is_too_close, f):
     best_peaks_in_a_run = []
     for run in peaks_in_stutter_runs:
 
-        half_run_max = (take_run_maximum(run)[0])[1] * 0.5
+        #tjd - should I put this back? or, ony remove if there is a significant dip?
+        #half_run_max = (take_run_maximum(run,trace_x_new, trace_y_new, threshold)[0])[1] * 0.5
         # if any peak is lest than 1/2 the max height in a run, kill it
-        for p in run:
-            if (p[1] < half_run_max):
-                run.remove(p)
+        #for p in run:
+        #    if (p[1] < half_run_max):
+        #        run.remove(p)
 
-        best_peaks_in_a_run = best_peaks_in_a_run + f(run)
+        best_peaks_in_a_run = best_peaks_in_a_run + f(run, trace_x_new, trace_y_new, threshold)
 
     return best_peaks_in_a_run
 
 
-def take_run_maximum(run):
+def take_run_maximum(run, trace_x_new, trace_y_new, threshold):
     if len(run) < 2:
         return run
 
@@ -202,25 +250,7 @@ def take_run_maximum(run):
 
 
 
-def bf15_special(run):
-    if len(run) < 2:
-        return run
-
-    min_height_in_run = min([p[1] for p in run])
-    peaks_at_close_to_that_height = [p for p in run if min_height_in_run*(.95) < p[1] < min_height_in_run*(1.05)]
-
-    p_replacement_x = statistics.mean( [p[0] for p in peaks_at_close_to_that_height])
-    p_replacement_y = statistics.mean( [p[1] for p in peaks_at_close_to_that_height])
-
-    for p in peaks_at_close_to_that_height:
-        run.remove(p)
-
-    if len(peaks_at_close_to_that_height) > 1:
-        run.append([p_replacement_x,p_replacement_y])
-
-    return run
-
-def drop_lowest(run):
+def drop_lowest(run,trace_x_new, trace_y_new, threshold):
     if len(run) < 2:
         return run
 
@@ -236,18 +266,18 @@ def drop_lowest(run):
     return run
 
 
-def take_right_most(run):
+def take_right_most(run, trace_x_new, trace_y_new, threshold):
     return [run[-1]]
 
 
-def drop_right_most(run):
+def drop_right_most(run, trace_x_new, trace_y_new, threshold):
     if len(run) < 2:
         return (run)
 
     return run[0:-1]
 
 
-def take_run_centroid(run):
+def take_run_centroid(run, trace_x_new, trace_y_new, threshold):
     weight_sum = sum([p[1] for p in run])
     max_y = max([p[1] for p in run])
     x_weighted_avg = 0

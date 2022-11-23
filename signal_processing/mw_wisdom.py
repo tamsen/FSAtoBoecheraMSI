@@ -30,8 +30,8 @@ def make_adjustments(peaks, loci):
         #tjd - this might be where I brought down all the accuracy
         peaks = [[p[0] + 0.3, p[1]] for p in peaks]
 
-    #if loci == 'A1': #b
-    #    peaks = [[p[0] -0.5, p[1]] for p in peaks]
+    if loci == 'A1': #b
+        peaks = [[p[0] -0.5, p[1]] for p in peaks]
 
     #-------------PS2--------------
 
@@ -48,7 +48,9 @@ def make_adjustments(peaks, loci):
         [peaks.remove(p) for p in peaks if 120 < p[0] < 122] # false peaks, noise
         [peaks.remove(p) for p in peaks if 140 < p[0] < 150] # false peaks, noise
         #[peaks.remove(p) for p in peaks if 86 < p[0] < 88] # false peaks, noise
-        peaks = [[p[0] - 0.5, p[1]] for p in peaks]
+        peaks = bf9_special(peaks)
+        #peaks = [[p[0] - 0.5, p[1]] for p in peaks]
+        peaks = [[p[0] - 6, p[1]] for p in peaks]
 
     if loci == 'BF18': #g
         #peaks = [[p[0] - 1, p[1]] for p in peaks]
@@ -75,3 +77,11 @@ def make_adjustments(peaks, loci):
         peaks = [[p[0] + 0.5, p[1]] for p in peaks]
 
     return [[int(round(p[0], 0)), p[1]] for p in peaks]
+
+
+def bf9_special(peaks):
+
+    #peaks = [[p[0]-6, p[1]] for p in peaks]
+    #num_peaks = len(peaks)
+    #return peaks[num_peaks-3:num_peaks]
+    return peaks
