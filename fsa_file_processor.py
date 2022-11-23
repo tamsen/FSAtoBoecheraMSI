@@ -77,9 +77,9 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
+            raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
 
-            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
+            #filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
@@ -98,11 +98,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                     peak_calling_parameters.min_distance_between_peaks,
                     peak_calling_parameters.min_distance_between_peaks,
                     threshold_multiplier * threshold_reduction, False)
-                #    #False)
-                #
-                # threshold_multiplier * threshold_reduction)
 
-                peaks_inside_loci, trace_x_new2, trace_y_new2, \
+                peaks_inside_loci, trace_x_new, trace_y_new, \
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                                     all_collected_data,
                                                                                     mapping_function,
@@ -110,10 +107,12 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                                                     dye_to_channel_mapping[channel],
                                                                                     rescue_parameters)
 
-                unfiltered_peaks_in_loci = peaks_inside_loci[loci]
-                raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
-
-                filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
+            unfiltered_peaks_in_loci = peaks_inside_loci[loci]
+            raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
+            typical_stutter = 3.5
+            raw_calls = peak_analysis.bf9_special2(raw_calls, loci, trace_x_new, trace_y_new,threshold_used,
+                                                   typical_stutter)
+            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
             final_calls = mw_wisdom.make_adjustments(filtered_calls, loci)
 
