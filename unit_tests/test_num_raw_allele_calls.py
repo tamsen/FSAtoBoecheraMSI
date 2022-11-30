@@ -52,7 +52,7 @@ class TestAlleleCalls(unittest.TestCase):
         bf18_results = FSA_file_results.MSI_loci_results_by_loci["BF18"].raw_alleles_called
         e9_results = FSA_file_results.MSI_loci_results_by_loci["E9"].raw_alleles_called
 
-        self.assertEqual(len(bf9_results), 8)
+        self.assertEqual(len(bf9_results), 5)
         self.assertEqual(len(bf18_results), 2)
         self.assertEqual(len(e9_results), 4)
 

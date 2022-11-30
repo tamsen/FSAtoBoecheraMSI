@@ -194,10 +194,10 @@ class TestFinalCalls(unittest.TestCase):
             fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF9"]
-        self.assertEqual(8, len(results.raw_alleles_called))
-        self.assertEqual(3, len(results.filtered_alleles_called))
+        self.assertEqual(6, len(results.raw_alleles_called))
+        self.assertEqual(5, len(results.filtered_alleles_called))
         self.assertEqual(3, len(results.final_alleles_called))
-        self.assertEqual([83,87,93], results.final_alleles_called) #ideally 82,92, 94
+        self.assertEqual([82,92, 94], results.final_alleles_called)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF18"]
         self.assertEqual(1, len(results.raw_alleles_called))

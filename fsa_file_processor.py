@@ -135,6 +135,12 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 where_loci_should_be = relevant_loci[loci]["length"]  # even though we didnt find them..
                 whole_loci_domain = [where_loci_should_be[0], where_loci_should_be[-1]]
 
+            if loci=="ICE3":
+                whole_loci_domain = [50,200]
+
+            if loci=="BF11":
+                whole_loci_domain = [60,110]
+
             loci_specific_plot_data = [trace_x_new, trace_y_new,
                                        [call[0] for call in raw_calls],
                                        [call[1] for call in raw_calls],

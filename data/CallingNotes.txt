@@ -1,0 +1,4 @@
+notes:	
+BF11, only call bumps to the right ~95 if we see a nice descending order
+BF20, never call the bump at 204 that comes before 209, or at 212 that comes before 218 etc. Always go with the leading peak - there is usually an echo. call the front peak
+BF9, a true polyploid is a real mess. A dipoid has two peaks with a small echo. Call the front peak

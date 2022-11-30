@@ -26,8 +26,9 @@ def make_adjustments(peaks, loci):
         #peaks = adjusted_peaks
 
     if loci == 'BF20': #g
-        [peaks.remove(p) for p in peaks if 203 < p[0] < 206]  #MW determined this to be false peak
+        [peaks.remove(p) for p in peaks if 203 < p[0] < 206]  # MW determined this to be false peak
         [peaks.remove(p) for p in peaks if 235 < p[0] ]  #cross contamination
+
         peaks = [[p[0] - 0.0, p[1]] for p in peaks]
 
     if loci == 'A1': #b
@@ -64,8 +65,12 @@ def make_adjustments(peaks, loci):
 
     #-------------PS4--------------
 
-    if loci in ['BF3','BF19']:
+    if loci in ['BF3']:
         peaks = [[p[0] - 1.0, p[1]] for p in peaks]
+
+    if loci in ['BF19']:
+        peaks = [[p[0] - 1.0, p[1]] for p in peaks]
+        [peaks.remove(p) for p in peaks if p[0] < 120]  # known false peaks, noise
 
     if loci in ['B6']:
         [peaks.remove(p) for p in peaks if 308 < p[0] < 310]

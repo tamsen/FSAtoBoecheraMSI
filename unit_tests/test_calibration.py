@@ -41,11 +41,11 @@ class TestCalibration(unittest.TestCase):
             all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.72, True)
-        self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.00, True)
+        self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.90, True)
+        self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.75, True)
         #self.assertEqual(avg_sample_accuracy['BP28'] >= 98.32, True)  # brought down by BF9, PS3, calling extra peak.
-        self.assertEqual(avg_sample_accuracy['BP28'] >= 99.52, True) #fixed when we increase sutter-distance from 3.5 -> 4
-        self.assertEqual(avg_sample_accuracy['LA846'] >= 99.44, True)
+        self.assertEqual(avg_sample_accuracy['BP28'] >= 99.60, True) #fixed when we increase sutter-distance from 3.5 -> 4
+        self.assertEqual(avg_sample_accuracy['LA846'] >= 99.62, True)
 
         #this was when kernel down to 6
         #self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.72, True)
@@ -98,8 +98,8 @@ class TestCalibration(unittest.TestCase):
             version.version_info(), all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        self.assertEqual(avg_sample_accuracy['FW428'] >= 82.33, True)
-        self.assertEqual(avg_sample_accuracy['FW415'] >= 76.24, True)
+        self.assertEqual(avg_sample_accuracy['FW428'] >= 84.11, True)
+        self.assertEqual(avg_sample_accuracy['FW415'] >= 79.71, True)
 
     def test_retrofracta_calibration(self):
         path = "/home/tamsen/Data/Eton/Retrofracta_Calibration"
@@ -122,8 +122,8 @@ class TestCalibration(unittest.TestCase):
 
         #self.assertEqual(avg_sample_accuracy['JB276'] >= 75.05, True)
         #self.assertEqual(avg_sample_accuracy['JB277'] >= 87.45, True)
-        self.assertEqual(avg_sample_accuracy['JB276'] >= 74.5, True)
-        self.assertEqual(avg_sample_accuracy['JB277'] >= 84.5, True)
+        self.assertEqual(avg_sample_accuracy['JB276'] >= 77.17, True)
+        self.assertEqual(avg_sample_accuracy['JB277'] >= 82.4, True)
 
     def test_miscellaneous_calibration(self):
         path = "/home/tamsen/Data/Eton/Miscellaneous_Calibration"
