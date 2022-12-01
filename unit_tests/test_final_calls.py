@@ -84,7 +84,7 @@ class TestFinalCalls(unittest.TestCase):
         self.assertEqual(10, len(raw_alleles_called)) #or 11, if you use smaller Kernel
         self.assertEqual(3, len(filtered_alleles_called))
         self.assertEqual(3, len(final_alleles_called))
-        self.assertEqual([208,214,219], final_alleles_called) #close enough. would be better if 214 was 218
+        self.assertEqual([208,218,219], final_alleles_called) 
 
 
 

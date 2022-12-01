@@ -27,8 +27,7 @@ def peaks_to_filtered_calls(peaks, loci):
         #peaks = stutter_fix(peaks, typical_stutter, take_left_most)
 
     if loci == 'BF20':  # most pain-in-the-ass loci
-        merge_peaks_closer_than_this = fine_stutter  # g
-        peaks = stutter_fix(peaks, merge_peaks_closer_than_this, take_run_maximum)
+        peaks = bf20_special(fine_stutter, peaks)
 
     # ----------- PS2 extra filtering --------------
 
@@ -73,6 +72,35 @@ def peaks_to_filtered_calls(peaks, loci):
         peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
 
     return [[round(peak[0], 1), peak[1]] for peak in peaks]
+
+
+def bf20_special(fine_stutter, peaks):
+
+    if len(peaks) < 2:
+        return peaks
+
+    merge_peaks_closer_than_this = fine_stutter  # g
+    # If the first two peaks are within 1.5 bases, this is the 218 / 219 split reported by Michael.
+    # stutter is usually 4 bases to the left
+    last_peak_x = peaks[-1][0]
+    next_last_peak_x = peaks[-2][0]
+    if (last_peak_x - next_last_peak_x) < 1.5:
+        saved_peaks = [peaks[-2], peaks[-1]]
+        expected_stutter_peaks = [p for p in peaks if next_last_peak_x - 6 < p[0] < next_last_peak_x - 3]
+    else:
+        saved_peaks = []
+        expected_stutter_peaks = [p for p in peaks if last_peak_x - 6 < p[0] < last_peak_x - 3]
+
+    peaks = stutter_fix(peaks, merge_peaks_closer_than_this, take_run_maximum)
+
+    for p in expected_stutter_peaks:
+        if p in peaks:
+            peaks.remove(p)
+    for p in saved_peaks:
+        if p not in peaks:
+            peaks.append(p)
+    peaks.sort(key=lambda x: x[0])
+    return peaks
 
 
 def filter_by_range(peak_x, peak_y, expected_range):
