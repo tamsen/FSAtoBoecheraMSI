@@ -39,8 +39,8 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     # parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
 
     # made kernel smaller so ladder matches peak-smoothing alg
-    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
-    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5, False)
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 5, 50, 10, .5, False)
+    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 5, 2, 1, .5, False)
     #print("ladder trace")
     #print(",".join(ladder_trace))
     highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(ladder_trace,

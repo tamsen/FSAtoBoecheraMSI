@@ -62,6 +62,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # Originally used a lot of smoothing, but backed off to better match michael w
         # peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
         peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier, False)
+        #peak_calling_parameters = shared.peak_calling_parameters(30, 5, 3, 1, threshold_multiplier, False)
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
