@@ -47,11 +47,16 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(avg_sample_accuracy['BP28'] >= 99.60, True) #fixed when we increase sutter-distance from 3.5 -> 4
         self.assertEqual(avg_sample_accuracy['LA846'] >= 99.62, True)
 
-        #this was when kernel down to 6
-        #self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.72, True)
-        #self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.12, True)
-        #self.assertEqual(avg_sample_accuracy['BP28'] >= 99.52, True)  # brought down by BF9, PS3, calling extra peak.
-        #self.assertEqual(avg_sample_accuracy['LA846'] >= 99.36, True)
+        # Also check the species designation are right
+        BD1200_species_determination=by_sample_results['BD1200']['A1'].BMW_determination
+        BD1200CNTRL_species_determination=by_sample_results['BD1200CNTRL']['A1'].BMW_determination
+        BP28_species_determination=by_sample_results['BP28']['A1'].BMW_determination
+        LA846_species_determination=by_sample_results['LA846']['A1'].BMW_determination
+
+        self.assertEqual("lemmonii x paupercula x retrofracta" in BD1200_species_determination, True)
+        self.assertEqual("lemmonii x paupercula x retrofracta" in BD1200CNTRL_species_determination, True)
+        #self.assertEqual("lemmonii x paupercula x retrofracta" in BP28_species_determination, True) (not yet passing. TODO, fx this)
+        self.assertEqual("lemmonii x paupercula x retrofracta" in LA846_species_determination, True)
 
     def test_paupercula_calibration(self):
         path = "/home/tamsen/Data/Eton/Paupercula_Calibration"
@@ -72,13 +77,16 @@ class TestCalibration(unittest.TestCase):
             all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        #self.assertEqual(avg_sample_accuracy['FW346'] >= 88.98, True)
-        #self.assertEqual(avg_sample_accuracy['FW437'] >= 89.21, True)
-
         self.assertEqual(avg_sample_accuracy['FW346'] >= 83.76, True)
         self.assertEqual(avg_sample_accuracy['FW437'] >= 89.21, True)
         #could be brough tup by fixing extra peak in BF3, but it breaks lxpxr accuracy
         #self.assertEqual(avg_sample_accuracy['FW437'] >= 91.84, True)
+
+        FW346_species_determination=by_sample_results['FW346']['A1'].BMW_determination.split(" ")[0]
+        FW437_species_determination=by_sample_results['FW437']['A1'].BMW_determination.split(" ")[0]
+
+        self.assertEqual("paupercula" == FW346_species_determination, True)
+        self.assertEqual("paupercula" == FW437_species_determination, True)
 
     def test_lemmonii_calibration(self):
         path = "/home/tamsen/Data/Eton/Lemmonii_Calibration"
@@ -94,12 +102,19 @@ class TestCalibration(unittest.TestCase):
         results_specific_to_this_subfolder = {}
         all_results_by_file = {}
 
+        #by_sample_results[sample_name][loci] = msi_results_for_loci
         by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
             version.version_info(), all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
         self.assertEqual(avg_sample_accuracy['FW428'] >= 84.11, True)
         self.assertEqual(avg_sample_accuracy['FW415'] >= 79.71, True)
+
+        FW428_species_determination=by_sample_results['FW428']['A1'].BMW_determination.split(" ")[0]
+        FW415_species_determination=by_sample_results['FW415']['A1'].BMW_determination.split(" ")[0]
+
+        self.assertEqual("lemmonii" == FW428_species_determination, True)
+        self.assertEqual("lemmonii" == FW415_species_determination, True)
 
     def test_retrofracta_calibration(self):
         path = "/home/tamsen/Data/Eton/Retrofracta_Calibration"
@@ -120,10 +135,14 @@ class TestCalibration(unittest.TestCase):
             all_results_by_file, output_folder_inside_data_folder,
             panel_info, path, results_specific_to_this_subfolder, truth_info)
 
-        #self.assertEqual(avg_sample_accuracy['JB276'] >= 75.05, True)
-        #self.assertEqual(avg_sample_accuracy['JB277'] >= 87.45, True)
-        self.assertEqual(avg_sample_accuracy['JB276'] >= 77.17, True)
-        self.assertEqual(avg_sample_accuracy['JB277'] >= 82.4, True)
+        self.assertEqual(avg_sample_accuracy['JB276'] >= 77.14, True)
+        self.assertEqual(avg_sample_accuracy['JB277'] >= 82.41, True)
+
+        JB276_species_determination=by_sample_results['JB276']['A1'].BMW_determination.split(" ")[0]
+        JB277_species_determination=by_sample_results['JB277']['A1'].BMW_determination.split(" ")[0]
+
+        self.assertEqual("retrofracta" in JB276_species_determination, True)
+        self.assertEqual("retrofracta" in JB277_species_determination, True)
 
     def test_miscellaneous_calibration(self):
         path = "/home/tamsen/Data/Eton/Miscellaneous_Calibration"

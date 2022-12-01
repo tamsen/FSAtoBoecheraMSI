@@ -58,7 +58,8 @@ def peaks_to_filtered_calls(peaks, loci):
         peaks = stutter_fix(peaks, merge_peaks_closer_than_this, take_run_maximum)
 
     if loci == 'BF19':
-        peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        #peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, typical_stutter, take_right_most)
 
     if loci == 'B6':
         peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)

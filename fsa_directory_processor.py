@@ -24,6 +24,7 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
 
     ladder_results.write_ladder_peaks(output_folder_inside_data_folder,results_specific_to_this_subfolder)
 
+    #by_sample_results [sample_name][loci] = msi_results_for_loci
     by_sample_results = results_files.consolidate_by_file_results_to_by_sample_results(
         results_specific_to_this_subfolder, panel_info, truth_info)
 
