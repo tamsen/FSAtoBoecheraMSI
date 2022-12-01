@@ -36,7 +36,7 @@ class TestAlleleCalls(unittest.TestCase):
         c8_results = FSA_file_results.MSI_loci_results_by_loci["C8"].raw_alleles_called
 
         self.assertEqual(len(bf11_results), 3)
-        self.assertEqual(len(ice14_results), 4)
+        self.assertEqual(len(ice14_results), 5)
         self.assertEqual(len(c8_results), 4)
 
     def test_PS3(self):

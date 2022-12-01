@@ -106,7 +106,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                                                     sixteen_peaks,
                                                                                     dye_to_channel_mapping[channel],
                                                                                     rescue_parameters)
-            elif loci=="BF20": #get more detail for problem loci
+            elif ((loci=="BF20") or (loci=="ICE14")): #get more detail for problem loci
                 rescue_parameters = shared.peak_calling_parameters(
                     100,
                     int(peak_calling_parameters.kernel_size*0.5),

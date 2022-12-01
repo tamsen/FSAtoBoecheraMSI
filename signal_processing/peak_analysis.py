@@ -35,7 +35,8 @@ def peaks_to_filtered_calls(peaks, loci):
         peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)
 
     if loci in ['ICE14']:  # be careful here b/c we later remove peak at 210
-        peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
+        #peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
+        peaks = stutter_fix(peaks, fine_stutter, take_right_most)
 
     # ----------- PS3 extra filtering --------------
 

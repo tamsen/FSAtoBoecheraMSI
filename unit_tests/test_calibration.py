@@ -49,7 +49,7 @@ class TestCalibration(unittest.TestCase):
         # Went down a bit when I noticed the BP28 truth was wrong.
         # I suspect there are errors in the original BP28 calls, which is why the BP28 score is low
         self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.90, True)
-        self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.87, True)
+        self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.90, True)
         self.assertEqual(avg_sample_accuracy['BP28'] >= 97.14, True) #fixed when we increase sutter-distance from 3.5 -> 4
         self.assertEqual(avg_sample_accuracy['LA846'] >= 99.75, True)
 
