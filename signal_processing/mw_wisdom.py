@@ -29,7 +29,7 @@ def make_adjustments(peaks, loci):
         [peaks.remove(p) for p in peaks if 203 < p[0] < 206]  # MW determined this to be false peak
         [peaks.remove(p) for p in peaks if 235 < p[0] ]  #cross contamination
 
-        peaks = [[p[0] - 0.0, p[1]] for p in peaks]
+        peaks = [[p[0] - 0.3, p[1]] for p in peaks]
 
     if loci == 'A1': #b
         peaks = [[p[0] -0.5, p[1]] for p in peaks]
@@ -40,8 +40,12 @@ def make_adjustments(peaks, loci):
         [peaks.remove(p) for p in peaks if 209.5 < p[0] < 210.5] #MW determined this to be false peak
 
     if loci == 'BF11': #b
-        [peaks.remove(p) for p in peaks if 95 < p[0] < 96]
+        [peaks.remove(p) for p in peaks if 94 < p[0] < 98]
         peaks = [[p[0] - 0.5, p[1]] for p in peaks]
+
+    if loci == 'C8':
+        [peaks.remove(p) for p in peaks if 94 < p[0] < 98]
+        peaks = [[p[0] - 0.6, p[1]] for p in peaks]
 
     #-------------PS3--------------
 

@@ -106,6 +106,21 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                                                     sixteen_peaks,
                                                                                     dye_to_channel_mapping[channel],
                                                                                     rescue_parameters)
+            elif loci=="BF20": #get more detail for problem loci
+                rescue_parameters = shared.peak_calling_parameters(
+                    100,
+                    int(peak_calling_parameters.kernel_size*0.5),
+                    peak_calling_parameters.min_distance_between_peaks,
+                    peak_calling_parameters.min_distance_between_peaks,
+                    threshold_multiplier * threshold_reduction, False)
+
+                peaks_inside_loci, trace_x_new, trace_y_new, \
+                threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
+                                                                                    all_collected_data,
+                                                                                    mapping_function,
+                                                                                    sixteen_peaks,
+                                                                                    dye_to_channel_mapping[channel],
+                                                                                    rescue_parameters)
 
             unfiltered_peaks_in_loci = peaks_inside_loci[loci]
             raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)

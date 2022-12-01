@@ -510,7 +510,8 @@
         <alleles>214,217</alleles>
     </loci>
     <loci name="C8">
-        <alleles>232,-1</alleles>
+        <alleles>232,240,-1</alleles> 
+        <!-- MW didnt have the -1, but I think thats an oversight -->
     </loci>
     <loci name="BF9">
         <alleles>82,92,94</alleles>
@@ -528,16 +529,16 @@
         <alleles>142,151</alleles>
     </loci>
     <loci name="B6">
-        <alleles>301,303,-1</alleles>
+        <alleles>301,303,313</alleles>
     </loci>
     <loci name="Bdru266">
-        <alleles>127,-1</alleles>
+        <alleles>127,130</alleles>
     </loci>
     <loci name="BF15">
         <alleles>91,93,101</alleles>
     </loci>
     <loci name="A3">
-        <alleles>0,248</alleles>
+        <alleles>248</alleles>
     </loci>
 </Sample>
         
