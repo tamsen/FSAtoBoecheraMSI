@@ -54,10 +54,10 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(avg_sample_accuracy['LA846'] >= 99.75, True)
 
         # Also check the species designation are right
-        BD1200_species_determination=by_sample_results['BD1200']['A1'].BMW_determination
-        BD1200CNTRL_species_determination=by_sample_results['BD1200CNTRL']['A1'].BMW_determination
-        BP28_species_determination=by_sample_results['BP28']['A1'].BMW_determination
-        LA846_species_determination=by_sample_results['LA846']['A1'].BMW_determination
+        BD1200_species_determination=by_sample_results['BD1200']['A1'].BMW_closest_sample_species
+        BD1200CNTRL_species_determination=by_sample_results['BD1200CNTRL']['A1'].BMW_closest_sample_species
+        BP28_species_determination=by_sample_results['BP28']['A1'].BMW_closest_sample_species
+        LA846_species_determination=by_sample_results['LA846']['A1'].BMW_closest_sample_species
 
         self.assertEqual("lemmonii x paupercula x retrofracta" in BD1200_species_determination, True)
         self.assertEqual("lemmonii x paupercula x retrofracta" in BD1200CNTRL_species_determination, True)
@@ -88,8 +88,8 @@ class TestCalibration(unittest.TestCase):
         #could be brough tup by fixing extra peak in BF3, but it breaks lxpxr accuracy
         #self.assertEqual(avg_sample_accuracy['FW437'] >= 91.84, True)
 
-        FW346_species_determination=by_sample_results['FW346']['A1'].BMW_determination.split(" ")[0]
-        FW437_species_determination=by_sample_results['FW437']['A1'].BMW_determination.split(" ")[0]
+        FW346_species_determination=by_sample_results['FW346']['A1'].BMW_closest_sample_species
+        FW437_species_determination=by_sample_results['FW437']['A1'].BMW_closest_sample_species
 
         self.assertEqual("paupercula" == FW346_species_determination, True)
         self.assertEqual("paupercula" == FW437_species_determination, True)
@@ -116,8 +116,8 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(avg_sample_accuracy['FW428'] >= 89.37, True)
         self.assertEqual(avg_sample_accuracy['FW415'] >= 85.01, True)
 
-        FW428_species_determination=by_sample_results['FW428']['A1'].BMW_determination.split(" ")[0]
-        FW415_species_determination=by_sample_results['FW415']['A1'].BMW_determination.split(" ")[0]
+        FW428_species_determination=by_sample_results['FW428']['A1'].BMW_closest_sample_species
+        FW415_species_determination=by_sample_results['FW415']['A1'].BMW_closest_sample_species
 
         self.assertEqual("lemmonii" == FW428_species_determination, True)
         self.assertEqual("lemmonii*" == FW415_species_determination, True)
@@ -144,8 +144,8 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(avg_sample_accuracy['JB276'] >= 77.14, True)
         self.assertEqual(avg_sample_accuracy['JB277'] >= 82.41, True)
 
-        JB276_species_determination=by_sample_results['JB276']['A1'].BMW_determination.split(" ")[0]
-        JB277_species_determination=by_sample_results['JB277']['A1'].BMW_determination.split(" ")[0]
+        JB276_species_determination=by_sample_results['JB276']['A1'].BMW_closest_sample_species
+        JB277_species_determination=by_sample_results['JB277']['A1'].BMW_closest_sample_species
 
         self.assertEqual("retrofracta" in JB276_species_determination, True)
         self.assertEqual("retrofracta" in JB277_species_determination, True)

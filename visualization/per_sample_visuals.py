@@ -172,7 +172,7 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
             loci_result = sample_result[loci]
             truth = loci_result.truth_data
             known_species = loci_result.true_species
-            determined_species = loci_result.BMW_determination
+            determined_species = loci_result.get_BMW_determination_string()
             final_accuracy = loci_result.final_accuracy
             raw_accuracy = loci_result.raw_accuracy
             raw_alleles_called = loci_result.raw_alleles_called
