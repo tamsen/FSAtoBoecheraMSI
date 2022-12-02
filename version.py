@@ -8,7 +8,7 @@ GLOBAL_public_version_info = [
     ["Adding more smarts to ladder, so we have some expectation of where ladder should be, based on calibration data. ",
      "Nov 17, 2022", "v1.0.0.4"],
     ["Shifted A1 call by 0.5bp, made all the difference between paup and lxpxr call.", "Nov 22, 2022", "v1.0.0.5"],
-    ["Reduced ladder kernel from 10 to 5.", "Dec 01, 2022", "v1.0.0.6"]]
+    ["Outputs spreadsheet with species determinations", "Dec 01, 2022", "v1.0.0.6"]]
 
 
 
