@@ -44,7 +44,8 @@ class TestQuery(unittest.TestCase):
 
         print("third line:" + lines[2])
 
-    def test_adjusted_calls(self):
+    #def test_adjusted_calls(self):
+    def adjusted_calls(self): #not a real unit test. Just kept handy here: so I can re-run batchqueries thrugh the BMW
 
         #in_dir = "/home/tamsen/Data/Eton/by_site/Bennetville/" + \
         #          "FSA_to_microsat_script_results__v1.0.0.6__02_12_2022_11_55_23"
