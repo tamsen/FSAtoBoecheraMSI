@@ -87,10 +87,25 @@ class TestQuery(unittest.TestCase):
                  "FSA_to_microsat_script_results__v1.0.0.6__02_12_2022_12_11_36"
         in_file = os.path.join(in_dir, "BatchQuery_RecallBySample_02_12_2022_12_19_11.tsv")
 
-
         in_dir = "/home/tamsen/Data/Eton/by_site/SaddlebagLake2021/" + \
                  "FSA_to_microsat_script_results__v1.0.0.6__02_12_2022_12_25_03"
         in_file = os.path.join(in_dir, "BatchQuery_RecallBySample_02_12_2022_12_29_27.tsv")
+
+        in_dir = "/home/tamsen/Data/Eton/by_site/SaddlebagLake-LakeHelen/" + \
+            "FSA_to_microsat_script_results__v1.0.0.6__09_12_2022_09_58_53"
+        in_file = os.path.join(in_dir, "BatchQuery_RecallBySample_09_12_2022_10_01_02.tsv")
+
+        in_dir = "/home/tamsen/Data/Eton/by_site/TwinLakes/" + \
+            "FSA_to_microsat_script_results__v1.0.0.6__02_12_2022_12_03_35"
+        in_file = os.path.join(in_dir, "BatchQuery_RecallBySample_02_12_2022_12_04_11.tsv")
+
+        in_dir = "/home/tamsen/Data/Eton/by_site/WalkerLake/" + \
+            "FSA_to_microsat_script_results__v1.0.0.6__02_12_2022_12_20_37"
+        in_file = os.path.join(in_dir, "BatchQuery_RecallBySample_02_12_2022_12_21_03.tsv")
+
+        in_dir = "/home/tamsen/Data/Eton/by_site/WhiteMountain/" + \
+            "FSA_to_microsat_script_results__v1.0.0.6__02_12_2022_12_30_16"
+        in_file = os.path.join(in_dir, "BatchQuery_RecallBySample_02_12_2022_12_30_34.tsv")
 
         URL1 = "https://sites.biology.duke.edu/windhamlab/cgi-bin/Search_database_batch.py"
         results1 = query_file.submit_file_query(in_file, URL1)
