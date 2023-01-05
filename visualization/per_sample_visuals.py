@@ -60,11 +60,12 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
         loci = ordered_loci_list[(i * 3) + 1]
         warning = ""
         if loci in sample_result.keys():
-            [runName, plot_name, threshold, smoothed_trace, sixteen_peaks] = sample_result[loci].ladder_plotting_data
+            [runName, plot_name, threshold, smoothed_trace, sixteen_peaks, ladder_trace_key] \
+                = sample_result[loci].ladder_plotting_data
             ladder_status = sample_result[loci].ladder_status
             warning = "Laddder status: " + str(ladder_status).split(".")[-1]
         else:
-            # some dummy todata
+            # some dummy data
             threshold = 0
             smoothed_trace = [1, 2, 3]
             sixteen_peaks = [[1, 2], [2, 3]]

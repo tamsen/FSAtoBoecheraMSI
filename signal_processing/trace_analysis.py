@@ -23,8 +23,8 @@ def remap_a_trace(tracedata_x_coords, tracedata_y_coords,
     return x_raw, x_new, y_raw  # y_raw and y_new are the same
 
 
-def remap_ladder(run_folder, trace_data_dictionary, mapping_info, sixteen_peaks, threshold):
-    original_ladder = trace_data_dictionary['DATA105']
+def remap_ladder(run_folder, trace_data_dictionary, mapping_info, sixteen_peaks, threshold, ladder_channel):
+    original_ladder = trace_data_dictionary[ladder_channel]
     num_data_points = len(original_ladder)
     old_x_coords = [x for x in range(0, num_data_points)]
     x_raw, x_new, y_new = remap_a_trace(old_x_coords, original_ladder, mapping_info.mapping_fxn,

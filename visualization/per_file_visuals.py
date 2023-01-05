@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 def plot_ladder(run_folder, plot_file_name, threshold,
-                smoothed_ladder_data, sixteen_peaks):
+                smoothed_ladder_data, sixteen_peaks, ladder_channel):
 
     peak_heights = [ x[1] for x in sixteen_peaks]
     peak_indexes = [x[0] for x in sixteen_peaks]

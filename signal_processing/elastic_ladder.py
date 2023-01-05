@@ -10,6 +10,8 @@ def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confide
     index_of_last_ladder_peak = confident_right_peak[2]
     ladder_peaks = [confident_right_peak]
 
+    # TODO - this doesnt work on Michael Windhams data, so need a flag to modify for his ladder.
+    # it seems like his distances (number of x-values) are shorter than my distances.
     for i in range(1, num_peaks_needed + 1):  # 0-14. skip the one at the start of the ladder.
         # print("i:" + str(i))
         ith_peak_to_find = num_peaks_needed + 1 - i

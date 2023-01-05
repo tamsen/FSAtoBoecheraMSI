@@ -26,9 +26,27 @@ class Mapping_Info:
 
 def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=-1):
     log.write_to_log("Reading through ladder trace for " + runName)
-    # 'DATA105' is the ladder channel
+    ladder_channel='DATA105'
 
-    ladder_trace = trace_data_dictionary['DATA105']
+    if ladder_channel in trace_data_dictionary:
+        ladder_trace = trace_data_dictionary['DATA105']
+    else:
+        log.write_to_log("The ladder trace is not where we expected to be in the FSA file for " + runName +\
+                         ". It was expected in data channel 'DATA105' ")
+
+        log.write_to_log("Please check the data channel plots to see which channel looks like the ladder! ")
+        for key in trace_data_dictionary:
+            if "DATA" in key:
+                per_file_visuals.plotUnmappedTraceByColor(runFolder,
+                                                          trace_data_dictionary[key],
+                                                          trace_data_dictionary[key],[],"","",
+                                                          key, "MysteryDataChannel" + key)
+
+                log.write_to_log("Going forward, I will assume that Data Channel 4 is the ladder... ")
+
+        ladder_trace = trace_data_dictionary['DATA4']
+        ladder_channel='DATA4'
+
     ladder_trace = cap_height_and_domain(ladder_trace)
 
     if window_half_width > 0:
@@ -91,7 +109,8 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     ladder_peaks = [(ladder_peaks[i][0], ladder_peaks[i][1], GLOBAL_Liz500[i])
                     for i in range(0, numLadderPeaks)]
 
-    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold_used, smoothed_trace, ladder_peaks]
+    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold_used, smoothed_trace, ladder_peaks,
+                        ladder_channel]
     per_file_visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
@@ -137,7 +156,9 @@ def get_background(ladder_trace, window_half_width):
 
 def cap_height_and_domain(ladder_trace):
     max_x = 8000
-    start_here = int((len(ladder_trace)) * 0.50)
+    len_ladder_trace=(len(ladder_trace))
+    max_x = int(min(len_ladder_trace*.95,max_x))
+    start_here = int(max_x * 0.50)
     max_height_allowed = max(ladder_trace[start_here:-1]) * 1.5
     trace_with_capped_height = [min([ladder_trace[i], max_height_allowed]) for i in range(0, max_x)]
     return trace_with_capped_height

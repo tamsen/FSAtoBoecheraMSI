@@ -192,9 +192,13 @@ def parse_fsa_header(header, handle):
 
 def readFSAFile(in_file):
     handle = open(in_file, 'rb')
+    #contents = handle.read()
+    #print(contents)
     try:
         handle.seek(0)
-        if not handle.read(4) == py3_get_byte('ABIF'):
+        results=handle.read(4)
+        print(results)
+        if not results == py3_get_byte('ABIF'):
             raise IOError('Input is not a valid trace file')
     except IOError:
         handle = None

@@ -1,6 +1,6 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, mw_wisdom, shared,elastic_ladder_analysis
+from signal_processing import peak_analysis, trace_analysis, mw_wisdom, shared, elastic_ladder_analysis
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from signal_processing.elastic_ladder_analysis import Mapping_Info
@@ -34,12 +34,12 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     if retry_needed:
         mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                             output_dir, run_folder, run_name, 50)
+                                                                  output_dir, run_folder, run_name, 50)
 
         retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
         if retry_needed:
             mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                             output_dir, run_folder, run_name, 25)
+                                                                      output_dir, run_folder, run_name, 25)
     if not mapping_attempt_worked:  # still!
         log.write_to_log("getting ladder peaks failed")
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -47,13 +47,14 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
     ladder_plot_data, mapping_function, sixteen_peaks, threshold = mapping_attempt_worked
 
-    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_function, sixteen_peaks, threshold)
+    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_function, sixteen_peaks,
+                                threshold, ladder_plot_data[5])
 
     # Channels we care about are ones with dyes in our panel.
     channels = set([loci_info_dict["dye"] for loci_info_dict in relevant_loci.values()])
 
     final_calls_by_loci = {}
-    for channel in channels:
+    for dye_name in channels:
 
         threshold_multiplier = 0.5
         # best parameters for the trace data: (fatter, messier spikes)
@@ -62,13 +63,21 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
         # Originally used a lot of smoothing, but backed off to better match michael w
         # peak_calling_parameters = shared.peak_calling_parameters(30, 20, 20, 10, threshold_multiplier)
         peak_calling_parameters = shared.peak_calling_parameters(30, 10, 3, 1, threshold_multiplier, False)
-        #peak_calling_parameters = shared.peak_calling_parameters(30, 5, 3, 1, threshold_multiplier, False)
+        # peak_calling_parameters = shared.peak_calling_parameters(30, 5, 3, 1, threshold_multiplier, False)
+
+        if dye_name in dye_to_channel_mapping:
+            data_channel_for_dye = dye_to_channel_mapping[dye_name]
+        else:  # hack for MW data
+            if dye_name == "VIC":
+                data_channel_for_dye = 1
+            if dye_name == "FAM":
+                data_channel_for_dye = 2
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
                                                                             all_collected_data, mapping_function,
                                                                             sixteen_peaks,
-                                                                            dye_to_channel_mapping[channel],
+                                                                            data_channel_for_dye,
                                                                             peak_calling_parameters)
 
         for loci in peaks_inside_loci.keys():
@@ -80,7 +89,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
             raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
 
-            #filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
+            # filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
@@ -105,12 +114,12 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                                                     all_collected_data,
                                                                                     mapping_function,
                                                                                     sixteen_peaks,
-                                                                                    dye_to_channel_mapping[channel],
+                                                                                    dye_to_channel_mapping[dye_name],
                                                                                     rescue_parameters)
-            elif ((loci=="BF20") or (loci=="ICE14")): #get more detail for problem loci
+            elif ((loci == "BF20") or (loci == "ICE14")):  # get more detail for problem loci
                 rescue_parameters = shared.peak_calling_parameters(
                     100,
-                    int(peak_calling_parameters.kernel_size*0.5),
+                    int(peak_calling_parameters.kernel_size * 0.5),
                     peak_calling_parameters.min_distance_between_peaks,
                     peak_calling_parameters.min_distance_between_peaks,
                     threshold_multiplier * threshold_reduction, False)
@@ -120,13 +129,13 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                                                     all_collected_data,
                                                                                     mapping_function,
                                                                                     sixteen_peaks,
-                                                                                    dye_to_channel_mapping[channel],
+                                                                                    dye_to_channel_mapping[dye_name],
                                                                                     rescue_parameters)
 
             unfiltered_peaks_in_loci = peaks_inside_loci[loci]
             raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
             typical_stutter = 3.5
-            raw_calls = peak_analysis.bf9_special2(raw_calls, loci, trace_x_new, trace_y_new,threshold_used,
+            raw_calls = peak_analysis.bf9_special2(raw_calls, loci, trace_x_new, trace_y_new, threshold_used,
                                                    typical_stutter)
             filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
@@ -141,8 +150,8 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
                 per_file_visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, [final_call_x],
                                                      [final_call_y],
-                                                     threshold, "wavelength", str(dye_to_channel_mapping[channel]),
-                                                     channel,
+                                                     threshold, "wavelength", str(dye_to_channel_mapping[dye_name]),
+                                                     dye_name,
                                                      plot_prefix, plot_domain=domain)
 
             if (len(final_calls) > 0):
@@ -151,11 +160,11 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                 where_loci_should_be = relevant_loci[loci]["length"]  # even though we didnt find them..
                 whole_loci_domain = [where_loci_should_be[0], where_loci_should_be[-1]]
 
-            if loci=="ICE3":
-                whole_loci_domain = [50,200]
+            if loci == "ICE3":
+                whole_loci_domain = [50, 200]
 
-            if loci=="BF11":
-                whole_loci_domain = [60,110]
+            if loci == "BF11":
+                whole_loci_domain = [60, 110]
 
             loci_specific_plot_data = [trace_x_new, trace_y_new,
                                        [call[0] for call in raw_calls],
@@ -163,7 +172,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                        [call[0] for call in filtered_calls],
                                        [call[1] for call in filtered_calls],
                                        threshold_used,
-                                       loci, whole_loci_domain, channel]
+                                       loci, whole_loci_domain, dye_name]
 
             # get the results ready to print to file
             raw_calls_for_loci = [x[0] for x in raw_calls]
@@ -184,7 +193,7 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
             log.write_to_log("final calls for loci " + loci + ": " + str(allele_calls_for_loci))
 
     log.write_to_log("**** Processing " + fsa_file + " completed  ********")
-    FSA_file_results = FSA_File_Results(final_calls_by_loci,sixteen_peaks)
+    FSA_file_results = FSA_File_Results(final_calls_by_loci, sixteen_peaks)
 
     return FSA_file_results
 
@@ -202,15 +211,14 @@ def check_if_retry_is_worth_it(mapping_attempt_worked):
 
 def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, run_folder, run_name,
                                      background_subtraction_window):
-
     try:
         gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
-                                                    background_subtraction_window)
+                                                                background_subtraction_window)
 
     except Exception as e:
         log.write_to_log("Major issue getting the ladder peaks.")
         log.write_to_log(str(e))
-        gotLadderPeaks=False
+        gotLadderPeaks = False
 
     if not gotLadderPeaks:
         log.write_to_log("getting ladder peaks failed")
@@ -233,7 +241,6 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
         data_string = [fsa_file, "panel problem", "Ladder too suspicious!!"]
         results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
-        #return False
-
+        # return False
 
     return ladder_plot_data, mapping_function, sixteen_peaks, threshold

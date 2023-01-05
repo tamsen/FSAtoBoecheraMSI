@@ -13,4 +13,5 @@
 #/home/tamsen/Data/Eton/by_site/GardiskyLake2021  
 #/home/tamsen/Data/Eton/by_site/MountLassen        
 #/home/tamsen/Data/Eton/by_site/SaddlebagLake-LakeHelen
-/home/tamsen/Data/Eton/CalibrationData
+#/home/tamsen/Data/Eton/CalibrationData
+/home/tamsen/Data/MWRawFSAData/Plate36_fsa
