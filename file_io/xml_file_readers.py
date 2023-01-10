@@ -46,9 +46,17 @@ def readPanelXml(input_file_path):
 def figure_out_loci_from_file_name(panel, file_name):
 
     base = os.path.basename(file_name).split(".")[0]
+    primer_set_equivalence={}
+    primer_set_equivalence["PS1"]="I3_B20_A1"
+    primer_set_equivalence["PS2"]="B11_I14_C8"
+    primer_set_equivalence["PS3"]="B9_B18_E9"
+    primer_set_equivalence["PS4"]="BF3_BF19_B6"
+    primer_set_equivalence["PS5"]="BF15_B266_A3"
 
     for primer_set in panel:
         if primer_set in base :
+            return panel[primer_set]
+        if primer_set_equivalence[primer_set] in base :
             return panel[primer_set]
 
     return False
