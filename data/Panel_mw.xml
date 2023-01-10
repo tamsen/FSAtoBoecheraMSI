@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+<PrimerSet name="PS1" >
+    <loci name="ICE3">
+        <length>65-180</length>
+        <dye>Dye1</dye>
+    </loci>
+    <loci name="BF20">
+        <length>190-260</length>
+        <dye>Dye2</dye>
+    </loci>
+    <loci name="A1">
+        <length>230-250</length>
+        <dye>Dye1</dye>
+    </loci>
+</PrimerSet>
+<PrimerSet name="PS2">
+    <loci name="BF11">
+        <length>65-110</length>
+        <dye>Dye1</dye>
+    </loci>
+    <loci name="ICE14">
+        <length>200-250</length>
+        <dye>Dye2</dye>
+    </loci>
+    <loci name="C8">
+        <length>220-300</length>
+        <dye>Dye1</dye>
+    </loci>
+</PrimerSet>
+<PrimerSet name="PS3">
+    <loci name="BF9">
+        <length>70-160</length>
+        <dye>Dye1</dye>
+    </loci>
+    <loci name="BF18">
+        <length>100-150</length>
+        <dye>Dye2</dye>
+    </loci>
+    <loci name="E9">
+        <length>190-260</length>
+        <dye>Dye1</dye>
+    </loci>
+</PrimerSet>
+
+<PrimerSet name="PS4">
+    <loci name="BF3">
+        <length>80-180</length>
+        <dye>Dye1</dye>
+    </loci>
+    <loci name="BF19">
+        <length>90-200</length>
+        <dye>Dye2</dye>
+    </loci>
+    <loci name="B6">
+        <length>290-370</length>
+        <dye>Dye1</dye>
+    </loci>
+</PrimerSet>
+<PrimerSet name="PS5">
+    <loci name="Bdru266">
+        <length>90-175</length>
+        <dye>Dye2</dye>
+    </loci>
+    <loci name="BF15">
+        <length>75-140</length>
+        <dye>Dye1</dye>
+    </loci>
+    <loci name="A3">
+        <length>205-310</length>
+        <dye>Dye1</dye>
+    </loci>
+</PrimerSet>
+<PrimerSet name="PSM">
+    <loci name="ICE3">
+        <length>65-180</length>
+        <dye>Dye2</dye>
+    </loci>
+    <loci name="BF20">
+        <length>190-260</length>
+        <dye>Dye1</dye>
+    </loci>
+    <loci name="C8">
+        <length>220-300</length>
+        <dye>Dye1</dye>
+    </loci>    
+</PrimerSet>
+<PrimerSet name="PSE">
+    <loci name="E9">
+        <length>190-260</length>
+        <dye>Dye1</dye>
+    </loci>
+</PrimerSet>
+</metadata>
+
