@@ -1,6 +1,6 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, mw_wisdom, shared, elastic_ladder_analysis
+from signal_processing import peak_analysis, trace_analysis, tamsens_offsets, mw_offsets, shared, elastic_ladder_analysis
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from signal_processing.elastic_ladder_analysis import Mapping_Info
@@ -8,7 +8,7 @@ from visualization import per_file_visuals
 import log
 
 
-def process_fsa_file(fsa_file, panel_info, output_dir):
+def process_fsa_file(fsa_file, panel_info, rules, output_dir):
     log.write_to_log("****** Processing " + fsa_file + " **********")
     dye_to_channel_mapping, all_collected_data = fsa_file_reader.readFSAFile(fsa_file)
     run_name = all_collected_data["SpNm1"]
@@ -84,8 +84,6 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
             raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
 
-            # filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
-
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
             if (len(raw_calls)) > 0:
@@ -134,7 +132,10 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
                                                    typical_stutter)
             filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
 
-            final_calls = mw_wisdom.make_adjustments(filtered_calls, loci)
+            if rules == "MW":
+                final_calls = mw_offsets.make_adjustments(filtered_calls, loci)
+            else:  # default to Tamsen's rules
+                final_calls = tamsens_offsets.make_adjustments(filtered_calls, loci)
 
             # make a zoomed-in plot JUST around the MSI call
             for final_call in final_calls:

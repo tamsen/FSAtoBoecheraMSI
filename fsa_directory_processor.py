@@ -12,8 +12,8 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
         if file.endswith(".fsa"):
             fsa_file = os.path.join(path, file)
 
-            FSA_file_results = fsa_file_processor.process_fsa_file(fsa_file,
-                                                                   panel_info, output_folder_inside_data_folder)
+            FSA_file_results = fsa_file_processor.process_fsa_file(fsa_file,panel_info, rules,
+                                                output_folder_inside_data_folder)
 
             if FSA_file_results:
                 all_results_by_file[fsa_file] = FSA_file_results.MSI_loci_results_by_loci
