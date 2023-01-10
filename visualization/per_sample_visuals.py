@@ -145,7 +145,7 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 
 
 def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_result, ordered_loci_list):
-    dye_to_color = {"FAM": "blue", "VIC": "green"}
+    dye_to_color = {"FAM": "blue", "VIC": "green", "Dye1": "blue", "Dye2": "green"}
     fig = plt.figure(figsize=(10, 10))
     known_species = False
     determined_species = False

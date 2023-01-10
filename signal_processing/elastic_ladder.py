@@ -5,8 +5,9 @@ import statistics
 GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
 
-def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confident_right_peak, num_peaks_needed):
-    tolerances = get_tolerances()
+def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confident_right_peak,
+                                    num_peaks_needed, scale_factor):
+    tolerances = get_tolerances(scale_factor)
     index_of_last_ladder_peak = confident_right_peak[2]
     ladder_peaks = [confident_right_peak]
 
@@ -26,7 +27,7 @@ def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confide
     return ladder_peaks
 
 
-def get_tolerances():
+def get_tolerances(scale_factor):
     # labels=[50-35,75-50,100-75,139-100,150-139,160-150,200-160,250-200,300-250,340-300,350-340,400-350,
     #                450-400,490-450,500-490]
 
@@ -37,12 +38,14 @@ def get_tolerances():
                         [585.58, 566.8, 605.2], [488.92, 469.6, 510.4], [100.75, 96.2, 105.8]]
 
     # range_min,range_max
-    expected_Y_diffs = [[-610.15, 1.25], [16.871, 155.339], [-10.475, 191.425], [-9.164, 253.3785],
+    expected_y_diffs = [[-610.15, 1.25], [16.871, 155.339], [-10.475, 191.425], [-9.164, 253.3785],
                         [-9.55, 159.05], [-95.06, 94.17], [13.66, 220.54], [-30.3, 152.1],
                         [-177, 207], [-51.420, 150.42], [12.949, 104.641], [15.587, 473.783],
                         [0.74, 376.841], [16.87, 410.83], [-51.71, 49.21]]
 
-    return [expected_x_diffs, expected_Y_diffs]
+    #apply scale factor
+    expected_x_diffs = [ [x*scale_factor for x in x_array ] for x_array in expected_x_diffs]
+    return [expected_x_diffs, expected_y_diffs]
 
 
 def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,

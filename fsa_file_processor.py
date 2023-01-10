@@ -67,11 +67,6 @@ def process_fsa_file(fsa_file, panel_info, output_dir):
 
         if dye_name in dye_to_channel_mapping:
             data_channel_for_dye = dye_to_channel_mapping[dye_name]
-        else:  # hack for MW data
-            if dye_name == "VIC":
-                data_channel_for_dye = 1
-            if dye_name == "FAM":
-                data_channel_for_dye = 2
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,

@@ -42,12 +42,12 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
                                                           trace_data_dictionary[key],[],"","",
                                                           key, "MysteryDataChannel" + key)
 
-                log.write_to_log("Going forward, I will assume that Data Channel 4 is the ladder... ")
+                log.write_to_log("Using Data Channel 4 as the ladder... ")
 
         ladder_trace = trace_data_dictionary['DATA4']
         ladder_channel='DATA4'
 
-    ladder_trace = cap_height_and_domain(ladder_trace)
+    ladder_trace, scale_factor = cap_height_and_domain(ladder_trace)
 
     if window_half_width > 0:
         ladder_trace = do_background_removal(ladder_trace, window_half_width)
@@ -91,7 +91,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     num_peaks_needed = 14
     log.write_to_log("highest_peaks_with_index_from_right:" + str(highest_peaks_with_index_from_right))
     ladder_peaks = elastic_ladder.build_elastic_ladder_from_right(highest_peaks_with_index_from_right, peak500,
-                                                                  num_peaks_needed)
+                                                                  num_peaks_needed, scale_factor)
 
     # want your ladder peaks leftmost on the left! not sorted by size
     ladder_peaks.sort(key=lambda x: x[0])
@@ -155,13 +155,15 @@ def get_background(ladder_trace, window_half_width):
 
 
 def cap_height_and_domain(ladder_trace):
-    max_x = 8000
+    original_max_x = 8000
     len_ladder_trace=(len(ladder_trace))
-    max_x = int(min(len_ladder_trace*.95,max_x))
+    inside_ladder=len_ladder_trace*.95
+    max_x = int(min(inside_ladder,original_max_x))
+    scale_factor = float(max_x)/float(original_max_x)
     start_here = int(max_x * 0.50)
     max_height_allowed = max(ladder_trace[start_here:-1]) * 1.5
     trace_with_capped_height = [min([ladder_trace[i], max_height_allowed]) for i in range(0, max_x)]
-    return trace_with_capped_height
+    return trace_with_capped_height, scale_factor
 
 
 def do_background_removal(ladder_trace, window_half_width):
@@ -189,7 +191,7 @@ def fix_over_saturated_start(ladder_trace, original_highest_peaks_tup,
         log.write_to_log("looks like first peak of ladder might be hiding in the noise.")
         log.write_to_log("going with an educated guess")
         back_up_plan_peak35 = elastic_ladder.get_peak_i(original_highest_peaks_tup,
-                                                        0, ladder_peaks[0][2], elastic_ladder.get_tolerances())
+                                                        0, ladder_peaks[0][2], elastic_ladder.get_tolerances(1))
         return back_up_plan_peak35
 
 

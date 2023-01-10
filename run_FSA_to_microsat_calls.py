@@ -1,13 +1,11 @@
 import os.path
 import version
 import sys
+import input_parser
 from datetime import datetime
-
 import fsa_directory_processor
 from file_io import text_file_readers, xml_file_readers, results_files
-import accuracy
-from visualization import per_sample_visuals
-import fsa_file_processor
+
 import log
 
 
@@ -20,11 +18,12 @@ import log
 def greet(version_info):
     print(version_info.version_num)
     print('Tool to convert ABI FSA trace files to allele calls')
-    print('Example input: ' + "./data/FSAlist.txt ./data/Panel.xml ./data/TruthData.xml")
+    print('Example input: ' )
+    input_parser.show_example_usage()
 
 def usage():
     print('Usage:')
-    print('\t%s command [options]' % sys.argv[0])
+    input_parser.show_example_usage()
     sys.exit(0)
 
 
@@ -32,19 +31,17 @@ def main():
 
     version_info = version.version_info()
     greet(version_info)
+    [output_dir, FSA_File_list, Panel_File, truth_file, rules] = input_parser.do_parsing(sys.argv)
 
-    output_dir = sys.argv[1]
-    FSA_File_list = sys.argv[2]
-    Panel_File = sys.argv[3]
-    truth_info = {}
 
-    if (len(sys.argv) > 4):
-        truth_file = sys.argv[4]
+    if truth_file:
         truth_info = xml_file_readers.read_truth_data(truth_file)
+    else:
+        truth_info = {}
 
     log.write_start_to_log(output_dir, version_info)
     log.write_to_log('Command Arguments Given: %s' % sys.argv)
-
+    log.write_to_log('Using post-processing rule: ' + rules + "'s rules.")
     paths_to_process = text_file_readers.readInputFile(FSA_File_list)
     panel_info = xml_file_readers.readPanelXml(Panel_File)
     all_results_by_file = {}
@@ -71,7 +68,7 @@ def main():
         if os.path.isdir(path):
 
             fsa_directory_processor.process_directory(version_info, all_results_by_file, output_folder_inside_data_folder, panel_info, path,
-                              results_specific_to_this_subfolder, truth_info)
+                              results_specific_to_this_subfolder, truth_info, rules)
 
         else:
             print("Please use directories, not individual FSA files.")
