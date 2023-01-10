@@ -5,8 +5,16 @@ def make_adjustments(peaks, loci):
     #-------------PS1--------------
 
     if loci == 'ICE3': #b
-
         peaks = [[p[0] -0.5, p[1]] for p in peaks]
+
+        for p in peaks:
+            if p[0] > 131:
+               p[0] = p[0]-1.5
+
+    if loci == 'BF20': #b
+
+        peaks = [[p[0] +0.1, p[1]] for p in peaks]
+
 
     #-------------PS2--------------
 

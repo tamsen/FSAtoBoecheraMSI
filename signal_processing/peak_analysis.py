@@ -3,12 +3,12 @@ import statistics
 import numpy as np
 
 
-def peaks_to_raw_calls_(peaks):
+def peaks_to_raw_calls(peaks):
     peaks = [[round(peak[0], 1), peak[1]] for peak in peaks]
     return peaks
 
 
-def peaks_to_filtered_calls(peaks, loci):
+def peaks_to_filtered_calls(peaks, loci, rules):
     # if loci=="BF3":
     #    print("break here")
 
@@ -40,9 +40,8 @@ def peaks_to_filtered_calls(peaks, loci):
 
     # ----------- PS3 extra filtering --------------
 
-    #if loci in ['BF9']:  # b
-    #    peaks = stutter_fix(peaks, typical_stutter + .5, take_run_maximum)
-    #    # peaks = stutter_fix(peaks, typical_stutter + .5, bf15_special)
+    if (loci in ['BF9']) and (rules == "MW"):
+        peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
 
     if loci in ['E9']:  # b
         peaks = stutter_fix(peaks, typical_stutter, take_right_most)
@@ -62,12 +61,18 @@ def peaks_to_filtered_calls(peaks, loci):
         peaks = stutter_fix(peaks, typical_stutter, take_right_most)
 
     if loci == 'B6':
-        peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
+        if rules == "MW":
+            peaks = stutter_fix(peaks, 1, take_run_maximum)
+        else:
+            peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
 
     # ----------- PS5 extra filtering --------------
 
     if loci == 'BF15':
-        peaks = stutter_fix(peaks, typical_stutter, drop_right_most)
+        if rules == "MW":
+            peaks = stutter_fix(peaks, fine_stutter, take_run_maximum)
+        else:
+            peaks = stutter_fix(peaks, typical_stutter, drop_right_most)
 
     if loci == 'Bdru266':
         peaks = stutter_fix(peaks, typical_stutter, take_run_maximum)

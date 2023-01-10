@@ -7,7 +7,7 @@ import log
 
 
 def process_directory(version_info, all_results_by_file, output_folder_inside_data_folder, panel_info, path,
-                      results_specific_to_this_subfolder, truth_info, rules):
+                      results_specific_to_this_subfolder, truth_info, rules="Tamsen"):
     for file in os.listdir(path):
         if file.endswith(".fsa"):
             fsa_file = os.path.join(path, file)

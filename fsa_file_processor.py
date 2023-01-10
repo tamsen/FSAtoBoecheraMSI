@@ -82,7 +82,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
             log.write_to_log("Processing loci " + loci)
             log.write_to_log("Unfiltered peaks found in loci range: " + str(unfiltered_peaks_in_loci))
 
-            raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
+            raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
 
             # rescue a loci that might be low-intensity
             # and thus falling below threshold
@@ -126,11 +126,13 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
                                                                                     rescue_parameters)
 
             unfiltered_peaks_in_loci = peaks_inside_loci[loci]
-            raw_calls = peak_analysis.peaks_to_raw_calls_(unfiltered_peaks_in_loci)
+            raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
             typical_stutter = 3.5
-            raw_calls = peak_analysis.bf9_special2(raw_calls, loci, trace_x_new, trace_y_new, threshold_used,
+
+            if rules == "Tamsen":
+                raw_calls = peak_analysis.bf9_special2(raw_calls, loci, trace_x_new, trace_y_new, threshold_used,
                                                    typical_stutter)
-            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci)
+            filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, rules)
 
             if rules == "MW":
                 final_calls = mw_offsets.make_adjustments(filtered_calls, loci)
