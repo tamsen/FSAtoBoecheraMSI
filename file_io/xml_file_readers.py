@@ -52,12 +52,15 @@ def figure_out_loci_from_file_name(panel, file_name):
     primer_set_equivalence["PS3"]="B9_B18_E9"
     primer_set_equivalence["PS4"]="BF3_BF19_B6"
     primer_set_equivalence["PS5"]="BF15_B266_A3"
+    primer_set_equivalence["PSM"]="DoesntExistInMWData"
+    primer_set_equivalence["PSE"]="DoesntExistInMWData"
 
     for primer_set in panel:
         if primer_set in base :
             return panel[primer_set]
         if primer_set_equivalence[primer_set] in base :
             return panel[primer_set]
+
 
     return False
 

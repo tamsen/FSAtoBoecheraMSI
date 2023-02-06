@@ -11,16 +11,24 @@ import log
 def process_fsa_file(fsa_file, panel_info, rules, output_dir):
     log.write_to_log("****** Processing " + fsa_file + " **********")
     dye_to_channel_mapping, all_collected_data = fsa_file_reader.readFSAFile(fsa_file)
-    run_name = all_collected_data["SpNm1"]
-    run_folder = os.path.join(output_dir, run_name)
-    if not (os.path.exists(run_folder)):
-        os.makedirs(run_folder)
+    run_name_according_to_FSA_file_header = all_collected_data["SpNm1"]
+
+    if not run_name_according_to_FSA_file_header in fsa_file:
+        log.write_warning_to_log("**** FSA file name and run name inside the fsa file do not match. ")
+        log.write_warning_to_log("run_name_according_to_FSA_file_header:" + \
+                                 run_name_according_to_FSA_file_header)
+        log.write_warning_to_log("run_name_according fsa file name:" + \
+                                 fsa_file)
+
+    run_folder_according_to_FSA_file_header = os.path.join(output_dir, run_name_according_to_FSA_file_header)
+    if not (os.path.exists(run_folder_according_to_FSA_file_header)):
+        os.makedirs(run_folder_according_to_FSA_file_header)
 
     relevant_loci = xml_file_readers.figure_out_loci_from_file_name(panel_info, fsa_file)
 
     if (relevant_loci == False):
         log.write_error_to_log("Uh-oh!  Can't figure out what panel to use for this FSA file!!")
-        log.write_error_to_log("Quitting " + run_name)
+        log.write_error_to_log("Quitting " + run_name_according_to_FSA_file_header)
         data_string = [fsa_file, "panel problem", "Can't figure out what panel to use for this FSA file!!"]
         results_files.write_results(output_dir, data_string)
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -29,17 +37,17 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
         log.write_to_log("relevant_loci: " + str(relevant_loci))
 
     mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                              output_dir, run_folder, run_name, -1)
+                                                              output_dir, run_folder_according_to_FSA_file_header, run_name_according_to_FSA_file_header, -1)
     retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
 
     if retry_needed:
         mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                                  output_dir, run_folder, run_name, 50)
+                                                                  output_dir, run_folder_according_to_FSA_file_header, run_name_according_to_FSA_file_header, 50)
 
         retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
         if retry_needed:
             mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                                      output_dir, run_folder, run_name, 25)
+                                                                      output_dir, run_folder_according_to_FSA_file_header, run_name_according_to_FSA_file_header, 25)
     if not mapping_attempt_worked:  # still!
         log.write_to_log("getting ladder peaks failed")
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -47,7 +55,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
 
     ladder_plot_data, mapping_function, sixteen_peaks, threshold = mapping_attempt_worked
 
-    trace_analysis.remap_ladder(run_folder, all_collected_data, mapping_function, sixteen_peaks,
+    trace_analysis.remap_ladder(run_folder_according_to_FSA_file_header, all_collected_data, mapping_function, sixteen_peaks,
                                 threshold, ladder_plot_data[5])
 
     # Channels we care about are ones with dyes in our panel.
@@ -69,7 +77,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
             data_channel_for_dye = dye_to_channel_mapping[dye_name]
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
-        threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
+        threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
                                                                             all_collected_data, mapping_function,
                                                                             sixteen_peaks,
                                                                             data_channel_for_dye,
@@ -103,7 +111,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
                     threshold_multiplier * threshold_reduction, False)
 
                 peaks_inside_loci, trace_x_new, trace_y_new, \
-                threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
+                threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
                                                                                     all_collected_data,
                                                                                     mapping_function,
                                                                                     sixteen_peaks,
@@ -118,7 +126,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
                     threshold_multiplier * threshold_reduction, False)
 
                 peaks_inside_loci, trace_x_new, trace_y_new, \
-                threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder, relevant_loci,
+                threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
                                                                                     all_collected_data,
                                                                                     mapping_function,
                                                                                     sixteen_peaks,
@@ -146,7 +154,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
                 domain = [final_call_x - 20, final_call_x + 20]
                 plot_prefix = "Loci" + loci + "CallAt" + str(final_call_x)
 
-                per_file_visuals.plot_remapped_trace(run_folder, trace_x_new, trace_y_new, [final_call_x],
+                per_file_visuals.plot_remapped_trace(run_folder_according_to_FSA_file_header, trace_x_new, trace_y_new, [final_call_x],
                                                      [final_call_y],
                                                      threshold, "wavelength", str(dye_to_channel_mapping[dye_name]),
                                                      dye_name,
