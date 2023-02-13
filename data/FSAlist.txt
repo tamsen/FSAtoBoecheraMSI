@@ -15,4 +15,4 @@
 #/home/tamsen/Data/Eton/by_site/SaddlebagLake-LakeHelen
 #/home/tamsen/Data/Eton/CalibrationData
 #/home/tamsen/Data/MWRawFSAData/Plate36_fsa
-/home/tamsen/Data/MWRawFSAData/BMW_Calibration_Batch2
+/home/tamsen/Data/TMRawFSAData

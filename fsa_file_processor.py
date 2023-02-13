@@ -10,7 +10,15 @@ import log
 
 def process_fsa_file(fsa_file, panel_info, rules, output_dir):
     log.write_to_log("****** Processing " + fsa_file + " **********")
-    dye_to_channel_mapping, all_collected_data = fsa_file_reader.readFSAFile(fsa_file)
+
+    try:
+        dye_to_channel_mapping, all_collected_data = fsa_file_reader.readFSAFile(fsa_file)
+    except Exception as inst:
+        print(type(inst))  # the exception instance
+        print(inst.args)  # arguments stored in .args
+        print(inst)
+        log.write_error_to_log("**** FSA file could not be read. " + fsa_file)
+        return False
     run_name_according_to_FSA_file_header = all_collected_data["SpNm1"]
 
     if not run_name_according_to_FSA_file_header in fsa_file:
