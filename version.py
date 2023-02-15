@@ -9,7 +9,8 @@ GLOBAL_public_version_info = [
      "Nov 17, 2022", "v1.0.0.4"],
     ["Shifted A1 call by 0.5bp, made all the difference between paup and lxpxr call.", "Nov 22, 2022", "v1.0.0.5"],
     ["Outputs spreadsheet with species determinations", "Dec 01, 2022", "v1.0.0.6"],
-    ["Extended to work with MW data, cleaned up input arguments", "Jan 10, 2023", "v1.0.1.0"]
+    ["Extended to work with MW data, cleaned up input arguments", "Jan 10, 2023", "v1.0.1.0"],
+    ["Extended to work with TM data", "Feb 15, 2023", "v1.0.2.0"]
         ]
 
 

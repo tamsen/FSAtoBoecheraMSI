@@ -7,12 +7,15 @@ import log
 
 
 def process_directory(version_info, all_results_by_file, output_folder_inside_data_folder, panel_info, path,
-                      results_specific_to_this_subfolder, truth_info, rules="Tamsen"):
+                      results_specific_to_this_subfolder, truth_info, rules,
+                      ladder_spikes, ladder_name):
+
     for file in os.listdir(path):
         if file.endswith(".fsa"):
             fsa_file = os.path.join(path, file)
 
             FSA_file_results = fsa_file_processor.process_fsa_file(fsa_file,panel_info, rules,
+                                                ladder_spikes, ladder_name,
                                                 output_folder_inside_data_folder)
 
             if FSA_file_results:

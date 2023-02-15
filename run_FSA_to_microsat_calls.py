@@ -31,8 +31,9 @@ def main():
 
     version_info = version.version_info()
     greet(version_info)
-    [output_dir, FSA_File_list, Panel_File, truth_file, rules] = input_parser.do_parsing(sys.argv)
-
+    [output_dir, FSA_File_list, Panel_File, truth_file, rules, ladder] = input_parser.do_parsing(sys.argv)
+    file_path = os.path.realpath(__file__)
+    internal_data_path=os.path.join(os.path.dirname(file_path),'data')
 
     if truth_file:
         truth_info = xml_file_readers.read_truth_data(truth_file)
@@ -44,6 +45,7 @@ def main():
     log.write_to_log('Using post-processing rule: ' + rules + "'s rules.")
     paths_to_process = text_file_readers.readInputFile(FSA_File_list)
     panel_info = xml_file_readers.readPanelXml(Panel_File)
+    ladder_info = xml_file_readers.readLadderXml(os.path.join(internal_data_path,"Ladders.xml"))
     all_results_by_file = {}
 
     for path in paths_to_process:
@@ -68,7 +70,8 @@ def main():
         if os.path.isdir(path):
 
             fsa_directory_processor.process_directory(version_info, all_results_by_file, output_folder_inside_data_folder, panel_info, path,
-                              results_specific_to_this_subfolder, truth_info, rules)
+                              results_specific_to_this_subfolder, truth_info,
+                              rules, ladder_info[ladder], ladder)
 
         else:
             print("Please use directories, not individual FSA files.")

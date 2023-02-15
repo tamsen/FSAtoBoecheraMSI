@@ -29,6 +29,11 @@ class TestCalibration(unittest.TestCase):
         truth_info = xml_file_readers.read_truth_data(truth_file)
         panel_info = xml_file_readers.readPanelXml(panel_file)
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
                                                         "CalibrationTest",
                                                         "LxPxR_FSA_to_microsat_script_results_" +
@@ -39,7 +44,7 @@ class TestCalibration(unittest.TestCase):
         by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
             version.version_info(),
             all_results_by_file, output_folder_inside_data_folder,
-            panel_info, path, results_specific_to_this_subfolder, truth_info)
+            panel_info, path, results_specific_to_this_subfolder, truth_info, "TD", ladder_spikes, ladder_name)
 
         #self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.90, True)
         #self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.75, True)
@@ -49,6 +54,7 @@ class TestCalibration(unittest.TestCase):
         # Went down a bit when I noticed the BP28 truth was wrong.
         # I suspect there are errors in the original BP28 calls, which is why the BP28 score is low
         self.assertEqual(avg_sample_accuracy['BD1200'] >= 99.90, True)
+        self.assertEqual(avg_sample_accuracy['BD1200'] >= 93.0, True)
         self.assertEqual(avg_sample_accuracy['BD1200CNTRL'] >= 99.90, True)
         self.assertEqual(avg_sample_accuracy['BP28'] >= 97.14, True) #fixed when we increase sutter-distance from 3.5 -> 4
         self.assertEqual(avg_sample_accuracy['LA846'] >= 99.75, True)
@@ -71,6 +77,11 @@ class TestCalibration(unittest.TestCase):
         truth_info = xml_file_readers.read_truth_data(truth_file)
         panel_info = xml_file_readers.readPanelXml(panel_file)
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
                                                         "CalibrationTest",
                                                         "Paupercula_FSA_to_microsat_script_results_" +
@@ -81,7 +92,7 @@ class TestCalibration(unittest.TestCase):
         by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
             version.version_info(),
             all_results_by_file, output_folder_inside_data_folder,
-            panel_info, path, results_specific_to_this_subfolder, truth_info)
+            panel_info, path, results_specific_to_this_subfolder, truth_info, "TD", ladder_spikes, ladder_name)
 
         self.assertEqual(avg_sample_accuracy['FW346'] >= 83.76, True)
         self.assertEqual(avg_sample_accuracy['FW437'] >= 94.49, True)
@@ -101,6 +112,11 @@ class TestCalibration(unittest.TestCase):
         truth_info = xml_file_readers.read_truth_data(truth_file)
         panel_info = xml_file_readers.readPanelXml(panel_file)
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
                                                         "CalibrationTest",
                                                         "Lemmonii_FSA_to_microsat_script_results_" +
@@ -111,7 +127,7 @@ class TestCalibration(unittest.TestCase):
         #by_sample_results[sample_name][loci] = msi_results_for_loci
         by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
             version.version_info(), all_results_by_file, output_folder_inside_data_folder,
-            panel_info, path, results_specific_to_this_subfolder, truth_info)
+            panel_info, path, results_specific_to_this_subfolder, truth_info, "TD", ladder_spikes, ladder_name)
 
         self.assertEqual(avg_sample_accuracy['FW428'] >= 89.37, True)
         self.assertEqual(avg_sample_accuracy['FW415'] >= 85.01, True)
@@ -129,6 +145,12 @@ class TestCalibration(unittest.TestCase):
         truth_info = xml_file_readers.read_truth_data(truth_file)
         panel_info = xml_file_readers.readPanelXml(panel_file)
 
+
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
                                                         "CalibrationTest",
                                                         "Retrofracta_FSA_to_microsat_script_results_" +
@@ -139,7 +161,7 @@ class TestCalibration(unittest.TestCase):
         by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
             version.version_info(),
             all_results_by_file, output_folder_inside_data_folder,
-            panel_info, path, results_specific_to_this_subfolder, truth_info)
+            panel_info, path, results_specific_to_this_subfolder, truth_info,  "TD", ladder_spikes, ladder_name,)
 
         self.assertEqual(avg_sample_accuracy['JB276'] >= 77.14, True)
         self.assertEqual(avg_sample_accuracy['JB277'] >= 82.41, True)
@@ -157,6 +179,12 @@ class TestCalibration(unittest.TestCase):
         truth_info = xml_file_readers.read_truth_data(truth_file)
         panel_info = xml_file_readers.readPanelXml(panel_file)
 
+
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         output_folder_inside_data_folder = os.path.join(test_globals.GLOBAL_test_output_dir,
                                                         "CalibrationTest",
                                                         "Miscellaneous_FSA_to_microsat_script_results_" +
@@ -166,7 +194,8 @@ class TestCalibration(unittest.TestCase):
 
         by_sample_results, avg_loci_accuracy, avg_sample_accuracy = fsa_directory_processor.process_directory(
             version.version_info(), all_results_by_file, output_folder_inside_data_folder,
-            panel_info, path, results_specific_to_this_subfolder, truth_info)
+            panel_info, path, results_specific_to_this_subfolder,
+            truth_info,  "TD", ladder_spikes, ladder_name)
 
         self.assertEqual(avg_sample_accuracy['JB1488'] >= 78, True)  # f x f
         self.assertEqual(avg_sample_accuracy['JB617'] >= 70, True)  # l x n x r

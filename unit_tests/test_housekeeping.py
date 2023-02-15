@@ -5,7 +5,7 @@ import unittest
 
 class test_housekeeping(unittest.TestCase):
 
-    def test_move_and_rename_MW_files(self):
+    def move_and_rename_MW_files(self):
 
         data_path="/home/tamsen/Data/MWRawFSAData/BMW_Calibration_Batch2"
         all_folders = os.listdir(data_path)
@@ -31,7 +31,7 @@ class test_housekeeping(unittest.TestCase):
 
         self.assertEqual(True, True)
 
-    def test_move_and_rename_TM_files(self):
+    def move_and_rename_TM_files(self):
 
         data_path="/home/tamsen/Data/TMRawFSAData/"
         all_folders = os.listdir(data_path)

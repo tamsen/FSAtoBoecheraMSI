@@ -7,7 +7,8 @@ def do_parsing(arg_list):
 
     truth_file = False
     upgraded_args= {}
-    rules="Tamsen"
+    rules="TD"
+    ladder="Liz500"
 
     for arg in arg_list:
         if "=" in arg:
@@ -16,15 +17,17 @@ def do_parsing(arg_list):
             value=splat[1]
             upgraded_args[key]=value
 
+    if "ladder" in upgraded_args:
+        ladder = upgraded_args["ladder"]
+
     if "truth" in upgraded_args:
         truth_file = upgraded_args["truth"]
 
     if "rules" in upgraded_args:
         rules= upgraded_args["rules"]
 
-    if rules != "Tamsen":
-        if rules != "MW":
-            print("Sorry, you need to use MW or Tamsen's rules. Try again.")
+    if rules not in ["TD", "MW","TM"]:
+            print("Sorry, you need to use MW, TM or TD's rules. Try again.")
             raise NotImplementedError()
 
-    return [upgraded_args["o"],upgraded_args["i"],upgraded_args["panel"],truth_file, rules]
+    return [upgraded_args["o"],upgraded_args["i"],upgraded_args["panel"],truth_file, rules, ladder]

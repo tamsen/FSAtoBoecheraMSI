@@ -3,6 +3,7 @@ import os
 import test_globals
 import fsa_file_processor
 import file_io.xml_file_readers
+from file_io import xml_file_readers
 from signal_processing import peak_analysis
 
 
@@ -44,8 +45,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS1_A04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         ice3_results = FSA_file_results.MSI_loci_results_by_loci["ICE3"]
         ice3_raw_alleles_called = ice3_results.raw_alleles_called
@@ -69,8 +75,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS1_A04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF20"]
         raw_alleles_called = results.raw_alleles_called
@@ -94,8 +105,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS1_A04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["A1"]
         raw_alleles_called = results.raw_alleles_called
@@ -118,8 +134,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS2_B04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF11"]
         raw_alleles_called = results.raw_alleles_called
@@ -142,8 +163,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS2_B04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["ICE14"]
         raw_alleles_called = results.raw_alleles_called
@@ -164,9 +190,13 @@ class TestFinalCalls(unittest.TestCase):
         panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS2_B04.fsa")
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
 
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["C8"]
         raw_alleles_called = results.raw_alleles_called
@@ -190,8 +220,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS3_C04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name,test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF9"]
         self.assertEqual(6, len(results.raw_alleles_called))
@@ -210,8 +245,19 @@ class TestFinalCalls(unittest.TestCase):
         panel_info = file_io.xml_file_readers.readPanelXml(test_globals.GLOBAL_panel_file)
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                     "BD1200PSE_F04.fsa")
+
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
+
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
 
         results = FSA_file_results.MSI_loci_results_by_loci["E9"]
         self.assertEqual(6, len(results.raw_alleles_called))
@@ -225,8 +271,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS4_D04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF3"]
         self.assertEqual(3, len(results.raw_alleles_called))
@@ -256,8 +307,13 @@ class TestFinalCalls(unittest.TestCase):
         fsa_file = os.path.join(test_globals.GLOBAL_test_input_dir, "test_final_calls",
                                 "BD1200PS5_E04.fsa")
 
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
         FSA_file_results = fsa_file_processor.process_fsa_file(
-            fsa_file, panel_info, test_globals.GLOBAL_test_output_dir)
+            fsa_file, panel_info, "TD", ladder_spikes, ladder_name, test_globals.GLOBAL_test_output_dir)
 
         results = FSA_file_results.MSI_loci_results_by_loci["BF15"]
         self.assertEqual(5, len(results.raw_alleles_called))

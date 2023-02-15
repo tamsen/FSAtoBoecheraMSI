@@ -1,6 +1,7 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
-from signal_processing import peak_analysis, trace_analysis, tamsens_offsets, mw_offsets, shared, elastic_ladder_analysis
+from signal_processing import peak_analysis, trace_analysis, tamsens_offsets, mw_offsets, shared, \
+    elastic_ladder_analysis, static_ladder_analysis_
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from signal_processing.elastic_ladder_analysis import Mapping_Info
@@ -8,7 +9,7 @@ from visualization import per_file_visuals
 import log
 
 
-def process_fsa_file(fsa_file, panel_info, rules, output_dir):
+def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, output_dir):
     log.write_to_log("****** Processing " + fsa_file + " **********")
 
     try:
@@ -45,17 +46,24 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
         log.write_to_log("relevant_loci: " + str(relevant_loci))
 
     mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                              output_dir, run_folder_according_to_FSA_file_header, run_name_according_to_FSA_file_header, -1)
+                                                              output_dir, run_folder_according_to_FSA_file_header,
+                                                              run_name_according_to_FSA_file_header,
+                                                              ladder_spikes, ladder_name,
+                                                              -1)
     retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
 
     if retry_needed:
         mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                                  output_dir, run_folder_according_to_FSA_file_header, run_name_according_to_FSA_file_header, 50)
+                                                                  output_dir, run_folder_according_to_FSA_file_header,
+                                                                  run_name_according_to_FSA_file_header,
+                                                                  ladder_spikes, ladder_name, 50)
 
         retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
         if retry_needed:
             mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
-                                                                      output_dir, run_folder_according_to_FSA_file_header, run_name_according_to_FSA_file_header, 25)
+                                                                      output_dir, run_folder_according_to_FSA_file_header,
+                                                                      run_name_according_to_FSA_file_header,
+                                                                      ladder_spikes, ladder_name, 25)
     if not mapping_attempt_worked:  # still!
         log.write_to_log("getting ladder peaks failed")
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -145,7 +153,7 @@ def process_fsa_file(fsa_file, panel_info, rules, output_dir):
             raw_calls = peak_analysis.peaks_to_raw_calls(unfiltered_peaks_in_loci)
             typical_stutter = 3.5
 
-            if rules == "Tamsen":
+            if rules == "TD":
                 raw_calls = peak_analysis.bf9_special2(raw_calls, loci, trace_x_new, trace_y_new, threshold_used,
                                                    typical_stutter)
             filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, rules)
@@ -224,10 +232,21 @@ def check_if_retry_is_worth_it(mapping_attempt_worked):
 
 
 def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, run_folder, run_name,
+                                     ladder_spikes, ladder_name,
                                      background_subtraction_window):
     try:
-        gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
+
+        if ladder_name == "Liz500":
+            gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
                                                                 background_subtraction_window)
+        elif ladder_name == "400HD":
+            gotLadderPeaks = static_ladder_analysis_.getLadderPeaks(run_folder, run_name, all_collected_data,
+                                                            ladder_spikes, ladder_name,
+                                                            background_subtraction_window)
+        else:
+            log.write_to_log("There is no info for the given ladder name: " + ladder_name)
+            log.write_to_log("Please update Ladders.xml")
+            raise NotImplementedError
 
     except Exception as e:
         log.write_to_log("Major issue getting the ladder peaks.")

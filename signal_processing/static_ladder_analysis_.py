@@ -9,8 +9,6 @@ from signal_processing import shared
 from visualization import per_file_visuals
 import log
 
-GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
-
 class Mapping_Info:
 
     def __init__(self, mapping_fxn, left_domain_limit, right_domain_limit,
@@ -27,10 +25,14 @@ class Mapping_Info:
 
 
 
-def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=-1):
+def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_spikes, ladder_name,
+                   window_half_width=-1):
+
+    expected_num_ladder_spikes=len(expected_ladder_spikes)
     log.write_to_log("Reading through ladder trace for " + runName)
-    # 'DATA105' is the ladder channel
-    ladder_trace = trace_data_dictionary['DATA105']
+
+    # 'DATA4' is the ladder channel for Teri M's Data
+    ladder_trace = trace_data_dictionary['DATA4']
 
     if window_half_width > 0:
         ladder_trace = do_background_removal(ladder_trace, window_half_width)
@@ -48,7 +50,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
 
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
 
-    if (len(highest_peaks_tup) < 18): #something went wrong here. Re-call the peaks
+    if (len(highest_peaks_tup) < (expected_num_ladder_spikes + 3)): #something went wrong here. Re-call the peaks
 
         new_theshold = highest_peaks_tup[0][1]*0.50
         parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 10, 50, 10, .5, new_theshold)
@@ -59,43 +61,42 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
 
     # now, keep the best 16 starting from the right-most index.
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
-    sixteen_peaks = highest_peaks_tup[0:16]
+    found_ladder_peaks = highest_peaks_tup[0:expected_num_ladder_spikes]
 
     # want your ladder peaks leftmost on the left! not sorted by size
-    sixteen_peaks.sort(key=lambda x: x[0])
+    found_ladder_peaks.sort(key=lambda x: x[0])
 
     # Minor tweak, our vendor has a spurious peak that pops up between  2000 and 2800
     # SO - if we see 4 peaks between 2000 and 2800, and we should see ony 3,
     # throw out the smallest
-    sixteen_peaks = remove_known_sus_ladder_peak_in_sus_range(sixteen_peaks, highest_peaks_tup, [2000,2800])
-    sixteen_peaks.sort(key=lambda x: x[0])
+    found_ladder_peaks = remove_known_sus_ladder_peak_in_sus_range(found_ladder_peaks, highest_peaks_tup, [2000,2800])
+    found_ladder_peaks.sort(key=lambda x: x[0])
 
-    sixteen_peaks = remove_shorties_relative_to_siblings(sixteen_peaks, highest_peaks_tup)
-    sixteen_peaks.sort(key=lambda x: x[0])
+    found_ladder_peaks = remove_shorties_relative_to_siblings(found_ladder_peaks, highest_peaks_tup)
+    found_ladder_peaks.sort(key=lambda x: x[0])
 
     # Another minor tweak, we need a smaller kernel to get the very first ladder point right,
     # Because it slams into over-saturation at the beginning of the gel
     best_guess_for_35_peak = fix_over_saturated_start(ladder_trace, parameters_for_left_side_of_ladder,
-                                                      sixteen_peaks)
-    sixteen_peaks[0]=best_guess_for_35_peak
+                                                      found_ladder_peaks)
+    found_ladder_peaks[0]=best_guess_for_35_peak
 
-    # bake LIZ500 into the peak tuple, for use later on.
-    numLadderPeaks = len(sixteen_peaks)
-    log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
+    num_found_ladder_peaks = len(found_ladder_peaks)
+    log.write_to_log("Num peaks found for ladder: " + str(num_found_ladder_peaks))
 
-    sixteen_peaks = [(sixteen_peaks[i][0], sixteen_peaks[i][1], GLOBAL_Liz500[i])
-                     for i in range(0, numLadderPeaks)]
+    found_ladder_peaks = [(found_ladder_peaks[i][0], found_ladder_peaks[i][1], expected_ladder_spikes[i])
+                     for i in range(0, num_found_ladder_peaks)]
 
-    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, sixteen_peaks]
+    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, found_ladder_peaks]
     per_file_visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
-    if (numLadderPeaks != len(GLOBAL_Liz500)):
+    if (num_found_ladder_peaks != expected_ladder_spikes):
         log.write_to_log("There is a problem with this sample's ladder! Inspect plot. ")
         log.write_to_log("Aborting run. ")
         return False
 
-    return sixteen_peaks, threshold, ladder_plot_data
+    return found_ladder_peaks, threshold, ladder_plot_data
 
 
 def get_background(ladder_trace,window_half_width):

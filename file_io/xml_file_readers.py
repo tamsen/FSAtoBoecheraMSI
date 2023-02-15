@@ -7,6 +7,27 @@ class TruthDataForSample:
         self.truth_by_loci = sample_data_by_loci
         self.species_name = species_name
 
+def readLadderXml(input_file_path):
+
+    mytree = ET.parse(input_file_path)
+    myroot = mytree.getroot()
+
+    ladder_data_by_dye_name={}
+    for ladder in myroot:
+        dye_name = ladder.attrib["name"]
+        primer_set_data_by_loci = {}
+        for data in ladder:
+                incoming_txt=data.text.strip()
+                incoming_tag = data.tag.strip()
+                if (incoming_tag == "peaks"):
+                    splat = incoming_txt.split(',')
+                    spikes=[]
+                    for s in splat:
+                        spikes.append(int(s))
+                    ladder_data_by_dye_name[dye_name]=spikes
+                    break
+    return ladder_data_by_dye_name
+
 def readPanelXml(input_file_path):
 
     mytree = ET.parse(input_file_path)
