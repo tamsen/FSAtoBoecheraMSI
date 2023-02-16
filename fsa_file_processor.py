@@ -9,7 +9,7 @@ from visualization import per_file_visuals
 import log
 
 
-def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, output_dir):
+def process_fsa_file(fsa_file, panel_info, rules, expected_ladder_peaks, ladder_name, output_dir):
     log.write_to_log("****** Processing " + fsa_file + " **********")
 
     try:
@@ -48,7 +48,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
     mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
                                                               output_dir, run_folder_according_to_FSA_file_header,
                                                               run_name_according_to_FSA_file_header,
-                                                              ladder_spikes, ladder_name,
+                                                              expected_ladder_peaks, ladder_name,
                                                               -1)
     retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
 
@@ -56,14 +56,14 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
         mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
                                                                   output_dir, run_folder_according_to_FSA_file_header,
                                                                   run_name_according_to_FSA_file_header,
-                                                                  ladder_spikes, ladder_name, 50)
+                                                                  expected_ladder_peaks, ladder_name, 50)
 
         retry_needed = check_if_retry_is_worth_it(mapping_attempt_worked)
         if retry_needed:
             mapping_attempt_worked = use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file,
                                                                       output_dir, run_folder_according_to_FSA_file_header,
                                                                       run_name_according_to_FSA_file_header,
-                                                                      ladder_spikes, ladder_name, 25)
+                                                                      expected_ladder_peaks, ladder_name, 25)
     if not mapping_attempt_worked:  # still!
         log.write_to_log("getting ladder peaks failed")
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
@@ -71,7 +71,8 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
 
     ladder_plot_data, mapping_function, detected_ladder_peaks, threshold = mapping_attempt_worked
 
-    trace_analysis.remap_ladder(run_folder_according_to_FSA_file_header, all_collected_data, mapping_function, detected_ladder_peaks,
+    trace_analysis.remap_ladder(run_folder_according_to_FSA_file_header, all_collected_data, mapping_function,
+                                detected_ladder_peaks, expected_ladder_peaks,
                                 threshold, ladder_plot_data[5])
 
     # Channels we care about are ones with dyes in our panel.
@@ -93,9 +94,11 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
             data_channel_for_dye = dye_to_channel_mapping[dye_name]
 
         peaks_inside_loci, trace_x_new, trace_y_new, \
-        threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
+        threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header,
+                                                                            relevant_loci,
                                                                             all_collected_data, mapping_function,
                                                                             detected_ladder_peaks,
+                                                                            expected_ladder_peaks,
                                                                             data_channel_for_dye,
                                                                             peak_calling_parameters)
 
@@ -131,6 +134,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
                                                                                     all_collected_data,
                                                                                     mapping_function,
                                                                                     detected_ladder_peaks,
+                                                                                    expected_ladder_peaks,
                                                                                     dye_to_channel_mapping[dye_name],
                                                                                     rescue_parameters)
             elif ((loci == "BF20") or (loci == "ICE14")):  # get more detail for problem loci
@@ -146,6 +150,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
                                                                                     all_collected_data,
                                                                                     mapping_function,
                                                                                     detected_ladder_peaks,
+                                                                                    expected_ladder_peaks,
                                                                                     dye_to_channel_mapping[dye_name],
                                                                                     rescue_parameters)
 
