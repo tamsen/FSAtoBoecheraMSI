@@ -69,9 +69,9 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         return False
 
-    ladder_plot_data, mapping_function, sixteen_peaks, threshold = mapping_attempt_worked
+    ladder_plot_data, mapping_function, detected_ladder_peaks, threshold = mapping_attempt_worked
 
-    trace_analysis.remap_ladder(run_folder_according_to_FSA_file_header, all_collected_data, mapping_function, sixteen_peaks,
+    trace_analysis.remap_ladder(run_folder_according_to_FSA_file_header, all_collected_data, mapping_function, detected_ladder_peaks,
                                 threshold, ladder_plot_data[5])
 
     # Channels we care about are ones with dyes in our panel.
@@ -95,7 +95,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
         peaks_inside_loci, trace_x_new, trace_y_new, \
         threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
                                                                             all_collected_data, mapping_function,
-                                                                            sixteen_peaks,
+                                                                            detected_ladder_peaks,
                                                                             data_channel_for_dye,
                                                                             peak_calling_parameters)
 
@@ -130,7 +130,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
                                                                                     all_collected_data,
                                                                                     mapping_function,
-                                                                                    sixteen_peaks,
+                                                                                    detected_ladder_peaks,
                                                                                     dye_to_channel_mapping[dye_name],
                                                                                     rescue_parameters)
             elif ((loci == "BF20") or (loci == "ICE14")):  # get more detail for problem loci
@@ -145,7 +145,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
                 threshold_used = trace_analysis.remap_data_trace_and_call_raw_peaks(run_folder_according_to_FSA_file_header, relevant_loci,
                                                                                     all_collected_data,
                                                                                     mapping_function,
-                                                                                    sixteen_peaks,
+                                                                                    detected_ladder_peaks,
                                                                                     dye_to_channel_mapping[dye_name],
                                                                                     rescue_parameters)
 
@@ -215,7 +215,7 @@ def process_fsa_file(fsa_file, panel_info, rules, ladder_spikes, ladder_name, ou
             log.write_to_log("final calls for loci " + loci + ": " + str(allele_calls_for_loci))
 
     log.write_to_log("**** Processing " + fsa_file + " completed  ********")
-    FSA_file_results = FSA_File_Results(final_calls_by_loci, sixteen_peaks)
+    FSA_file_results = FSA_File_Results(final_calls_by_loci, detected_ladder_peaks)
 
     return FSA_file_results
 
@@ -261,8 +261,8 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
         return False
 
     else:
-        sixteen_peaks, threshold, ladder_plot_data = gotLadderPeaks
-    mapping_function = elastic_ladder_analysis.build_interpolation_based_on_ladder(run_folder, sixteen_peaks)
+        ladder_peaks, threshold, ladder_plot_data = gotLadderPeaks
+    mapping_function = elastic_ladder_analysis.build_interpolation_based_on_ladder(run_folder, ladder_peaks)
 
     if not mapping_function:
         data_string = [fsa_file, "panel problem", "Ladder failed monotonicity!!"]
@@ -276,4 +276,4 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
         log.write_to_log("**** Processing " + fsa_file + " failed ********")
         # return False
 
-    return ladder_plot_data, mapping_function, sixteen_peaks, threshold
+    return ladder_plot_data, mapping_function, ladder_peaks, threshold

@@ -236,17 +236,18 @@ def get_threshold_for_trace(smoothed_trace, threshold_multiplier):
     return threshold
 
 
-def build_interpolation_based_on_ladder(run_folder, sixteen_peaks):
+def build_interpolation_based_on_ladder(run_folder, ladder_peaks):
     # you are building a mapping from A -> B.
     # A = the peak positions in raw gel-travellijng space
     # B = the peak positions in bp length, as determined by the ladder.
 
-    A = [x[0] for x in sixteen_peaks]  # get the peak position, not intensity
-    B = [x[2] for x in sixteen_peaks]  # the LIZ 500 we baked in
+    A = [x[0] for x in ladder_peaks]  # get the peak position, not intensity
+    B = [x[2] for x in ladder_peaks]  # the ladder base-pair length we baked in
+    num_ladder_peaks=len(ladder_peaks)
 
     # dont apply the spline where we dont have data!
-    left_domain_limit = sixteen_peaks[0][0]
-    right_domain_limit = sixteen_peaks[15][0]
+    left_domain_limit = ladder_peaks[0][0]
+    right_domain_limit = ladder_peaks[num_ladder_peaks-1][0]
 
     plotting_data_spline = False
     plotting_data_linear = False
