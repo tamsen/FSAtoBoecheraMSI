@@ -1,11 +1,10 @@
 import os
-from signal_processing.elastic_ladder import GLOBAL_Liz500
 import matplotlib.pyplot as plt
 
 
 def plot_trace_and_special_points(fig, plot_index, xs, ys,
                                   peak_xs, peak_ys, loci, plot_domain, dye_color,
-                                  msi_call_text, ladder_peak_txt):
+                                  msi_call_text, ladder_peak_txt, expected_ladder_peaks):
     ax = fig.add_subplot(*plot_index)
     ax = plt.plot(xs, ys, c=dye_color)
     ax = plt.scatter(peak_xs, peak_ys, marker="*", c='orange')
@@ -17,7 +16,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     if (ladder_peak_txt):
         ax = plt.gca()
         for i in range(0, len(peak_xs)):
-            ax = plt.text(peak_xs[i], peak_ys[i] * 1.05, str(GLOBAL_Liz500[i]), rotation=0)
+            ax = plt.text(peak_xs[i], peak_ys[i] * 1.05, str(expected_ladder_peaks[i]), rotation=0)
 
     ys_within_domain = []
     if (plot_domain):
@@ -36,7 +35,8 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
     return ax
 
 
-def write_per_sample_summary_plots(version_info, run_folder, by_sample_results):
+def write_per_sample_summary_plots(version_info, run_folder, by_sample_results,
+                                   expected_ladder_peaks):
     # specific order to arrange the plots
     ordered_loci_list = ["dummy_index", "ICE3", "BF20", "A1",
                          "BF11", "ICE14", "C8",
@@ -46,13 +46,16 @@ def write_per_sample_summary_plots(version_info, run_folder, by_sample_results):
 
     for sample_name, sample_result in by_sample_results.items():
         plot_traces_for_the_sample(version_info,run_folder, sample_name,
-                                   sample_result, ordered_loci_list)
+                                   sample_result, ordered_loci_list,expected_ladder_peaks)
 
-        plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list)
-        plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list)
+        plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
+                                    expected_ladder_peaks)
+        plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
+                                     expected_ladder_peaks)
 
 
-def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
+def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
+                                expected_ladder_peaks):
     fig = plt.figure(figsize=(10, 10))
 
     for i in range(0, 5):
@@ -79,7 +82,7 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
                                            smoothed_trace,
                                            peak_xs,
                                            [x[1] for x in sixteen_peaks],
-                                           warning, domain, 'black', False, True)
+                                           warning, domain, 'black', False, True, expected_ladder_peaks)
 
         ax = plt.plot(x_values, [threshold for x in x_values], c="green")
 
@@ -95,7 +98,7 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
     plt.close()
 
 
-def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list):
+def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,expected_ladder_peaks):
     fig = plt.figure(figsize=(10, 10))
 
     for i in range(1, 16):
@@ -112,16 +115,19 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
                 [x_original, x_new, A, B] = mapping_plot_data_spline
 
                 ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
-                                                   loci + " spline map", False, "purple", False, False)
+                                                   loci + " spline map", False, "purple", False, False,
+                                                   expected_ladder_peaks)
 
             elif mapping_plot_data_linear:
                 [x_original, x_new, A, B] = mapping_plot_data_linear
 
                 ax = plot_trace_and_special_points(fig, (5, 3, i), x_original, x_new, A, B,
-                                                   loci  + " linear map", False, "purple", False, False)
+                                                   loci  + " linear map", False, "purple", False, False,
+                                                   expected_ladder_peaks)
             else:
                 ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
-                                                   loci + "Failed", False, "purple", False, False)
+                                                   loci + "Failed", False, "purple", False, False,
+                                                   expected_ladder_peaks)
 
             ax = plt.gca()
             ax = plt.text(0.05, 0.85, warning, horizontalalignment='left',
@@ -129,7 +135,8 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
 
         else:
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3],
-                                               loci + "Failed", False, "purple", False, False)
+                                               loci + "Failed", False, "purple", False, False,expected_ladder_peaks)
+
 
         if i in [1, 4, 7, 10, 13, 16]:
             plt.ylabel("PS" + str(int((i + 2.0) / 3.0)), fontsize=16)
@@ -144,7 +151,8 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
     plt.close()
 
 
-def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_result, ordered_loci_list):
+def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_result,
+                               ordered_loci_list, expected_ladder_peaks):
     dye_to_color = {"FAM": "blue", "VIC": "green", "Dye1": "blue", "Dye2": "green"}
     fig = plt.figure(figsize=(10, 10))
     known_species = False
@@ -157,14 +165,15 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
         if loci not in sample_result.keys():
             dye = "FAM"
             ax = plot_trace_and_special_points(fig, (5, 3, i), [1], [1], [1], [1],
-                                               loci + " FAIL", [0, 1], dye_to_color[dye], True, False)
+                                               loci + " FAIL", [0, 1], dye_to_color[dye], True, False,
+                                               expected_ladder_peaks)
         else:
             [new_x, new_y, raw_peak_xs, raw_peak_ys, filtered_peak_xs, filtered_peak_ys,
              threshold, plot_prefix, domain, dye] = \
                 sample_result[loci].plotting_data_evidence
 
             ax = plot_trace_and_special_points(fig, (5, 3, i), new_x, new_y, raw_peak_xs, raw_peak_ys,
-                                               loci, domain, dye_to_color[dye], True, False)
+                                               loci, domain, dye_to_color[dye], True, False, expected_ladder_peaks)
 
             ax = plt.scatter(filtered_peak_xs, filtered_peak_ys, s=80, facecolors='none', edgecolors='r')
             ax = plt.plot(new_x, [threshold for x in new_x], c="gray")

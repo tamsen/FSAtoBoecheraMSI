@@ -32,7 +32,8 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     log.write_to_log("Reading through ladder trace for " + runName)
 
     # 'DATA4' is the ladder channel for Teri M's Data
-    ladder_trace = trace_data_dictionary['DATA4']
+    ladder_channel='DATA4'
+    ladder_trace = trace_data_dictionary[ladder_channel]
 
     if window_half_width > 0:
         ladder_trace = do_background_removal(ladder_trace, window_half_width)
@@ -87,11 +88,12 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     found_ladder_peaks = [(found_ladder_peaks[i][0], found_ladder_peaks[i][1], expected_ladder_spikes[i])
                      for i in range(0, num_found_ladder_peaks)]
 
-    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace, found_ladder_peaks]
+    ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold, smoothed_trace,
+                        found_ladder_peaks, ladder_channel]
     per_file_visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
-    if (num_found_ladder_peaks != expected_ladder_spikes):
+    if (num_found_ladder_peaks != expected_num_ladder_spikes):
         log.write_to_log("There is a problem with this sample's ladder! Inspect plot. ")
         log.write_to_log("Aborting run. ")
         return False

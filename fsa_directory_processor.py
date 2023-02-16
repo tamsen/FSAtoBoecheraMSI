@@ -55,6 +55,7 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
                                              by_sample_results, True, True)
 
     per_sample_visuals.write_per_sample_summary_plots(version_info, output_folder_inside_data_folder,
-                                                      by_sample_results)
+                                                      by_sample_results,
+                                                      ladder_spikes)
 
     return by_sample_results, avg_loci_accuracy, avg_sample_accuracy

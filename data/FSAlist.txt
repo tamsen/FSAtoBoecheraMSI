@@ -13,6 +13,6 @@
 #/home/tamsen/Data/Eton/by_site/GardiskyLake2021  
 #/home/tamsen/Data/Eton/by_site/MountLassen        
 #/home/tamsen/Data/Eton/by_site/SaddlebagLake-LakeHelen
-/home/tamsen/Data/Eton/Frag_Order_16821
+#/home/tamsen/Data/Eton/Frag_Order_16821
 #/home/tamsen/Data/MWRawFSAData/Plate36_fsa
-#/home/tamsen/Data/TMRawFSAData
+/home/tamsen/Data/TMRawFSAData
