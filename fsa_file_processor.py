@@ -245,6 +245,7 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
 
         if ladder_name == "Liz500":
             gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,
+                                                                ladder_spikes, ladder_name,
                                                                 background_subtraction_window)
         elif ladder_name == "400HD":
             gotLadderPeaks = static_ladder_analysis_.getLadderPeaks(run_folder, run_name, all_collected_data,

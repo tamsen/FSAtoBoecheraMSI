@@ -6,7 +6,6 @@ from scipy.signal import find_peaks
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import interp1d
 from signal_processing import shared, elastic_ladder
-from signal_processing.elastic_ladder import GLOBAL_Liz500
 from visualization import per_file_visuals
 import log
 
@@ -24,7 +23,8 @@ class Mapping_Info:
     LadderState = Enum('LadderStatus', ['Good', 'Bad', 'Suspect'])
 
 
-def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=-1):
+def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_spikes,
+                   ladder_name, window_half_width=-1):
     log.write_to_log("Reading through ladder trace for " + runName)
     ladder_channel='DATA105'
 
@@ -106,7 +106,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     numLadderPeaks = len(ladder_peaks)
     log.write_to_log("Num peaks found for ladder: " + str(numLadderPeaks))
 
-    ladder_peaks = [(ladder_peaks[i][0], ladder_peaks[i][1], GLOBAL_Liz500[i])
+    ladder_peaks = [(ladder_peaks[i][0], ladder_peaks[i][1], expected_ladder_spikes[i])
                     for i in range(0, numLadderPeaks)]
 
     ladder_plot_data = [runFolder, runName + "_LadderPlot", threshold_used, smoothed_trace, ladder_peaks,
@@ -114,7 +114,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, window_half_width=
     per_file_visuals.plot_ladder(*ladder_plot_data, )
 
     # note, we had an index out of range here - issue with the ladder - hence the check
-    if (numLadderPeaks != len(GLOBAL_Liz500)):
+    if (numLadderPeaks != len(expected_ladder_spikes)):
         log.write_to_log("There is a problem with this sample's ladder! Inspect plot. ")
         log.write_to_log("Aborting run. ")
         return False

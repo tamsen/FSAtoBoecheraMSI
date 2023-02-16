@@ -1,12 +1,9 @@
 import os
 
-from signal_processing.elastic_ladder_analysis import GLOBAL_Liz500
-
-
-def write_ladder_peaks(outputDir, fsa_results_by_file_name):
+def write_ladder_peaks(outputDir, fsa_results_by_file_name, expected_ladder_spikes):
 
     ladder_file_name = os.path.join(outputDir, "LadderPeaks.csv")
-    peak_names = [str(n) for n in GLOBAL_Liz500]
+    peak_names = [str(n) for n in expected_ladder_spikes]
     header_x = ["peak x's:"] + peak_names
     header_y = ["peak y's:"] + peak_names
 

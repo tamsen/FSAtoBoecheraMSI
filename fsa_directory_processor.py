@@ -25,9 +25,9 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
                 all_results_by_file[fsa_file] = False
                 results_specific_to_this_subfolder[fsa_file] = False
 
-    ladder_results.write_ladder_peaks(output_folder_inside_data_folder,results_specific_to_this_subfolder)
+    ladder_results.write_ladder_peaks(output_folder_inside_data_folder,
+                                      results_specific_to_this_subfolder, ladder_spikes)
 
-    #by_sample_results [sample_name][loci] = msi_results_for_loci
     by_sample_results = results_files.consolidate_by_file_results_to_by_sample_results(
         results_specific_to_this_subfolder, panel_info, truth_info)
 
@@ -56,6 +56,6 @@ def process_directory(version_info, all_results_by_file, output_folder_inside_da
 
     per_sample_visuals.write_per_sample_summary_plots(version_info, output_folder_inside_data_folder,
                                                       by_sample_results,
-                                                      ladder_spikes)
+                                                      ladder_spikes, rules)
 
     return by_sample_results, avg_loci_accuracy, avg_sample_accuracy

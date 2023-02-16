@@ -2,7 +2,7 @@ import statistics
 #from signal_processing.elastic_ladder_analysis import GLOBAL_Liz500
 
 
-GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
+#GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
 
 def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confident_right_peak,

@@ -36,7 +36,7 @@ def plot_trace_and_special_points(fig, plot_index, xs, ys,
 
 
 def write_per_sample_summary_plots(version_info, run_folder, by_sample_results,
-                                   expected_ladder_peaks):
+                                   expected_ladder_peaks, rules):
     # specific order to arrange the plots
     ordered_loci_list = ["dummy_index", "ICE3", "BF20", "A1",
                          "BF11", "ICE14", "C8",
@@ -45,7 +45,7 @@ def write_per_sample_summary_plots(version_info, run_folder, by_sample_results,
                          "BF15", "Bdru266", "A3"]
 
     for sample_name, sample_result in by_sample_results.items():
-        plot_traces_for_the_sample(version_info,run_folder, sample_name,
+        plot_traces_for_the_sample(version_info,rules, run_folder, sample_name,
                                    sample_result, ordered_loci_list,expected_ladder_peaks)
 
         plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
@@ -151,7 +151,7 @@ def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered
     plt.close()
 
 
-def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_result,
+def plot_traces_for_the_sample(version_info, rules, run_folder, sample_name, sample_result,
                                ordered_loci_list, expected_ladder_peaks):
     dye_to_color = {"FAM": "blue", "VIC": "green", "Dye1": "blue", "Dye2": "green"}
     fig = plt.figure(figsize=(10, 10))
@@ -253,7 +253,7 @@ def plot_traces_for_the_sample(version_info, run_folder, sample_name, sample_res
     fig.suptitle(plot_title)
 
     if version_info:
-        version_string= version_info.app_name + " " + version_info.version_num
+        version_string= version_info.app_name + " " + version_info.version_num + "\nRules: " + rules
         ax = plt.gca()
         fig.text(-2.6, -0.5, version_string,
             verticalalignment='bottom', horizontalalignment='left',
