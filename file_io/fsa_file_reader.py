@@ -91,7 +91,8 @@ def py3_get_string(byte):
     if version_info[0] < 3:
         return byte
     else:
-        return byte.decode()
+        #return byte.decode() #tjd - modified to accept non-ascii characters in FSA files
+        return byte.decode('latin-1').encode('ascii', errors='xmlcharrefreplace').decode('ascii')
 
 def py3_get_byte(string):
     if version_info[0] < 3:
@@ -187,6 +188,7 @@ def parse_fsa_header(header, handle):
         handle.seek(start)
         dir_entry = struct.unpack(_DIRFMT,
                                   handle.read(struct.calcsize(_DIRFMT))) + (start,)
+        #print(dir_entry)
         index += 1
         yield TraceDir(dir_entry, handle)
 

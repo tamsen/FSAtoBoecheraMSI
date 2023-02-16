@@ -1,7 +1,7 @@
 import os
 from file_io import xml_file_readers, results_files, fsa_file_reader
 from signal_processing import peak_analysis, trace_analysis, tamsens_offsets, mw_offsets, shared, \
-    elastic_ladder_analysis, static_ladder_analysis_
+    elastic_ladder_analysis, static_ladder_analysis_, teris_offsets
 from fsa_file_results import FSA_File_Results
 from loci_results import loci_results
 from signal_processing.elastic_ladder_analysis import Mapping_Info
@@ -163,7 +163,9 @@ def process_fsa_file(fsa_file, panel_info, rules, expected_ladder_peaks, ladder_
                                                    typical_stutter)
             filtered_calls = peak_analysis.peaks_to_filtered_calls(raw_calls, loci, rules)
 
-            if rules == "MW":
+            if rules == "TM":
+                final_calls = teris_offsets.make_adjustments(filtered_calls, loci)
+            elif rules == "MW":
                 final_calls = mw_offsets.make_adjustments(filtered_calls, loci)
             else:  # default to Tamsen's rules
                 final_calls = tamsens_offsets.make_adjustments(filtered_calls, loci)
