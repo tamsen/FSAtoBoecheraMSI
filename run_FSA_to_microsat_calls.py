@@ -8,6 +8,8 @@ from file_io import text_file_readers, xml_file_readers, results_files
 
 import log
 
+#o=/home/tamsen/Data/Eton i=./data/FSAlist.txt panel=./data/Panel_mw.xml truth=./data/TruthData.xml rules="MW"
+#o=/home/tamsen/Data/Eton i=./data/FSAlist.txt panel=./data/Panel_td.xml truth=./data/TruthData.xml rules="TD"
 
 # code snippets from
 # https://github.com/trmznt/fatools/
