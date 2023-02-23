@@ -15,4 +15,10 @@
 #/home/tamsen/Data/Eton/by_site/SaddlebagLake-LakeHelen
 #/home/tamsen/Data/Eton/Frag_Order_16821
 #/home/tamsen/Data/MWRawFSAData/Plate36_fsa
-/home/tamsen/Data/TMRawFSAData
+#/home/tamsen/Data/TMRawFSAData
+#o=/home/tamsen/Data/Eton i=./data/FSAlist.txt panel=./data/Panel_mw.xml truth=./data/TruthData.xml rules="TM" ladder="400HD"
+#o=/home/tamsen/Data/Eton i=./data/FSAlist.txt panel=./data/Panel_td.xml truth=./data/TruthData.xml rules="TD" ladder="Liz500"
+#/home/tamsen/Data/Eton/Frag_Order_16831/a_renamed
+#/home/tamsen/Data/Eton/Frag_Order_16831/b_renamed
+/home/tamsen/Data/Eton/Frag_Order_16830/a_renamed
+/home/tamsen/Data/Eton/Frag_Order_16830/b_renamed
