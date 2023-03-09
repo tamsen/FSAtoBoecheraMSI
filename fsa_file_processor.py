@@ -195,6 +195,10 @@ def process_fsa_file(fsa_file, panel_info, rules, expected_ladder_peaks, ladder_
             if loci == "BF11":
                 whole_loci_domain = [60, 110]
 
+            #tjd - temporary for TD21RP31
+            #if loci == "E9":
+            #    whole_loci_domain = [180, 225]
+
             loci_specific_plot_data = [trace_x_new, trace_y_new,
                                        [call[0] for call in raw_calls],
                                        [call[1] for call in raw_calls],

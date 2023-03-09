@@ -71,6 +71,11 @@ def make_adjustments(peaks, loci):
         #peaks = [[p[0] - 1, p[1]] for p in peaks]
         peaks = [[p[0] - 0.5, p[1]] for p in peaks]
         #peaks = [[p[0] - 0.0, p[1]] for p in peaks]
+
+    #tjd + temporary to get more detail on  TD21RP31
+    #if loci == 'E9': #g
+    #    [peaks.remove(p) for p in peaks if 220 < p[0]]  # known false peaks, noise
+
     #-------------PS4--------------
 
     if loci in ['BF3']:

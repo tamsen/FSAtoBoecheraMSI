@@ -4,7 +4,7 @@
 #/home/tamsen/Data/Eton/by_site/TwinLakes
 #/home/tamsen/Data/Eton/by_site/DanaGibbs2021     
 #/home/tamsen/Data/Eton/by_site/MonoPass           
-#/home/tamsen/Data/Eton/by_site/RubyLake2020and2021  
+/home/tamsen/Data/Eton/by_site/RubyLake2020and2021  
 #/home/tamsen/Data/Eton/by_site/WalkerLake
 #/home/tamsen/Data/Eton/by_site/EmmaLake          
 #/home/tamsen/Data/Eton/by_site/MountConness        
@@ -20,5 +20,5 @@
 #o=/home/tamsen/Data/Eton i=./data/FSAlist.txt panel=./data/Panel_td.xml truth=./data/TruthData.xml rules="TD" ladder="Liz500"
 #/home/tamsen/Data/Eton/Frag_Order_16831/a_renamed
 #/home/tamsen/Data/Eton/Frag_Order_16831/b_renamed
-/home/tamsen/Data/Eton/Frag_Order_16830/a_renamed
-/home/tamsen/Data/Eton/Frag_Order_16830/b_renamed
+#/home/tamsen/Data/Eton/Frag_Order_16830/a_renamed
+#/home/tamsen/Data/Eton/Frag_Order_16830/b_renamed

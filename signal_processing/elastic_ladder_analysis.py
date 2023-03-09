@@ -59,8 +59,11 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     # made kernel smaller so ladder matches peak-smoothing alg
     parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
     parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5, False)
-    #print("ladder trace")
-    #print(",".join(ladder_trace))
+
+    #num_peaks_needed,kernel_size,min_distance_between_peaks,min_peak_width,threshold_multiplier,forced_threshold
+    #TD21RL21PS5_E08.fsa had special parameters b/c bad ladder
+    #parameters_for_right_side_of_ladder = shared.peak_calling_parameters(60, 10, 50, 5, .5, False)
+
     highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(ladder_trace,
                                                                          parameters_for_right_side_of_ladder, True)
 
