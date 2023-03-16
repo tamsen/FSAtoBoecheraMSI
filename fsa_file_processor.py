@@ -196,8 +196,12 @@ def process_fsa_file(fsa_file, panel_info, rules, expected_ladder_peaks, ladder_
                 whole_loci_domain = [60, 110]
 
             #tjd - temporary for TD21RP31
-            #if loci == "E9":
+            # if loci == "E9":
             #    whole_loci_domain = [180, 225]
+
+            #tjd - temporary for TD21SB39
+            #if loci == "Bdru266":
+            #    whole_loci_domain = [120, 140]
 
             loci_specific_plot_data = [trace_x_new, trace_y_new,
                                        [call[0] for call in raw_calls],
@@ -246,6 +250,7 @@ def use_the_ladder_to_make_a_mapping(all_collected_data, fsa_file, output_dir, r
                                      ladder_spikes, ladder_name,
                                      background_subtraction_window):
     try:
+
 
         if ladder_name == "Liz500":
             gotLadderPeaks = elastic_ladder_analysis.getLadderPeaks(run_folder, run_name, all_collected_data,

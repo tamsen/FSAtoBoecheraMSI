@@ -52,6 +52,12 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     if window_half_width > 0:
         ladder_trace = do_background_removal(ladder_trace, window_half_width)
 
+    #self.num_peaks_needed = num_peaks_needed
+    #    self.kernel_size = kernel_size
+    #    self.min_distance_between_peaks = min_distance_between_peaks
+    #    self.min_peak_width = min_peak_width
+    #    self.threshold_multiplier = threshold_multiplier
+    #    self.forced_threshold = False
     # parameters_for_right_side_of_ladder
     # parameters_for_right_side_of_ladder = shared.peak_calling_parameters(30, 20, 50, 10, .5)
     # parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
@@ -63,6 +69,9 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     #num_peaks_needed,kernel_size,min_distance_between_peaks,min_peak_width,threshold_multiplier,forced_threshold
     #TD21RL21PS5_E08.fsa had special parameters b/c bad ladder
     #parameters_for_right_side_of_ladder = shared.peak_calling_parameters(60, 10, 50, 5, .5, False)
+
+    #TD22BV10, TD21SB14, PS4 had special parameters b/c bad ladder
+    #parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 2, 10, .5, False)
 
     highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(ladder_trace,
                                                                          parameters_for_right_side_of_ladder, True)

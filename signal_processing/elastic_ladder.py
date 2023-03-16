@@ -2,7 +2,6 @@ import statistics
 #from signal_processing.elastic_ladder_analysis import GLOBAL_Liz500
 
 
-#GLOBAL_Liz500 = [35, 50, 75, 100, 139, 150, 160, 200, 250, 300, 340, 350, 400, 450, 490, 500]
 
 
 def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confident_right_peak,
@@ -11,19 +10,29 @@ def build_elastic_ladder_from_right(highest_peaks_with_index_from_right, confide
     index_of_last_ladder_peak = confident_right_peak[2]
     ladder_peaks = [confident_right_peak]
 
-    # TODO - this doesnt work on Michael Windhams data, so need a flag to modify for his ladder.
+    # There is a ladder issue where peak 139, tends to have a false peak onthe right.
+    # So if two peaks come very close together around ~139. We need to pick the left-most.
+    # At least, thats what happened with Tamsen's vendor ETON. Should hit at i=3
+
     # it seems like his distances (number of x-values) are shorter than my distances.
     for i in range(1, num_peaks_needed + 1):  # 0-14. skip the one at the start of the ladder.
-        # print("i:" + str(i))
+        print("i:" + str(i))
         ith_peak_to_find = num_peaks_needed + 1 - i
-        # print("ith peak to find:" + str(ith_peak_to_find))
-        # print("ladder peaks so far:" + str(ladder_peaks))
+
+        print("ith peak to find:" + str(ith_peak_to_find))
+        print("ladder peaks so far:" + str(ladder_peaks))
         next_peak = get_peak_i(highest_peaks_with_index_from_right, ith_peak_to_find,
                                index_of_last_ladder_peak, tolerances)
+        print("next peak found:" + str(next_peak))
+
+
         index_of_last_ladder_peak = next_peak[2]
+        next_closest=highest_peaks_with_index_from_right[index_of_last_ladder_peak+1]
+        print("checking next peak over:" + str(next_closest))
+
         ladder_peaks = [next_peak] + ladder_peaks
 
-    # print("final ladder peaks:" + str(ladder_peaks))
+    print("final ladder peaks:" + str(ladder_peaks))
     return ladder_peaks
 
 
