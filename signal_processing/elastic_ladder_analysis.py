@@ -52,7 +52,7 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     if window_half_width > 0:
         ladder_trace = do_background_removal(ladder_trace, window_half_width)
 
-    #self.num_peaks_needed = num_peaks_needed
+    #    self.num_peaks_needed = num_peaks_needed
     #    self.kernel_size = kernel_size
     #    self.min_distance_between_peaks = min_distance_between_peaks
     #    self.min_peak_width = min_peak_width
@@ -63,15 +63,19 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     # parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 20, 2, 1, .5)
 
     # made kernel smaller so ladder matches peak-smoothing alg
-    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
-    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 2, 1, .5, False)
+
+    # old parameters, 1.0.2.0
+    # parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
+
+    # new right_side parameters, changed for TD22BV10, TD21SB14, PS4 ladder issues, 1.0.3.0
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(60, 10, 20, 5, .3, False)
+    parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 10, 1, .5, False)
 
     #num_peaks_needed,kernel_size,min_distance_between_peaks,min_peak_width,threshold_multiplier,forced_threshold
     #TD21RL21PS5_E08.fsa had special parameters b/c bad ladder
     #parameters_for_right_side_of_ladder = shared.peak_calling_parameters(60, 10, 50, 5, .5, False)
 
-    #TD22BV10, TD21SB14, PS4 had special parameters b/c bad ladder
-    #parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 2, 10, .5, False)
+
 
     highest_peaks_tup, smoothed_trace, threshold_used = find_top_N_Peaks(ladder_trace,
                                                                          parameters_for_right_side_of_ladder, True)
@@ -81,11 +85,11 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     # right-most first
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
 
-    if (len(highest_peaks_tup) < 18):  # something went wrong here. Re-call the peaks, lower the threshold
+    if (len(highest_peaks_tup) < 20):  # something went wrong here. Re-call the peaks, lower the threshold
 
         threshold_to_force = threshold_used * 0.66
-        peak_width = 5
-        recall_parameters = shared.peak_calling_parameters(30, 10, 50, peak_width, .5, threshold_to_force)
+        peak_width = 3
+        recall_parameters = shared.peak_calling_parameters(60, 10, 20, peak_width, .3, threshold_to_force)
         highest_peaks_tup, smoothed_trace, threshold_used = recall_ladder_peaks(ladder_trace, recall_parameters)
 
     # now, keep the best 16 starting from the right-most index.

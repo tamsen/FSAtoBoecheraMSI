@@ -243,7 +243,44 @@ class TestLadder(TestCase):
         self.assertEqual(expected_peak_xs, observed_peak_xs)
 
 
-    def test_specifcally_that_worked_after_elastic_ladder_alg(self):
+    def test_fix_for_false_peak_at_E9(self):
+
+        #this bug caused issues for TD21SB2809, TD21RL0301, TD22BV10, TD21SB14: BF19.
+        # These samples had an allele call of 138 instead of the typical 142.
+        # Which kind of would violate apomixis given the GT of the other SB28 siblings.
+        # I tracked it down to an error with the ladder.
+        # An occasional extra peak would show up in the ladder for these runs right at 139 (!),
+        # throwing off the results.
+        # I was able to fix it in software, and indeed all calls of 138 went back to the standard 142.  S
+        # o, (138, 151) -> (142, 151)
+
+        out_folder=os.path.join(test_globals.GLOBAL_test_output_dir,
+                                "bug_false_peak_at_E9_139")
+        if not (os.path.exists(out_folder)):
+            os.makedirs(out_folder)
+
+        ladder_file = os.path.join("../data/Ladders.xml")
+        ladder_info = xml_file_readers.readLadderXml(ladder_file)
+        ladder_name= "Liz500"
+        ladder_spikes=ladder_info[ladder_name]
+
+        fsa_file = "../test_data/test_ladder/bug_false_peak_at_E9_139/TD21SB14_PS4_D6_D06.fsa"
+        dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(out_folder,
+                                                                                    "TD21SB14_PS4_D6_D06_",
+                                                                                    trace_data_dictionary,
+                                                                                            ladder_spikes, ladder_name)
+
+        expected_peak_xs = [1138,1282,1544,1800,2213,2319,2426,2864,3406,3997,4444,4557,5148,5701,6160,6256]
+        observed_peak_xs = [x[0] for x in sixteen_peaks]
+        self.assertEqual(expected_peak_xs, observed_peak_xs)
+
+    def test_specifically_that_worked_after_elastic_ladder_alg(self):
+
+        out_folder=os.path.join(test_globals.GLOBAL_test_output_dir,
+                                 "test_specifically_that_worked_after_elastic_ladder")
+        if not (os.path.exists(out_folder)):
+            os.makedirs(out_folder)
 
         ladder_file = os.path.join("../data/Ladders.xml")
         ladder_info = xml_file_readers.readLadderXml(ladder_file)
@@ -252,7 +289,7 @@ class TestLadder(TestCase):
 
         fsa_file = "../test_data/test_ladder/TD22EL23-PS2-B7_B07.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
-        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(test_globals.GLOBAL_test_output_dir,
+        sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(out_folder,
                                                                                     "TD22EL23-PS2-B7_B07_",
                                                                                     trace_data_dictionary,
                                                                                             ladder_spikes, ladder_name)
@@ -264,7 +301,7 @@ class TestLadder(TestCase):
         fsa_file = "../test_data/test_ladder/TD22BV12-PS5-E8_E08.fsa"
         dye_to_channel_mapping, trace_data_dictionary = fsa_file_reader.readFSAFile(fsa_file)
         sixteen_peaks, threshold, ladder_plot_data = elastic_ladder_analysis.getLadderPeaks(
-            test_globals.GLOBAL_test_output_dir,
+            out_folder,
             "TD22BV12-PS5-E8_E08.fsa_",
             trace_data_dictionary, ladder_spikes, ladder_name)
 
