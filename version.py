@@ -13,7 +13,7 @@ GLOBAL_public_version_info = [
     ["Extended to work with TM data", "Feb 15, 2023", "v1.0.2.0"],
     ["Tweeked ladder parameters to better deal with false peaks that came to close to real peaks on BF19",
      "Mar 20, 2023", "v1.0.3.0"],
-    ["After that last change, more peaks would get called, so had to add extra smarts to distinguish between them",
+    ["After that last change, more peaks would get called, causing more bugs, so I ended up undoing it",
      "Mar 24, 2023", "v1.0.3.1"]
         ]
 
