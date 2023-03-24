@@ -65,11 +65,13 @@ def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
     # print("last_peak_to_the_right_y:" + str(last_peak_to_the_right_y))
 
     expected_x = last_peak_to_the_right_x - tolerances[0][nth_ladder_peak_needed][0]
+    expected_y = last_peak_to_the_right_y
     tolerances_range_x_for_i = tolerances[0][nth_ladder_peak_needed][1:3]
     tolerances_range_y_for_i = tolerances[1][nth_ladder_peak_needed][0:2]
-
-    # print("tolerances_range_x_for_i:" + str(tolerances_range_x_for_i))
-    # print("tolerances_range_y_for_i:" + str(tolerances_range_y_for_i))
+    #print("expected x: " + str(expected_x))
+    #print("expected y: " + str(expected_y))
+    #print("tolerances_range_x_for_i:" + str(tolerances_range_x_for_i))
+    #print("tolerances_range_y_for_i:" + str(tolerances_range_y_for_i))
 
     num_extra_peaks_to_choose_from = 4
     index_to_start_looking = index_of_last_ladder_peak_in_trace_space + 1  # one past where we started
@@ -77,34 +79,51 @@ def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
     i_end = min(index_to_start_looking + num_extra_peaks_to_choose_from, len(peaks_from_left_to_right))
     # print("candidate_peak_indexes:" + str([i_start, i_end]))
     candidate_next_peaks = peaks_from_left_to_right[i_start:i_end]
-    # print("candidate_next_peaks:" + str(candidate_next_peaks))
+    #print("candidate_next_peaks:" + str(candidate_next_peaks))
+
 
     expected_x_range = [last_peak_to_the_right_x - tolerances_range_x_for_i[1],
                         last_peak_to_the_right_x - tolerances_range_x_for_i[0]]
     expected_y_range = [last_peak_to_the_right_y - tolerances_range_y_for_i[1],
                         last_peak_to_the_right_y - tolerances_range_y_for_i[0]]
 
-    # print("expected_x_range:" + str(expected_x_range))
-    # print("expected_y_range:" + str(expected_y_range))
+    #print("expected_x_range:" + str(expected_x_range))
+    #print("expected_y_range:" + str(expected_y_range))
 
     # how  many are within parameters?
     peaks_in_the_right_place = [p for p in candidate_next_peaks if
                                 ((expected_x_range[0] < p[0] < expected_x_range[1]) and
                                  (expected_y_range[0] < p[1] < expected_y_range[1]))]
 
-    # print("peaks in right place within exact parameters:" + str(peaks_in_the_right_place))
+    #print("peaks in right place within exact parameters:" + str(peaks_in_the_right_place))
 
     # if we found nothing, loosen up the height requirement
     if len(peaks_in_the_right_place) < 1:
         peaks_in_the_right_place = [p for p in candidate_next_peaks if
                                     (expected_x_range[0] < p[0] < expected_x_range[1])]
 
-        # print("peaks in right place with funny height:" + str(peaks_in_the_right_place))
+        #print("peaks in right place with funny height:" + str(peaks_in_the_right_place))
+
+    # if we found nothing, loosen up the x requirement
+    if len(peaks_in_the_right_place) < 1:
+        buffer=30
+        expanded_x=[expected_x_range[0] - buffer,expected_x_range[1] +buffer]
+        expanded_y=[expected_y_range[0] - buffer, expected_y_range[1]+buffer]
+        #print("expanded x:" + str(expanded_x))
+        #print("expanded y:" + str(expanded_y))
+        peaks_in_the_right_place = [p for p in candidate_next_peaks if
+                                    ((expanded_x[0] < p[0] < expanded_x[1] )
+                                    and
+                                    (expanded_y[0] < p[1] < expanded_y[1]))]
+
+
+        #print("peaks in roughly the right place with good height:" + str(peaks_in_the_right_place))
 
     # if we found nothing, throw the kitchen sink at it
     if len(peaks_in_the_right_place) < 1:
         peaks_in_the_right_place = candidate_next_peaks
-        # print("peaks not even close to where expected:" + str(peaks_in_the_right_place))
+        #print("peaks not even close to where expected." )
+        #print("Here is our choices:" + str(peaks_in_the_right_place))
 
     # All else fails, fake it till you make it?
     if len(peaks_in_the_right_place) == 0:
@@ -115,7 +134,12 @@ def get_peak_i(peaks_from_left_to_right, nth_ladder_peak_needed,
         return peaks_in_the_right_place[0]
 
     else:  # its good to have choices
+        #print("seeking the closest option." )
+
         return get_peak_closest_to_x(expected_x, peaks_in_the_right_place)
+
+        # this only worked better for some samples...TD22BV10, E9
+        #return get_peak_closest_to_x_and_y(expected_x, expected_y,peaks_in_the_right_place)
 
     # All else fails, fake it till you make it?
     return [expected_x, 0, -1]
@@ -131,5 +155,29 @@ def get_peak_closest_to_x(expected_x, peaks_in_the_right_place):
     closest_it_comes = min(diffs_between_obs_and_exp_pos)
     for i in range(0, len(peaks_in_the_right_place)):
         d = abs(peaks_in_the_right_place[i][0] - expected_x)
+        if d == closest_it_comes:
+            return peaks_in_the_right_place[i]
+
+def get_peak_closest_to_x_and_y(expected_x, expected_y, peaks_in_the_right_place):
+    # get the peak in the most likely spot, regardless of height
+    # print("expected_x:" + str(expected_x))
+    observed_x = [peaks_in_the_right_place[i][0]
+                  for i in range(0, len(peaks_in_the_right_place))]
+    observed_y = [peaks_in_the_right_place[i][1]
+                  for i in range(0, len(peaks_in_the_right_place))]
+
+    x_diffs_between_obs_and_exp_pos = [abs(observed_x[i] - expected_x)
+                                     for i in range(0, len(peaks_in_the_right_place))]
+
+    y_diffs_between_obs_and_exp_pos = [abs(observed_y[i] - expected_y)
+                                     for i in range(0, len(peaks_in_the_right_place))]
+
+    distances_squared = [x_diffs_between_obs_and_exp_pos[i]*x_diffs_between_obs_and_exp_pos[i]+
+                0.1 * y_diffs_between_obs_and_exp_pos[i] * y_diffs_between_obs_and_exp_pos[i]
+                                     for i in range(0, len(peaks_in_the_right_place))]
+
+    closest_it_comes = min(distances_squared)
+    for i in range(0, len(peaks_in_the_right_place)):
+        d = distances_squared[i]
         if d == closest_it_comes:
             return peaks_in_the_right_place[i]

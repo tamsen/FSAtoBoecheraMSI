@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-<!--  data taken from the BMW, 2021. MW later revisited some of his original allele calls -->
+<!--  data taken form the BMW, 2021. MW later revisited some of his original allele calls -->
 <Sample name="BD1200" species="lxpxr" >
     <loci name="ICE3">
         <alleles>69,89,131</alleles>

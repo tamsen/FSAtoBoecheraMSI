@@ -65,10 +65,12 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     # made kernel smaller so ladder matches peak-smoothing alg
 
     # old parameters, 1.0.2.0
-    # parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
+    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(50, 10, 50, 10, .5, False)
 
-    # new right_side parameters, changed for TD22BV10, TD21SB14, PS4 ladder issues, 1.0.3.0
-    parameters_for_right_side_of_ladder = shared.peak_calling_parameters(60, 10, 20, 5, .3, False)
+    # tjd+ new right_side parameters, changed for TD22BV10, TD21SB14, PS4 ladder issues,
+    # parameters_for_right_side_of_ladder = shared.peak_calling_parameters(60, 10, 20, 5, .3, False)
+    # but then commented out bc it caused other problems.. better to deal with on-one-off basis
+
     parameters_for_left_side_of_ladder = shared.peak_calling_parameters(30, 10, 10, 1, .5, False)
 
     #num_peaks_needed,kernel_size,min_distance_between_peaks,min_peak_width,threshold_multiplier,forced_threshold
@@ -85,11 +87,11 @@ def getLadderPeaks(runFolder, runName, trace_data_dictionary, expected_ladder_sp
     # right-most first
     highest_peaks_tup.sort(key=lambda x: x[0], reverse=True)
 
-    if (len(highest_peaks_tup) < 20):  # something went wrong here. Re-call the peaks, lower the threshold
-
+    if (len(highest_peaks_tup) < 18):  # something went wrong here. Re-call the peaks, lower the threshold
         threshold_to_force = threshold_used * 0.66
         peak_width = 3
-        recall_parameters = shared.peak_calling_parameters(60, 10, 20, peak_width, .3, threshold_to_force)
+        #recall_parameters = shared.peak_calling_parameters(60, 10, 20, peak_width, .3, threshold_to_force)
+        recall_parameters = shared.peak_calling_parameters(50, 10, 50, peak_width, .5, threshold_to_force)
         highest_peaks_tup, smoothed_trace, threshold_used = recall_ladder_peaks(ladder_trace, recall_parameters)
 
     # now, keep the best 16 starting from the right-most index.

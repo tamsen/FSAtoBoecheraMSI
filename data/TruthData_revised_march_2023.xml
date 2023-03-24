@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-<!--  data taken from the BMW, 2021. MW later revisited some of his original allele calls -->
+<!-- updated March 23, 2023 after MW revisited some of his original allele calls-->
 <Sample name="BD1200" species="lxpxr" >
     <loci name="ICE3">
         <alleles>69,89,131</alleles>
@@ -31,14 +31,15 @@
         <alleles>197,210</alleles>
     </loci>
     <loci name="BF3">
-        <alleles>93,99,101</alleles>
+        <alleles>93,99</alleles>
     </loci>
     <loci name="BF19">
-        <alleles>142,150</alleles>
+        <alleles>142,151</alleles>
     </loci>
     <loci name="B6">
-        <alleles>301,303</alleles>
+        <alleles>301,303, 310</alleles>
         <!-- tjd, 309  also seems real, but MW never called it -->
+        <!-- tjd, update, MW now calls 310 -->
     </loci>
     <loci name="Bdru266">
         <alleles>129</alleles>
@@ -165,7 +166,7 @@
         <alleles>214,217</alleles>
     </loci>
     <loci name="C8">
-        <alleles>234,242,-1</alleles>
+        <alleles>232,242,253</alleles>
     </loci>
     <loci name="BF9">
         <alleles>82,92,94</alleles>
@@ -174,7 +175,7 @@
         <alleles>117</alleles>
     </loci>
     <loci name="E9">
-        <alleles>-1,-1</alleles>
+        <alleles>197,208</alleles>
     </loci>
     <loci name="BF3">
         <alleles>93,99,101</alleles>
@@ -183,10 +184,10 @@
         <alleles>142,151</alleles>
     </loci>
     <loci name="B6">
-        <alleles>0,301,303</alleles>
+        <alleles>301,303,312</alleles>
     </loci>
     <loci name="Bdru266">
-        <alleles>-1,129</alleles>
+        <alleles>129</alleles>
     </loci>
     <loci name="BF15">
         <alleles>91,93,101</alleles>
@@ -496,7 +497,7 @@
     
 <Sample name="BP28" species="lxpxr" >
     <loci name="ICE3">
-        <alleles>69,89,-1</alleles>
+        <alleles>69,89,125</alleles>
     </loci>
     <loci name="BF20">
         <alleles>218,219</alleles>
@@ -505,14 +506,15 @@
         <alleles>238</alleles>
     </loci>
     <loci name="BF11">
-        <alleles>80,-1</alleles>
+        <alleles>80,86</alleles>
     </loci>
     <loci name="ICE14">
         <alleles>214,217</alleles>
     </loci>
     <loci name="C8">
-        <alleles>232,240,-1</alleles> 
+        <alleles>232,242,253</alleles> 
         <!-- MW didnt have the -1, but I think thats an oversight -->
+        <!-- update, MW changed his call to add 253!  -->
     </loci>
     <loci name="BF9">
         <alleles>82,92,94</alleles>
@@ -521,7 +523,7 @@
         <alleles>117</alleles>
     </loci>
     <loci name="E9">
-        <alleles>-1,-1</alleles>
+        <alleles>197,208</alleles>
     </loci>
     <loci name="BF3">
         <alleles>93,99,101</alleles>
@@ -530,10 +532,10 @@
         <alleles>142,151</alleles>
     </loci>
     <loci name="B6">
-        <alleles>301,303,313</alleles>
+        <alleles>301,303,312</alleles>
     </loci>
     <loci name="Bdru266">
-        <alleles>127,130</alleles>
+        <alleles>127,129</alleles>
     </loci>
     <loci name="BF15">
         <alleles>91,93,101</alleles>

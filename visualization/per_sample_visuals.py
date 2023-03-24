@@ -54,6 +54,58 @@ def write_per_sample_summary_plots(version_info, run_folder, by_sample_results,
                                      expected_ladder_peaks)
 
 
+def plot_ladders_for_E9_of_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
+                                expected_ladder_peaks):
+    fig = plt.figure(figsize=(10, 10))
+    what_we_are_looking_for="E9"
+    for i in range(0, 5):
+        PS = i + 1
+        loci = ordered_loci_list[(i * 3) + 3]
+        if not (loci == what_we_are_looking_for):
+            continue
+
+        warning = ""
+        if loci in sample_result.keys():
+            [runName, plot_name, threshold, smoothed_trace, sixteen_peaks, ladder_trace_key] \
+                = sample_result[loci].ladder_plotting_data
+            file_name= os.path.basename(runName)
+            if not ("PSE" in file_name):
+                return
+
+            print(file_name)
+            ladder_status = sample_result[loci].ladder_status
+            warning =  loci + " Laddder status: " + str(ladder_status).split(".")[-1]
+        else:
+            return
+            # some dummy data
+            #threshold = 0
+            #smoothed_trace = [1, 2, 3]
+            #sixteen_peaks = [[1, 2], [2, 3]]
+            #warning = "this loci had no ladder data"
+
+        domain = [500, sixteen_peaks[-1][0] + 200]
+        x_values = range(0, len(smoothed_trace))
+        peak_xs = [x[0] for x in sixteen_peaks]
+        ax = plot_trace_and_special_points(fig, (5, 1, PS),
+                                           x_values,
+                                           smoothed_trace,
+                                           peak_xs,
+                                           [x[1] for x in sixteen_peaks],
+                                           warning, domain, 'black', False, True, expected_ladder_peaks)
+
+        ax = plt.plot(x_values, [threshold for x in x_values], c="green")
+
+        plt.ylabel("PS" + str(PS), fontsize=16)
+
+    fig.suptitle(str(sample_name) + " ladder (x=fragment travel distance, y=intensity) ")
+
+    out_path = os.path.join(run_folder, "ladders")
+    if not (os.path.exists(out_path)):
+        os.makedirs(out_path)
+    plt.savefig(out_path + "/" + str(sample_name) + "_ladder_for_loci_E9" + "_plot" + ".png")
+
+    plt.close()
+
 def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
                                 expected_ladder_peaks):
     fig = plt.figure(figsize=(10, 10))
@@ -97,6 +149,8 @@ def plot_ladders_for_the_sample(run_folder, sample_name, sample_result, ordered_
 
     plt.close()
 
+    plot_ladders_for_E9_of_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,
+                                expected_ladder_peaks)
 
 def plot_mappings_for_the_sample(run_folder, sample_name, sample_result, ordered_loci_list,expected_ladder_peaks):
     fig = plt.figure(figsize=(10, 10))

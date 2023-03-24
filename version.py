@@ -11,7 +11,10 @@ GLOBAL_public_version_info = [
     ["Outputs spreadsheet with species determinations", "Dec 01, 2022", "v1.0.0.6"],
     ["Extended to work with MW data, cleaned up input arguments", "Jan 10, 2023", "v1.0.1.0"],
     ["Extended to work with TM data", "Feb 15, 2023", "v1.0.2.0"],
-    ["Tweeked ladder parmaters to better deal with false peaks", "Mar 20, 2023", "v1.0.3.0"]
+    ["Tweeked ladder parameters to better deal with false peaks that came to close to real peaks on BF19",
+     "Mar 20, 2023", "v1.0.3.0"],
+    ["After that last change, more peaks would get called, so had to add extra smarts to distinguish between them",
+     "Mar 24, 2023", "v1.0.3.1"]
         ]
 
 
