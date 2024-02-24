@@ -1,19 +1,21 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="run_FSA_to_microsat_calls" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+  <configuration default="false" name="TM_FSA_to_microsat_calls" type="PythonConfigurationType" factoryName="Python">
     <module name="FSAtoBoecheraMSI" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
+    <option name="SDK_NAME" value="Python 3.8" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_FSA_to_microsat_calls.py" />
-    <option name="PARAMETERS" value="o=$USER_HOME$/Data/Eton i=./data/FSAlist.txt panel=./data/Panel_td.xml truth=./data/TruthData.xml rules=&quot;TD&quot; ladder=&quot;Liz500&quot;" />
+    <option name="PARAMETERS" value="o=$USER_HOME$/Data/TMRawFSAData_2024/Output i=$USER_HOME$/Data/TMRawFSAData_2024/FSAlist.txt panel=./data/Panel_mw.xml truth=./data/TruthData.xml rules=&quot;TM&quot; ladder=&quot;400HD&quot;" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

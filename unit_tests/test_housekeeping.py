@@ -53,9 +53,11 @@ class test_housekeeping(unittest.TestCase):
 
         self.assertEqual(True, True)
 
+    #def test_move_and_rename_TM_files(self):
     def move_and_rename_TM_files(self):
 
         data_path="/home/tamsen/Data/TMRawFSAData/"
+        data_path="/home/tamsen/Data/TMRawFSAData_2024/Boechera_raw_sequences_selection/to_rename"
         all_folders = os.listdir(data_path)
         for d in all_folders:
             print("directory: " + d)
