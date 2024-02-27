@@ -3,11 +3,11 @@
 
 # Quick Start
 
-Command syntax:  python run_FSA_to_microsat_calls.py Files.txt Panel.xml
 
-"Files.txt" is a txt file with th list of FSA files you want to process.
-And "Panel.xml" decribes your multiplex primer set.
-(Sorry, DNA ladder currenly hard coded to LIZ 500, thats all we are using right now.)
+"FSAlist.txt" is a txt file with the list of the directories of FSA files you want to process.
+And "Panel.xml" decribes your multiplex primer set. 
+TruthData.xml is only used if you have specimens with known alleles, and you want to quantify how close the alleles called in your sample come to the truth.
+(Sorry, DNA ladder choices only LIZ 500 or 400HD, thats all we are using right now.)
 
 Example, using the sample input files included in the "data" folder in the repo
 
