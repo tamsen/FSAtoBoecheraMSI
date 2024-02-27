@@ -9,9 +9,6 @@ And "Panel.xml" decribes your multiplex primer set.
 TruthData.xml is only used if you have specimens with known alleles, and you want to quantify how close the alleles called in your sample come to the truth.
 (Sorry, DNA ladder choices only LIZ 500 or 400HD, thats all we are using right now.)
 
-Example, using the sample input files included in the "data" folder in the repo
-
-tamsen@tamsen:~/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI$ /venv/bin/python run_FSA_to_microsat_calls.py data/FSAlist.txt data/Panel.xml
 
 #### Running Tamsen's raw data 
 
