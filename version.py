@@ -14,8 +14,11 @@ GLOBAL_public_version_info = [
     ["Tweeked ladder parameters to better deal with false peaks that came to close to real peaks on BF19",
      "Mar 20, 2023", "v1.0.3.0"],
     ["After that last change, more peaks would get called, causing more bugs, so I ended up undoing it",
-     "Mar 24, 2023", "v1.0.3.1"]
-        ]
+     "Mar 24, 2023", "v1.0.3.1"],
+    ["I noticed consistent cross contamination in PS1, between BF20 and A1 in TM's data," +
+     " so I added a rule to remove it. Only affect's TM's data",
+        "Feb 27, 2024", "v1.0.3.2"]
+]
 
 
 

@@ -9,6 +9,7 @@ def make_adjustments(peaks, loci):
 
     if loci == 'BF20': #g
         peaks = [[p[0] - 0.3, p[1]] for p in peaks]
+        [peaks.remove(p) for p in peaks if 235 < p[0] ]  #cross contamination
 
     if loci == 'A1': #b
         peaks = [[p[0] -0.5, p[1]] for p in peaks]
