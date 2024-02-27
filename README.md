@@ -13,14 +13,14 @@ Example, using the sample input files included in the "data" folder in the repo
 
 tamsen@tamsen:~/Git/FSAtoBoecheraMSI/FSAtoBoecheraMSI$ /venv/bin/python run_FSA_to_microsat_calls.py data/FSAlist.txt data/Panel.xml
 
-### Running Tamsen's raw data 
+#### Running Tamsen's raw data 
 
 run_FSA_to_microsat_calls.py o=path_to_output_folder i=/path_to/FSAlist.txt panel=/path_to/Panel_td.xml truth=/path_to/TruthData.xml rules="TD" ladder="Liz500"
 
-# Running Michael W's raw data
+#### Running Michael W's raw data
 run_FSA_to_microsat_calls.py o=path_to_output_folder i=/path_to/FSAlist.txt panel=/path_to/Panel_mw.xml truth=/path_to/TruthData.xml rules="MW" ladder="Liz500"
 
-# Running Teri's raw data
+#### Running Teri's raw data
 run_FSA_to_microsat_calls.py o=path_to_output_folder i=/path_to/FSAlist.txt panel=/path_to/Panel_mw.xml truth=/path_to/TruthData.xml rules="TM" ladder="400HD"
 
 
